@@ -1,0 +1,111 @@
+
+{{this.fg.getRawValue() | json }}
+<!--
+{{this.fg.errors| json }}
+-->
+
+<form nz-form [formGroup]="fg" nzLayout="vertical">
+
+  <ng-template #errorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+      필수 입력 값입니다.
+    </ng-container>
+    <ng-container *ngIf="control.hasError('exists')">
+      기존 코드가 존재합니다.
+    </ng-container>
+  </ng-template>
+
+  <nz-form-item-custom for="input_text" label="label1" required>
+    <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+      <input nz-input id="input_text" formControlName="input_text" required
+        placeholder="필수 입력 항목입니다."/>
+    </nz-form-control>
+  </nz-form-item-custom>
+
+  <nz-form-item-custom for="input_textarea" label="label2">
+    <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+      <textarea nz-input id="input_textarea" formControlName="input_textarea"
+      placeholder="필수 입력 항목입니다." [rows]="20">
+      </textarea>
+    </nz-form-control>
+  </nz-form-item-custom>
+
+  <nz-form-item-custom for="input_date" label="label3" required>
+    <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+      <nz-date-picker nzId="input_date" formControlName="input_date">
+      </nz-date-picker>
+    </nz-form-control>
+  </nz-form-item-custom>
+
+  <app-nz-input-datetime
+    formControlName="input_date" itemId="data3"
+    [required]="true" [nzErrorTip]="errorTpl">label3
+  </app-nz-input-datetime>
+
+  <nz-form-item-custom for="input_number" label="label4" required>
+    <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+      <nz-input-number nzId="input_number" formControlName="input_number" required
+        [nzMin]="0" [nzMax]="9999">
+      </nz-input-number>
+    </nz-form-control>
+  </nz-form-item-custom>
+
+  <!-- [opt_label]="'label'" -->
+  <!-- [custom_label]="custom_label" -->
+
+  <nz-form-item-custom for="input_select" label="label5" required>
+    <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+      <nz-input-select required
+        formControlName="input_select" itemId="input_select"
+        [options]="selectList" [opt_value]="'value'" [opt_label]="'label'"
+        placeholder="Please select">
+      </nz-input-select>
+    </nz-form-control>
+  </nz-form-item-custom>
+
+  <!--
+  <app-nz-form-input-tree-select
+    formControlName="input_treeselect" itemId="data6"
+    [nodes]="treeList"
+    placeholder="please selec'"
+    [required]="true" [nzErrorTip]="errorTpl">label6
+  </app-nz-form-input-tree-select>
+  -->
+
+  <nz-form-item-custom for="input_text" label="asfsaf" required>
+    <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+      <label nz-checkbox nzId="input_text" formControlName="input_text"></label>
+    </nz-form-control>
+  </nz-form-item-custom>
+
+  <!--
+  <app-nz-input-select-dept
+    formControlName="input_deptselect" itemId="input_deptselect"
+    placeholder="Please select" opt_value="deptCode"
+    [required]="true" [nzErrorTip]="errorTpl">label5
+  </app-nz-input-select-dept>
+-->
+
+  <nz-input-ckeditor
+    formControlName="input_text" itemId="data1"
+    rows="10">
+    Editor
+  </nz-input-ckeditor>
+
+  <app-nz-input-radio-group formControlName="input_text" itemId="data1" [options]="[{label:'a',value:'a'},{label:'b',value:'b'}]">
+    라디오버튼
+  </app-nz-input-radio-group>
+
+  <app-nz-buttons [buttons]="btns"></app-nz-buttons>
+
+</form>
+
+<app-duty-date-list>
+
+</app-duty-date-list>
+
+<!--
+<app-daypilot-calendar>
+
+</app-daypilot-calendar>
+-->

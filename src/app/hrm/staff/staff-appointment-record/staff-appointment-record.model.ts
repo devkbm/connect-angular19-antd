@@ -1,0 +1,20 @@
+export interface StaffAppointmentRecord {
+  staffNo: string | null;
+  staffName: string | null;
+  seq: string | null;
+  appointmentTypeCode: string | null;
+  appointmentDate: Date | null;
+  appointmentEndDate: Date | null;
+  recordName: string | null;
+  comment: string | null;
+  isCompleted: boolean | null;
+  blngDeptCode: string | null;
+  workDeptCode: string | null;
+  jobGroupCode: string | null;
+  jobPositionCode: string | null;
+  occupationCode: string | null;
+  jobGradeCode: string | null;
+  payStepCode: string | null;
+  jobCode: string | null;
+  dutyResponsibilityCode: string | null;
+}
