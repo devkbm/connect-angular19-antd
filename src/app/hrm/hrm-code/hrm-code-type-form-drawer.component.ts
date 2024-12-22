@@ -21,7 +21,7 @@ import { HrmCodeTypeFormComponent } from './hrm-code-type-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
       <app-hrm-code-type-form *nzDrawerContent
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -44,7 +44,7 @@ import { HrmCodeTypeFormComponent } from './hrm-code-type-form.component';
 })
 export class HrmCodeTypeFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<HrmCodeTypeFormComponent>(HrmCodeTypeFormComponent);

@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, inject, output } from '@angular/core';
+import { Component, Input, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 ModuleRegistry.registerModules([
@@ -40,41 +41,17 @@ import { Menu } from './menu.model';
   </ag-grid-angular>
   `
 })
-export class MenuGridComponent implements OnInit {
+export class MenuGridComponent extends AgGridCommon {
 
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  menuList: Menu[] = [];
+  private menuService = inject(MenuService);
+  private appAlarmService = inject(AppAlarmService);
 
   rowClicked = output<any>();
   rowDoubleClicked = output<any>();
   editButtonClicked = output<any>();
 
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
-
   @Input() menuGroupCode: string = '';
-
-  private menuService = inject(MenuService);
-  private appAlarmService = inject(AppAlarmService);
-
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  menuList: Menu[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -103,16 +80,9 @@ export class MenuGridComponent implements OnInit {
     {headerName: 'APP URL',       field: 'appUrl',          width: 300 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-      return params.data.menuGroupCode + params.data.menuCode;
+  getRowId: GetRowIdFunc<Menu> = (params: GetRowIdParams<Menu>) => {
+      return params.data.menuGroupCode! + params.data.menuCode!;
   };
-
-  ngOnInit() {
-  }
-
-  private onEditButtonClick(e: any) {
-    this.editButtonClicked.emit(e.rowData);
-  }
 
   getMenuList(params?: any) {
 
@@ -132,7 +102,11 @@ export class MenuGridComponent implements OnInit {
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any) {
-    this.rowDoubleClicked.emit(event.data);
+  rowDbClicked(event: RowDoubleClickedEvent<Menu>) {
+    this.rowDoubleClicked.emit(event.data!);
+  }
+
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
+    this.editButtonClicked.emit(e.rowData);
   }
 }

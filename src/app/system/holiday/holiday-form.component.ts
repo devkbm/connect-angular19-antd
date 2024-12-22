@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, inject, Renderer2, input, effect, output } from '@angular/core';
+import { Component, AfterViewInit, inject, Renderer2, input, effect, output } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -79,7 +79,7 @@ import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-
   `,
   styles: []
 })
-export class HolidayFormComponent implements OnInit, AfterViewInit {
+export class HolidayFormComponent implements AfterViewInit {
 
   private service = inject(HolidayService);
   private appAlarmService = inject(AppAlarmService);
@@ -95,25 +95,15 @@ export class HolidayFormComponent implements OnInit, AfterViewInit {
     comment       : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<Date>();
+  formInitId = input<Date>();
 
   constructor() {
 
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId()!);
+      if (this.formInitId()) {
+        this.get(this.formInitId()!);
       }
     })
-  }
-
-  ngOnInit(): void {
-    /*
-    if (this.initLoadId) {
-      this.get(this.initLoadId);
-    } else {
-      this.newForm(new Date());
-    }
-      */
   }
 
   ngAfterViewInit(): void {

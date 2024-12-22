@@ -2,9 +2,10 @@ import { Component, OnInit, computed, inject, output, signal } from '@angular/co
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 ModuleRegistry.registerModules([
@@ -17,6 +18,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { HolidayService } from './holiday.service';
 import { DateInfo, Holiday } from './holiday.model';
+
 
 @Component({
   selector: 'app-holiday-grid',
@@ -39,32 +41,14 @@ import { DateInfo, Holiday } from './holiday.model';
   </ag-grid-angular>
   `
 })
-export class HolidayGridComponent implements OnInit {
+export class HolidayGridComponent extends AgGridCommon implements OnInit {
 
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
+  private appAlarmService = inject(AppAlarmService);
+  private holidayService = inject(HolidayService);
 
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+  rowClicked = output<DateInfo>();
+  rowDoubleClicked = output<DateInfo>();
+  editButtonClicked = output<DateInfo>();
 
   //gridList: Holiday[] = [];
   gridList = signal<DateInfo[]>([]);
@@ -77,11 +61,6 @@ export class HolidayGridComponent implements OnInit {
     });
     return obj;
   });
-
-  private appAlarmService = inject(AppAlarmService);
-  private holidayService = inject(HolidayService);
-
-  defaultColDef: ColDef = { sortable: true, resizable: true };
 
   columnDefs: ColDef[] = [
     {
@@ -107,8 +86,8 @@ export class HolidayGridComponent implements OnInit {
     { headerName: '비고',     field: 'holiday.comment',     width: 200 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.date;
+  getRowId: GetRowIdFunc<any> = (params: GetRowIdParams<any>) => {
+    return params.data.date!;
   };
 
   ngOnInit(): void {
@@ -127,18 +106,18 @@ export class HolidayGridComponent implements OnInit {
         );
   }
 
-  onEditButtonClick(e: any): void {
-    this.editButtonClicked.emit(e.rowData);
-  }
-
   selectionChanged(event: any): void {
     const selectedRows = this.gridApi.getSelectedRows();
 
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any): void {
-    this.rowDoubleClicked.emit(event.data);
+  rowDbClicked(event: RowDoubleClickedEvent<DateInfo>): void {
+    this.rowDoubleClicked.emit(event.data!);
+  }
+
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}): void {
+    this.editButtonClicked.emit(e.rowData);
   }
 
 }

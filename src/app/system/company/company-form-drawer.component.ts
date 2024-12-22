@@ -21,7 +21,7 @@ import { CompanyFormComponent } from './company-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-company-form *nzDrawerContent
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -43,7 +43,7 @@ import { CompanyFormComponent } from './company-form.component';
   styles:[]
 })
 export class CompanyFormDrawerComponent {
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<CompanyFormComponent>(CompanyFormComponent);

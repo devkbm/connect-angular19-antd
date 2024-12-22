@@ -328,13 +328,13 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
       dutyResponsibilityCode  : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<{staffId: string, seq: string}>();
+  formInitId = input<{staffId: string, seq: string}>();
   staff = input<{companyCode: string, staffNo: string, staffName: string}>();
 
   constructor() {
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId()?.staffId!, this.initLoadId()?.seq!);
+      if (this.formInitId()) {
+        this.get(this.formInitId()?.staffId!, this.formInitId()?.seq!);
       } else {
         this.newForm();
       }
@@ -362,13 +362,6 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
       {typeId: 'HR0007', propertyName: "dutyResponsibilityCodeList"}
     ]);
 
-    /*
-    if (this.initLoadId) {
-      this.get(this.initLoadId.staffId, this.initLoadId.seq);
-    } else {
-      this.newForm();
-    }
-      */
   }
 
   newForm(): void {

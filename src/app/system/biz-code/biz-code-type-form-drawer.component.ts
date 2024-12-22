@@ -22,7 +22,7 @@ import { BizCodeTypeFormComponent } from './biz-code-type-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
       <app-biz-code-type-form *nzDrawerContent
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -47,7 +47,7 @@ import { BizCodeTypeFormComponent } from './biz-code-type-form.component';
 })
 export class BizCodeTypeFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<BizCodeTypeFormComponent>(BizCodeTypeFormComponent);

@@ -2,12 +2,13 @@ import { Component, OnInit, Input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent, SelectionChangedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 import { TeamModel } from './team.model';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -23,7 +24,7 @@ ModuleRegistry.registerModules([
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="list"
+      [rowData]="data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -35,36 +36,13 @@ ModuleRegistry.registerModules([
     </ag-grid-angular>
   `
 })
-export class TeamGridComponent implements OnInit {
+export class TeamGridComponent extends AgGridCommon implements OnInit {
 
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
+  rowClicked = output<TeamModel | undefined>();
+  rowDoubleClicked = output<TeamModel | undefined>();
+  editButtonClicked = output<TeamModel | undefined>();
 
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  @Input() list: TeamModel[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
-
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  @Input() data: TeamModel[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -88,25 +66,25 @@ export class TeamGridComponent implements OnInit {
     { headerName: '팀명',       field: 'teamName',    width: 200, filter: 'agTextColumnFilter' }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.teamId;
+  getRowId: GetRowIdFunc<TeamModel> = (params: GetRowIdParams<TeamModel>) => {
+    return params.data.teamId!;
   };
 
   ngOnInit() {
 
   }
 
-  selectionChanged(event: any) {
+  selectionChanged(event: SelectionChangedEvent<TeamModel>) {
     const selectedRows = this.gridApi.getSelectedRows();
 
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any) {
+  rowDbClicked(event: RowDoubleClickedEvent<TeamModel>) {
     this.rowDoubleClicked.emit(event.data);
   }
 
-  private onEditButtonClick(e: any) {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 

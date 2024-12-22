@@ -197,13 +197,13 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
   });
 
   //@Input() staff?: {companyCode: string, staffNo: string, staffName: string};
-  initLoadId = input<{staffId: string, seq: string}>();
+  formInitId = input<{staffId: string, seq: string}>();
   staff = input<{companyCode: string, staffNo: string, staffName: string}>();
 
   constructor()  {
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId()?.staffId!, this.initLoadId()?.seq!);
+      if (this.formInitId()) {
+        this.get(this.formInitId()?.staffId!, this.formInitId()?.seq!);
       } else {
         this.newForm();
       }
@@ -213,14 +213,6 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
   ngOnInit() {
     this.getSchoolCareerTypeList();
     this.getSchoolCodeList();
-
-    /*
-    if (this.initLoadId) {
-      this.get(this.initLoadId.staffId, this.initLoadId.seq);
-    } else {
-      this.newForm();
-    }
-      */
   }
 
   ngAfterViewInit(): void {

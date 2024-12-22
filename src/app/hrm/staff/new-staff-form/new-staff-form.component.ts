@@ -95,7 +95,7 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
     nameChi                     : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<string>('');
+  formInitId = input<string>('');
 
   ngOnInit() {
   }

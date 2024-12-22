@@ -114,13 +114,13 @@ export class TeamFormComponent implements OnInit, AfterViewInit, OnChanges {
     memberList  : new FormControl<string[] | null>(null)
   });
 
-  initLoadId = input<string>('');
+  formInitId = input<string>('');
 
   ngOnInit() {
     this.getMembers();
 
-    if (this.initLoadId()) {
-      this.get(this.initLoadId());
+    if (this.formInitId()) {
+      this.get(this.formInitId());
     } else {
       this.newForm();
     }

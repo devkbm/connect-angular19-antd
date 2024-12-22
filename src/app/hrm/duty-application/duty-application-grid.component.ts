@@ -3,9 +3,10 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -18,6 +19,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { DutyApplicationService } from './duty-application.service';
 import { DutyApplication } from './duty-application.model';
 
+
 @Component({
   selector: 'app-duty-application-grid',
   imports: [
@@ -27,7 +29,7 @@ import { DutyApplication } from './duty-application.model';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="_data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -41,38 +43,16 @@ import { DutyApplication } from './duty-application.model';
   styles: [`
   `]
 })
-export class DutyApplicationGridComponent implements OnInit {
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  _list: DutyApplication[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class DutyApplicationGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
   private dutyApplicationService = inject(DutyApplicationService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  _data: DutyApplication[] = [];
+
+  rowClicked = output<DutyApplication | undefined>();
+  rowDoubleClicked = output<DutyApplication | undefined>();
+  editButtonClicked = output<DutyApplication | undefined>();
 
   columnDefs: ColDef[] = [
     {
@@ -100,8 +80,8 @@ export class DutyApplicationGridComponent implements OnInit {
     { headerName: '근태근태종료일시',   field: 'dutyEndDateTime',     width: 80 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.dutyId;
+  getRowId: GetRowIdFunc<DutyApplication> = (params: GetRowIdParams<DutyApplication>) => {
+    return params.data.dutyId!;
   };
 
   ngOnInit() {
@@ -118,9 +98,9 @@ export class DutyApplicationGridComponent implements OnInit {
         .subscribe(
           (model: ResponseList<DutyApplication>) => {
             if (model.data) {
-              this._list = model.data;
+              this._data = model.data;
             } else {
-              this._list = [];
+              this._data = [];
             }
             this.appAlarmService.changeMessage(model?.message);
           }
@@ -133,11 +113,11 @@ export class DutyApplicationGridComponent implements OnInit {
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any) {
+  rowDbClicked(event: RowDoubleClickedEvent<DutyApplication>) {
     this.rowDoubleClicked.emit(event.data);
   }
 
-  onEditButtonClick(e: any) {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 

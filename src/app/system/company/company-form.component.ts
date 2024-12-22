@@ -122,13 +122,13 @@ export class CompanyFormComponent  {
     establishmentDate           : new FormControl<Date | null>(null)
   });
 
-  initLoadId = input<string>('');
+  formInitId = input<string>('');
 
   constructor() {
 
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId());
+      if (this.formInitId()) {
+        this.get(this.formInitId());
       }
     })
   }

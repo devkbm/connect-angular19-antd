@@ -113,14 +113,14 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
     memberList        : new FormControl<any | null>(null)
   });
 
-  initLoadId = input<number>(-1);
+  formInitId = input<number>(-1);
 
   constructor() {
     this.getAllMember();
 
     effect(() => {
-      if ( this.initLoadId() > 0 ) {
-        this.get(this.initLoadId());
+      if ( this.formInitId() > 0 ) {
+        this.get(this.formInitId());
       }
     })
   }

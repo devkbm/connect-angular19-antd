@@ -117,12 +117,12 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
     */
   });
 
-  initLoadId = input<string>();
+  formInitId = input<string>();
 
   constructor() {
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId()!);
+      if (this.formInitId()) {
+        this.get(this.formInitId()!);
       } else {
         this.newForm();
       }

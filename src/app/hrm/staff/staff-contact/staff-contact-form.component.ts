@@ -146,7 +146,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
   });
 
   //@Input() staff?: {companyCode: string, staffNo: string, staffName: string};
-  initLoadId = input<{staffId: string, seq: string}>();
+  formInitId = input<{staffId: string, seq: string}>();
   staff = input<{companyCode: string, staffNo: string, staffName: string}>();
 
   constructor() {
@@ -169,13 +169,6 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
   }
 
   ngOnInit() {
-    /*
-    if (this.initLoadId) {
-      this.get(this.initLoadId);
-    } else {
-      this.newForm();
-    }
-    */
   }
 
   ngAfterViewInit(): void {

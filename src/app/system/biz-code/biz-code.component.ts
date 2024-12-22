@@ -146,11 +146,11 @@ export class BizCodeComponent {
   gridCode = viewChild.required(BizCodeGridComponent);
 
   drawer: {
-    codeType: { visible: boolean, initLoadId: any },
-    code: { visible: boolean, initLoadId: any }
+    codeType: { visible: boolean, formInitId: any },
+    code: { visible: boolean, formInitId: any }
   } = {
-    codeType: { visible: false, initLoadId: null },
-    code: { visible: false, initLoadId: null }
+    codeType: { visible: false, formInitId: null },
+    code: { visible: false, formInitId: null }
   }
 
   selectBizCodeTypeList() {
@@ -160,25 +160,25 @@ export class BizCodeComponent {
   }
 
   newCodeType() {
-    this.drawer.codeType.initLoadId = null;
+    this.drawer.codeType.formInitId = null;
     this.drawer.codeType.visible = true;
   }
 
   editCodeType(params: any) {
-    this.drawer.codeType.initLoadId = params.typeId;
+    this.drawer.codeType.formInitId = params.typeId;
     this.drawer.codeType.visible = true;
   }
 
   codeTypeGridRowClicked(params: any) {
-    this.drawer.codeType.initLoadId = params.typeId;
-    this.drawer.code.initLoadId = {typeId: params.typeId};
+    this.drawer.codeType.formInitId = params.typeId;
+    this.drawer.code.formInitId = {typeId: params.typeId};
 
-    this.gridCode().getList(this.drawer.code.initLoadId.typeId);
+    this.gridCode().getList(this.drawer.code.formInitId.typeId);
   }
 
   selectBizCodeList() {
     this.drawer.code.visible = false;
-    this.gridCode().getList(this.drawer.code.initLoadId.typeId);
+    this.gridCode().getList(this.drawer.code.formInitId.typeId);
   }
 
   newCode() {
@@ -186,12 +186,12 @@ export class BizCodeComponent {
   }
 
   editCode(params: any) {
-    this.drawer.code.initLoadId = {typeId: params.typeId, code: params.code};
+    this.drawer.code.formInitId = {typeId: params.typeId, code: params.code};
     this.drawer.code.visible = true;
   }
 
   codeGridRowClicked(params: any) {
-    this.drawer.code.initLoadId = {typeId: params.typeId, code: params.code};
+    this.drawer.code.formInitId = {typeId: params.typeId, code: params.code};
   }
 
 }

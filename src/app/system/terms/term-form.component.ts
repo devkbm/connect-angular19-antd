@@ -195,15 +195,15 @@ export class TermFormComponent implements OnInit, AfterViewInit {
     comment      : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<string>('');
+  formInitId = input<string>('');
 
   ngOnInit(): void {
     this.getSystemTypeList();
     this.getWordList();
     this.getDataDoaminList();
 
-    if (this.initLoadId()) {
-      this.get(this.initLoadId());
+    if (this.formInitId()) {
+      this.get(this.formInitId());
     } else {
       this.newForm();
     }

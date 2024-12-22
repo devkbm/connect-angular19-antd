@@ -22,6 +22,7 @@ import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 import { ArticleService } from './article.service';
 import { Article } from './article.model';
 import { ArticleFileUploadComponent } from './article-file-upload.component';
+import { SessionManager } from 'src/app/core/session-manager';
 
 
 @Component({
@@ -175,6 +176,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     boardId         : new FormControl<string | null>(null, { validators: [Validators.required] }),
     articleId       : new FormControl<string | null>(null, { validators: [Validators.required] }),
     articleParentId : new FormControl<string | null>(null),
+    userId          : new FormControl<string | null>(null),
     title           : new FormControl<string | null>(null, { validators: [Validators.required] }),
     contents        : new FormControl<string | null>(null),
     attachFile      : new FormControl<any>(null)
@@ -192,7 +194,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     */
   });
 
-  initLoadId = input<string>('');
+  formInitId = input<string>('');
 
   ngOnInit(): void {
 
@@ -200,12 +202,12 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
       this.boardId = this.activatedRoute.snapshot.params['boardId'];
     }
 
-    if (this.activatedRoute.snapshot.params['initLoadId']) {
-      this.initLoadId = this.activatedRoute.snapshot.params['initLoadId'];
+    if (this.activatedRoute.snapshot.params['formInitId']) {
+      this.formInitId = this.activatedRoute.snapshot.params['formInitId'];
     }
 
-    if (this.initLoadId()) {
-      this.get(this.initLoadId());
+    if (this.formInitId()) {
+      this.get(this.formInitId());
     } else {
       this.newForm(this.boardId);
     }
@@ -228,10 +230,10 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   newForm(boardId: any): void {
     this.fg.reset();
     this.fg.controls.boardId.setValue(boardId);
+
+    this.fg.controls.userId.setValue(SessionManager.getUserId());
     this.fileList = [];
     this.textData = null;
-    // console.log(this.ckEditor.editorInstance);
-    //this.ckEditor.writeValue(null);
 
     this.focusInput();
   }

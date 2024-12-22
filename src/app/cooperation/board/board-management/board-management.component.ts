@@ -42,7 +42,7 @@ import { BoardTreeComponent } from '../board-hierarcy/board-tree.component';
       </app-board-tree>
 
       <app-board-form #boardForm
-        [initLoadId]="this.drawerBoard.initLoadId"
+        [formInitId]="this.drawerBoard.formInitId"
         (formSaved)="getBoardTree()"
         (formDeleted)="getBoardTree()"
         (formClosed)="drawerBoard.visible = false">
@@ -94,9 +94,9 @@ export class BoardManagementComponent implements AfterViewInit {
 
   boardTree = viewChild.required(BoardTreeComponent);
 
-  drawerBoard: { visible: boolean, initLoadId: any } = {
+  drawerBoard: { visible: boolean, formInitId: any } = {
     visible: false,
-    initLoadId: null
+    formInitId: null
   }
 
   /**
@@ -116,7 +116,7 @@ export class BoardManagementComponent implements AfterViewInit {
   }
 
   newBoard(): void {
-    this.drawerBoard.initLoadId = null;
+    this.drawerBoard.formInitId = null;
     this.drawerBoard.visible = true;
   }
 
@@ -125,7 +125,7 @@ export class BoardManagementComponent implements AfterViewInit {
   }
 
   boardTreeItemClick(item: NzTreeNodeOptions) {
-    this.drawerBoard.initLoadId = item.key;
+    this.drawerBoard.formInitId = item.key;
   }
 
 }

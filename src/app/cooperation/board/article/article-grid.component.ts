@@ -4,7 +4,12 @@ import { CommonModule } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, FirstDataRenderedEvent, GridSizeChangedEvent, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  RowSelectionModule,
+]);
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
@@ -13,10 +18,6 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { ArticleService } from './article.service';
 import { Article } from './article.model';
 
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  RowSelectionModule,
-]);
 
 @Component({
   selector: 'app-article-grid',
@@ -27,7 +28,7 @@ ModuleRegistry.registerModules([
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="articleList"
+      [rowData]="_data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -41,39 +42,16 @@ ModuleRegistry.registerModules([
     </ag-grid-angular>
   `
 })
-export class ArticleGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  articleList: Article[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class ArticleGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
   private boardService = inject(ArticleService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  rowClicked = output<Article | undefined>();
+  rowDoubleClicked = output<Article | undefined>();
+  editButtonClicked = output<Article | undefined>();
+
+  _data: Article[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -122,7 +100,7 @@ export class ArticleGridComponent implements OnInit {
     }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
+  getRowId: GetRowIdFunc<Article> = (params: GetRowIdParams<Article>) => {
     return params.data.articleId;
   };
 
@@ -135,22 +113,22 @@ export class ArticleGridComponent implements OnInit {
         .getArticleList(fkBoard)
         .subscribe(
           (model: ResponseList<Article>) => {
-            this.articleList = model.data;
+            this._data = model.data;
             this.appAlarmService.changeMessage(model.message);
           }
         );
   }
 
-  rowClickedEvent(params: RowClickedEvent) {
+  rowClickedEvent(params: RowClickedEvent<Article>) {
     const selectedRows = params.api.getSelectedRows();
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(params: RowDoubleClickedEvent) {
+  rowDbClicked(params: RowDoubleClickedEvent<Article>) {
     this.rowDoubleClicked.emit(params.data);
   }
 
-  onEditButtonClick(e: any) {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 

@@ -21,7 +21,7 @@ import { StaffDutyResponsibilityFormComponent } from './staff-duty-responsibilit
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-staff-duty-responsibility-form *nzDrawerContent
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           [staff]="selectedStaff()"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
@@ -45,7 +45,7 @@ import { StaffDutyResponsibilityFormComponent } from './staff-duty-responsibilit
 })
 export class StaffDutyResponsibilityFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   selectedStaff = input<any>();

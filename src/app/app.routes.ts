@@ -20,7 +20,7 @@ export const routes: Routes = [
   {path: 'hrm', loadChildren: () => import('src/app/hrm/hrm-routing.module').then(m => m.routes)},
   {path: 'grw', loadChildren: () => import('src/app/cooperation/cooperation-routing.module').then(m => m.routes)},
   {path: 'article-write/:boardId', component: ArticleFormComponent},
-  {path: 'article-edit/:boardId/:initLoadId', component: ArticleFormComponent},
+  {path: 'article-edit/:boardId/:formInitId', component: ArticleFormComponent},
   {path: 'article-view', component: ArticleViewComponent},
   {path: 'test', loadChildren: () => import('./pages/welcome/welcome-routing.module').then(m => m.routes)},
 ];

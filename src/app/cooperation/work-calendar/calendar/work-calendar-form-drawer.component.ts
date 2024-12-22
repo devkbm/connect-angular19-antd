@@ -23,7 +23,7 @@ import { WorkCalendarFormComponent } from './work-calendar-form.component';
       (nzOnClose)="drawer().visible = false">
 
       <app-work-calendar-form *nzDrawerContent
-        [initLoadId]="drawer().initLoadId"
+        [formInitId]="drawer().formInitId"
         (formSaved)="closeDrawer($event)"
         (formDeleted)="closeDrawer($event)"
         (formClosed)="drawer().visible = false">
@@ -46,7 +46,7 @@ import { WorkCalendarFormComponent } from './work-calendar-form.component';
 })
 export class WorkCalendarFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<WorkCalendarFormComponent>(WorkCalendarFormComponent);

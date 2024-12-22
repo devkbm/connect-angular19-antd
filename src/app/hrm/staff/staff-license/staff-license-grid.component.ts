@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, inject, output } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 ModuleRegistry.registerModules([
@@ -40,41 +41,18 @@ import { StaffLicense } from './staff-license.model';
   `,
   styles: []
 })
-export class StaffLicenseGridComponent implements OnInit, OnChanges {
+export class StaffLicenseGridComponent extends AgGridCommon implements OnChanges {
 
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
+  private appAlarmService = inject(AppAlarmService);
+  private service = inject(StaffLicenseService);
 
   protected _list: StaffLicense[] = [];
 
   @Input() staffId?: string;
 
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
-
-  private appAlarmService = inject(AppAlarmService);
-  private service = inject(StaffLicenseService);
-
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  rowClicked = output<StaffLicense>();
+  rowDoubleClicked = output<StaffLicense>();
+  editButtonClicked = output<StaffLicense>();
 
   columnDefs: ColDef[] = [
     {
@@ -101,13 +79,9 @@ export class StaffLicenseGridComponent implements OnInit, OnChanges {
     { headerName: '비고',           field: 'comment',                 width: 100 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.staffId + params.data.seq;
+  getRowId: GetRowIdFunc<StaffLicense> = (params: GetRowIdParams<StaffLicense>) => {
+    return params.data.staffNo! + params.data.seq!;
   };
-
-  ngOnInit() {
-    //this.setWidthAndHeight('100%', '600px');
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['staffId'].currentValue) {
@@ -132,11 +106,11 @@ export class StaffLicenseGridComponent implements OnInit, OnChanges {
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any) {
-    this.rowDoubleClicked.emit(event.data);
+  rowDbClicked(event: RowDoubleClickedEvent<StaffLicense>) {
+    this.rowDoubleClicked.emit(event.data!);
   }
 
-  onEditButtonClick(e: any) {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 }

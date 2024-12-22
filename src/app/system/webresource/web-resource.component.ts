@@ -172,9 +172,9 @@ export class WebResourceComponent implements OnInit {
   }];
 
   drawer: {
-    resource: { visible: boolean, initLoadId: any }
+    resource: { visible: boolean, formInitId: any }
   } = {
-    resource: { visible: false, initLoadId: null }
+    resource: { visible: false, formInitId: null }
   }
 
   ngOnInit(): void {
@@ -191,12 +191,12 @@ export class WebResourceComponent implements OnInit {
   }
 
   newResource(): void {
-    this.drawer.resource.initLoadId = null;
+    this.drawer.resource.formInitId = null;
     this.drawer.resource.visible = true;
   }
 
   editResource(item: any): void {
-    this.drawer.resource.initLoadId = item.resourceId;
+    this.drawer.resource.formInitId = item.resourceId;
     this.drawer.resource.visible = true;
   }
 
@@ -213,7 +213,7 @@ export class WebResourceComponent implements OnInit {
   }
 
   resourceGridRowClicked(item: any): void {
-    this.drawer.resource.initLoadId = item.resourceId;
+    this.drawer.resource.formInitId = item.resourceId;
   }
 
 }

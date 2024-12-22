@@ -1,12 +1,12 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
-
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RowSelectionModule,
@@ -17,6 +17,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { BizCode } from './biz-code.model';
 import { BizCodeService } from './biz-code.service';
+
 
 @Component({
   selector: 'app-biz-code-grid',
@@ -40,39 +41,16 @@ import { BizCodeService } from './biz-code.service';
   `,
   styles: []
 })
-export class BizCodeGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  _list: BizCode[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class BizCodeGridComponent extends AgGridCommon {
 
   private service = inject(BizCodeService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  _list: BizCode[] = [];
+
+  rowClicked = output<BizCode>();
+  rowDoubleClicked = output<BizCode>();
+  editButtonClicked = output<BizCode>();
 
   columnDefs: ColDef[] = [
     {
@@ -100,13 +78,9 @@ export class BizCodeGridComponent implements OnInit {
     { headerName: '비고',         field: 'comment',       width: 400 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-      return params.data.typeId + params.data.code;
+  getRowId: GetRowIdFunc<BizCode> = (params: GetRowIdParams<BizCode>) => {
+    return params.data.typeId! + params.data.code!;
   };
-
-  ngOnInit(): void {
-
-  }
 
   getList(typeId: string): void {
     this.service
@@ -121,16 +95,15 @@ export class BizCodeGridComponent implements OnInit {
 
   }
 
-  rowClickedFunc(event: any): void {
-    const selectedRows = this.gridApi.getSelectedRows();
-    this.rowClicked.emit(selectedRows[0]);
+  rowClickedFunc(event: RowClickedEvent<BizCode>) {
+    this.rowClicked.emit(event.data!);
   }
 
-  rowDoubleClickedFunc(event: any): void {
-    this.rowDoubleClicked.emit(event.data);
+  rowDoubleClickedFunc(event: RowDoubleClickedEvent<BizCode>) {
+    this.rowDoubleClicked.emit(event.data!);
   }
 
-  onEditButtonClick(e: any): void {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 

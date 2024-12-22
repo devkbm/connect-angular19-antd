@@ -152,9 +152,9 @@ export class HolidayComponent implements AfterViewInit {
   }
 
   drawer: {
-    holiday: { visible: boolean, initLoadId: any }
+    holiday: { visible: boolean, formInitId: any }
   } = {
-    holiday: { visible: false, initLoadId: null }
+    holiday: { visible: false, formInitId: null }
   }
 
   ngAfterViewInit(): void {
@@ -183,7 +183,7 @@ export class HolidayComponent implements AfterViewInit {
   }
 
   newHoliday(): void {
-    this.drawer.holiday.initLoadId = null;
+    this.drawer.holiday.formInitId = null;
     this.openDrawer();
   }
 
@@ -207,18 +207,18 @@ export class HolidayComponent implements AfterViewInit {
   }
 
   holidayGridRowClicked(item: any): void {
-    this.drawer.holiday.initLoadId = item.date;
+    this.drawer.holiday.formInitId = item.date;
   }
 
   edit(item: any): void {
-    this.drawer.holiday.initLoadId = item.date;
+    this.drawer.holiday.formInitId = item.date;
     this.openDrawer();
   }
 
   navigatorSelectChanged(params: any) {
     //console.log(params);
     //console.log(params.start.value as Date);
-    this.drawer.holiday.initLoadId = params.start.value as Date;
+    this.drawer.holiday.formInitId = params.start.value as Date;
     this.openDrawer();
   }
 }

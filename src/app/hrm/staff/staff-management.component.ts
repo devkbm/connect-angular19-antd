@@ -301,21 +301,21 @@ export class StaffManagementComponent implements OnInit {
   selectedStaff?: {companyCode: string, staffNo: string, staffName: string};
 
   drawer: {
-    newStaff: { visible: boolean, initLoadId: any },
-    appointment: { visible: boolean, initLoadId: any },
-    dutyResponsibility: { visible: boolean, initLoadId: any },
-    contact: { visible: boolean, initLoadId: any },
-    family: { visible: boolean, initLoadId: any },
-    schoolCareer: { visible: boolean, initLoadId: any },
-    license: { visible: boolean, initLoadId: any }
+    newStaff: { visible: boolean, formInitId: any },
+    appointment: { visible: boolean, formInitId: any },
+    dutyResponsibility: { visible: boolean, formInitId: any },
+    contact: { visible: boolean, formInitId: any },
+    family: { visible: boolean, formInitId: any },
+    schoolCareer: { visible: boolean, formInitId: any },
+    license: { visible: boolean, formInitId: any }
   } = {
-    newStaff: { visible: false, initLoadId: null },
-    appointment: { visible: false, initLoadId: null },
-    dutyResponsibility: { visible: false, initLoadId: null },
-    contact: { visible: false, initLoadId: null },
-    family: { visible: false, initLoadId: null },
-    schoolCareer: { visible: false, initLoadId: null },
-    license: { visible: false, initLoadId: null }
+    newStaff: { visible: false, formInitId: null },
+    appointment: { visible: false, formInitId: null },
+    dutyResponsibility: { visible: false, formInitId: null },
+    contact: { visible: false, formInitId: null },
+    family: { visible: false, formInitId: null },
+    schoolCareer: { visible: false, formInitId: null },
+    license: { visible: false, formInitId: null }
   }
 
   constructor() {
@@ -358,7 +358,7 @@ export class StaffManagementComponent implements OnInit {
   }
 
   editAppointment(row: StaffAppointmentRecord) {
-    this.drawer.appointment.initLoadId = {staffId: row.staffNo, seq: row.seq};
+    this.drawer.appointment.formInitId = {staffId: row.staffNo, seq: row.seq};
     this.drawer.appointment.visible = true;
   }
 
@@ -372,7 +372,7 @@ export class StaffManagementComponent implements OnInit {
   }
 
   editFamily(row: StaffFamily) {
-    this.drawer.family.initLoadId = {staffId: row.staffNo, seq: row.seq};
+    this.drawer.family.formInitId = {staffId: row.staffNo, seq: row.seq};
     this.drawer.family.visible = true;
   }
 
@@ -386,7 +386,7 @@ export class StaffManagementComponent implements OnInit {
   }
 
   editSchoolCareer(row: StaffSchoolCareer) {
-    this.drawer.schoolCareer.initLoadId = {staffId: row.staffNo, seq: row.seq};
+    this.drawer.schoolCareer.formInitId = {staffId: row.staffNo, seq: row.seq};
     this.drawer.schoolCareer.visible = true;
   }
 
@@ -400,7 +400,7 @@ export class StaffManagementComponent implements OnInit {
   }
 
   editLicense(row: StaffLicense) {
-    this.drawer.license.initLoadId = {staffId: row.staffNo, seq: row.seq};
+    this.drawer.license.formInitId = {staffId: row.staffNo, seq: row.seq};
     this.drawer.license.visible = true;
   }
 

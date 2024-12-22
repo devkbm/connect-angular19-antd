@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output, viewChild } from '@angular/core';
+import { Component, input, output, viewChild } from '@angular/core';
 
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
@@ -22,7 +22,7 @@ import { WebResourceFormComponent } from './web-resource-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-web-resource-form *nzDrawerContent
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -45,10 +45,10 @@ import { WebResourceFormComponent } from './web-resource-form.component';
 })
 export class WebResourceFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
-  form = viewChild.required<WebResourceFormComponent>(WebResourceFormComponent);
+  form = viewChild.required(WebResourceFormComponent);
 
   save() {
     this.form().save();

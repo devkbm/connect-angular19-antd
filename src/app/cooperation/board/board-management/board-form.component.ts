@@ -188,12 +188,12 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
     boardDescription: new FormControl<string | null>(null)
   });
 
-  initLoadId = input<any>();
+  formInitId = input<any>();
 
   constructor() {
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId());
+      if (this.formInitId()) {
+        this.get(this.formInitId());
       }
     })
   }

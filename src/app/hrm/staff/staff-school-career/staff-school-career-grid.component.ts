@@ -2,9 +2,10 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges, inject, output } fr
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 ModuleRegistry.registerModules([
@@ -41,22 +42,10 @@ import { StaffSchoolCareer } from './staff-school-career.model';
   `,
   styles: []
 })
-export class StaffSchoolCareerGridComponent implements OnInit, OnChanges {
+export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnInit, OnChanges {
 
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
+  private appAlarmService = inject(AppAlarmService);
+  private service = inject(StaffSchoolCareerService);
 
   protected _list: StaffSchoolCareer[] = [];
 
@@ -65,17 +54,6 @@ export class StaffSchoolCareerGridComponent implements OnInit, OnChanges {
   rowClicked = output<any>();
   rowDoubleClicked = output<any>();
   editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
-
-  private appAlarmService = inject(AppAlarmService);
-  private service = inject(StaffSchoolCareerService);
-
-  defaultColDef: ColDef = { sortable: true, resizable: true };
 
   columnDefs: ColDef[] = [
     {
@@ -106,8 +84,8 @@ export class StaffSchoolCareerGridComponent implements OnInit, OnChanges {
     { headerName: '비고',           field: 'comment',           width: 200 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.staffId + params.data.seq;
+  getRowId: GetRowIdFunc<StaffSchoolCareer> = (params: GetRowIdParams<StaffSchoolCareer>) => {
+    return params.data.staffNo! + params.data.seq!;
   };
 
   ngOnInit() {
@@ -136,11 +114,11 @@ export class StaffSchoolCareerGridComponent implements OnInit, OnChanges {
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any) {
+  rowDbClicked(event: RowDoubleClickedEvent<StaffSchoolCareer>) {
     this.rowDoubleClicked.emit(event.data);
   }
 
-  onEditButtonClick(e: any) {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 }

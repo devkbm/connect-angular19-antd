@@ -178,9 +178,9 @@ export class UserComponent implements OnInit {
   }
 
   drawer: {
-    user: { visible: boolean, initLoadId: any }
+    user: { visible: boolean, formInitId: any }
   } = {
-    user: { visible: false, initLoadId: null }
+    user: { visible: false, formInitId: null }
   }
 
   private service = inject(UserService);
@@ -189,13 +189,13 @@ export class UserComponent implements OnInit {
   }
 
   newForm() {
-    this.drawer.user.initLoadId = null;
+    this.drawer.user.formInitId = null;
     this.drawer.user.visible = true;
 
   }
 
   editForm(item: User) {
-    this.drawer.user.initLoadId = item.userId;
+    this.drawer.user.formInitId = item.userId;
     this.drawer.user.visible = true;
   }
 
@@ -211,7 +211,7 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser() {
-    const userId: string = this.grid().getSelectedRow().userId;
+    const userId: string = this.drawer.user.formInitId;
     this.service
         .deleteUser(userId)
         .subscribe(
@@ -221,8 +221,8 @@ export class UserComponent implements OnInit {
         );
   }
 
-  userGridSelected(params: any) {
-    this.drawer.user.initLoadId = params.userId;
+  userGridSelected(params: User) {
+    this.drawer.user.formInitId = params.userId;
   }
 
 }

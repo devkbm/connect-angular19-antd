@@ -136,7 +136,7 @@ export class DataDomainFormComponent implements OnInit, AfterViewInit, OnChanges
     comment       : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<string>('');
+  formInitId = input<string>('');
 
   ngOnChanges(changes: SimpleChanges): void {
   }
@@ -144,8 +144,8 @@ export class DataDomainFormComponent implements OnInit, AfterViewInit, OnChanges
   ngOnInit() {
     this.getDatabaseList();
 
-    if (this.initLoadId()) {
-      this.get(this.initLoadId());
+    if (this.formInitId()) {
+      this.get(this.formInitId());
     } else {
       this.newForm();
     }

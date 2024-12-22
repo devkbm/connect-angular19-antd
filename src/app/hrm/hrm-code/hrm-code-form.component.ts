@@ -193,15 +193,15 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
     the5AddInfo   : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<{typeId: string, code: string}>();
+  formInitId = input<{typeId: string, code: string}>();
 
   constructor() {
     effect(() => {
-      if (this.initLoadId()) {
-        if (this.initLoadId()?.typeId && this.initLoadId()?.code) {
-          this.get(this.initLoadId()?.typeId!, this.initLoadId()?.code!);
-        } else if (this.initLoadId()?.typeId) {
-          this.newForm(this.initLoadId()?.typeId!);
+      if (this.formInitId()) {
+        if (this.formInitId()?.typeId && this.formInitId()?.code) {
+          this.get(this.formInitId()?.typeId!, this.formInitId()?.code!);
+        } else if (this.formInitId()?.typeId) {
+          this.newForm(this.formInitId()?.typeId!);
         }
       }
     });

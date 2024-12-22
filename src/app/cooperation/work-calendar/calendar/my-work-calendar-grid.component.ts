@@ -2,21 +2,20 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
-import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  RowSelectionModule,
+]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
 import { WorkCalendarService } from './work-calendar.service';
 import { WorkCalendar } from './work-calendar.model';
-
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  RowSelectionModule,
-]);
 
 @Component({
   selector: 'app-my-work-calendar-grid',
@@ -27,7 +26,7 @@ ModuleRegistry.registerModules([
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="workGroupList"
+      [rowData]="_data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -39,39 +38,16 @@ ModuleRegistry.registerModules([
     </ag-grid-angular>
   `
 })
-export class MyWorkCalendarGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  workGroupList: WorkCalendar[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "multiRow",
-    checkboxes: true,
-    enableClickSelection: true
-  };
+export class MyWorkCalendarGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
   private workGroupService = inject(WorkCalendarService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  rowClicked = output<WorkCalendar | undefined>();
+  rowDoubleClicked = output<WorkCalendar | undefined>();
+  editButtonClicked = output<WorkCalendar | undefined>();
+
+  _data: WorkCalendar[] = [];
 
   columnDefs: ColDef[] = [
     /*{
@@ -106,7 +82,7 @@ export class MyWorkCalendarGridComponent implements OnInit {
     }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
+  getRowId: GetRowIdFunc<any> = (params: GetRowIdParams<any>) => {
     return params.data.id;
   };
 
@@ -119,7 +95,7 @@ export class MyWorkCalendarGridComponent implements OnInit {
         .getMyWorkGroupList()
         .subscribe(
           (model: ResponseList<WorkCalendar>) => {
-            this.workGroupList = model.data;
+            this._data = model.data;
             this.appAlarmService.changeMessage(model.message);
           }
         );
@@ -133,7 +109,7 @@ export class MyWorkCalendarGridComponent implements OnInit {
     // console.log('ids ' + ids);
   }
 
-  rowDbClicked(event: any): void {
+  rowDbClicked(event: RowDoubleClickedEvent<WorkCalendar>): void {
     this.rowDoubleClicked.emit(event.data);
   }
 

@@ -147,13 +147,13 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
       isPayApply              : new FormControl<boolean | null>(null)
     });
 
-  initLoadId = input<{staffId: string, seq: string}>();
+    formInitId = input<{staffId: string, seq: string}>();
   staff = input<{companyCode: string, staffNo: string, staffName: string}>();
 
   constructor() {
     effect(() => {
-      if (this.initLoadId()) {
-        this.get(this.initLoadId()?.staffId!, this.initLoadId()?.seq!);
+      if (this.formInitId()) {
+        this.get(this.formInitId()?.staffId!, this.formInitId()?.seq!);
       } else {
         this.newForm();
       }
@@ -165,13 +165,6 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
   }
 
   ngAfterViewInit(): void {
-    /*
-    if (this.initLoadId && this.initLoadId.staffId && this.initLoadId.seq) {
-      this.get(this.initLoadId.staffId, this.initLoadId.seq);
-    } else {
-      this.newForm();
-    }
-      */
   }
 
 

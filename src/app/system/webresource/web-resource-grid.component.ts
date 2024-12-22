@@ -2,7 +2,7 @@ import { Component, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
 import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
@@ -17,6 +17,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { WebResourceService } from './web-resource.service';
 import { WebResource } from './web-resource.model';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 
 @Component({
   selector: 'app-web-resource-grid',
@@ -57,40 +58,17 @@ import { WebResource } from './web-resource.model';
     }
   `]
 })
-export class WebResourceGridComponent {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  isLoading: boolean = false;
-  _list: WebResource[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class WebResourceGridComponent extends AgGridCommon {
 
   private service = inject(WebResourceService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  rowClicked = output<WebResource>();
+  rowDoubleClicked = output<WebResource>();
+  editButtonClicked = output<WebResource>();
+
+  isLoading: boolean = false;
+  _list: WebResource[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -117,11 +95,12 @@ export class WebResourceGridComponent {
     { headerName: '설명',         field: 'description',     width: 300 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.resourceId;
+  getRowId: GetRowIdFunc<WebResource> = (params: GetRowIdParams<WebResource>) => {
+    return params.data.resourceId!;
   };
 
   constructor() {
+    super();
     this.getList();
   }
 
@@ -138,18 +117,16 @@ export class WebResourceGridComponent {
         );
   }
 
-  private onEditButtonClick(e: any) {
+  rowClickedEvent(event: RowClickedEvent<WebResource>) {
+    this.rowClicked.emit(event.data!);
+  }
+
+  rowDbClicked(event: RowDoubleClickedEvent<WebResource>) {
+    this.rowDoubleClicked.emit(event.data!);
+  }
+
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
-  }
-
-  rowClickedEvent(event: any) {
-    const selectedRows = this.gridApi.getSelectedRows();
-
-    this.rowClicked.emit(selectedRows[0]);
-  }
-
-  rowDbClicked(event: any) {
-    this.rowDoubleClicked.emit(event.data);
   }
 
 }

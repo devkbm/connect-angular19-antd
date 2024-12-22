@@ -22,7 +22,7 @@ import { StaffAppointmentRecordFormComponent } from './staff-appointment-record-
       (nzOnClose)="drawer().visible = false">
         <app-staff-appointment-record-form *nzDrawerContent
           [staff]="selectedStaff()"
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -45,7 +45,7 @@ import { StaffAppointmentRecordFormComponent } from './staff-appointment-record-
 })
 export class StaffAppointmentRecordFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   selectedStaff = input<any>();

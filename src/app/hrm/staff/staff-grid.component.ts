@@ -2,10 +2,9 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
-import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -17,6 +16,7 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
 import { StaffService } from './staff.service';
 import { Staff } from './staff.model';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 
 @Component({
   selector: 'app-staff-grid',
@@ -40,39 +40,16 @@ import { Staff } from './staff.model';
   `,
   styles: []
 })
-export class StaffGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  list: Staff[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class StaffGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(StaffService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  list: Staff[] = [];
+
+  rowClicked = output<Staff>();
+  rowDoubleClicked = output<Staff>();
+  editButtonClicked = output<Staff>();
 
   columnDefs: ColDef[] = [
     /*{
@@ -97,16 +74,12 @@ export class StaffGridComponent implements OnInit {
     /*{headerName: '생년월일',      field: 'birthday',        width: 200 } */
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.companyCode + params.data.staffNo;
+  getRowId: GetRowIdFunc<Staff> = (params: GetRowIdParams<Staff>) => {
+    return params.data.companyCode! + params.data.staffNo!;
   };
 
   ngOnInit() {
     this.getList();
-  }
-
-  private onEditButtonClick(e: any) {
-    this.editButtonClicked.emit(e.rowData);
   }
 
   getList(params?: any): void {
@@ -120,14 +93,16 @@ export class StaffGridComponent implements OnInit {
         );
   }
 
-  rowClickedFunc(event: any) {
-    const selectedRows = this.gridApi.getSelectedRows();
-
-    this.rowClicked.emit(selectedRows[0]);
+  rowClickedFunc(event: RowClickedEvent<Staff>) {
+    this.rowClicked.emit(event.data!);
   }
 
-  rowDbClickedFunc(event: any) {
-    this.rowDoubleClicked.emit(event.data);
+  rowDbClickedFunc(event: RowDoubleClickedEvent<Staff>) {
+    this.rowDoubleClicked.emit(event.data!);
+  }
+
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
+    this.editButtonClicked.emit(e.rowData);
   }
 
 }

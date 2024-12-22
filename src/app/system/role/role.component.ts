@@ -146,9 +146,9 @@ export class RoleComponent implements AfterViewInit {
   }
 
   drawer: {
-    role: { visible: boolean, initLoadId: any }
+    role: { visible: boolean, formInitId: any }
   } = {
-    role: { visible: false, initLoadId: null }
+    role: { visible: false, formInitId: null }
   }
 
   buttons: ButtonTemplate[] = [{
@@ -188,14 +188,14 @@ export class RoleComponent implements AfterViewInit {
 
   selectedItem(data: any) {
     if (data) {
-      this.drawer.role.initLoadId = data.roleCode;
+      this.drawer.role.formInitId = data.roleCode;
     } else {
-      this.drawer.role.initLoadId = null;
+      this.drawer.role.formInitId = null;
     }
   }
 
   initForm() {
-    this.drawer.role.initLoadId = null;
+    this.drawer.role.formInitId = null;
 
     this.openDrawer();
   }

@@ -2,9 +2,10 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 ModuleRegistry.registerModules([
@@ -33,7 +34,6 @@ import { Role } from './role.model';
       [columnDefs]="columnDefs"
       [defaultColDef]="defaultColDef"
       [getRowId]="getRowId"
-      (gridSize)="test($event)"
       (gridReady)="onGridReady($event)"
       (rowClicked)="rowClickedEvent($event)"
       (rowDoubleClicked)="rowDbClicked($event)">
@@ -49,39 +49,16 @@ import { Role } from './role.model';
     :host::ng-deep .header-right .ag-header-cell-label { flex-direction: row-reverse; }
   `]
 })
-export class RoleGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  roleList: Role[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class RoleGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(RoleService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  rowClicked = output<Role>();
+  rowDoubleClicked = output<Role>();
+  editButtonClicked = output<Role>();
+
+  roleList: Role[] = [];
 
   columnDefs : ColDef[] = [
     {
@@ -133,8 +110,8 @@ export class RoleGridComponent implements OnInit {
     }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.roleCode;
+  getRowId: GetRowIdFunc<Role> = (params: GetRowIdParams<Role>) => {
+    return params.data.roleCode!;
   };
 
   ngOnInit() {
@@ -152,20 +129,16 @@ export class RoleGridComponent implements OnInit {
         );
   }
 
-  rowClickedEvent(params: any): void {
-    this.rowClicked.emit(params.data);
+  rowClickedEvent(params: RowClickedEvent<Role>): void {
+    this.rowClicked.emit(params.data!);
   }
 
-  rowDbClicked(params: any): void {
-    this.rowDoubleClicked.emit(params.data);
+  rowDbClicked(params: RowDoubleClickedEvent<Role>): void {
+    this.rowDoubleClicked.emit(params.data!);
   }
 
-  private onEditButtonClick(e: any) {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
-  }
-
-  public test(event: any): void {
-    console.log(event);
   }
 
 }

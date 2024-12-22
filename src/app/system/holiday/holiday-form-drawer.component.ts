@@ -22,7 +22,7 @@ import { HolidayFormComponent } from './holiday-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
       <app-holiday-form *nzDrawerContent
-        [initLoadId]="drawer().initLoadId"
+        [formInitId]="drawer().formInitId"
         (formSaved)="closeDrawer($event)"
         (formDeleted)="closeDrawer($event)"
         (formClosed)="drawer().visible = false">
@@ -45,7 +45,7 @@ import { HolidayFormComponent } from './holiday-form.component';
 })
 export class HolidayFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<HolidayFormComponent>(HolidayFormComponent);

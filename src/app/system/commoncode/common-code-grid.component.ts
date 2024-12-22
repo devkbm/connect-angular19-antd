@@ -2,9 +2,10 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 ModuleRegistry.registerModules([
@@ -17,6 +18,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { CommonCodeService } from './common-code.service';
 import { CommonCode } from './common-code.model';
+
 
 @Component({
   selector: 'app-common-code-grid',
@@ -39,39 +41,16 @@ import { CommonCode } from './common-code.model';
   </ag-grid-angular>
   `
 })
-export class CommonCodeGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  commonCodeList: CommonCode[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
 
   private commonCodeService = inject(CommonCodeService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  commonCodeList: CommonCode[] = [];
+
+  rowClicked = output<CommonCode>();
+  rowDoubleClicked = output<CommonCode>();
+  editButtonClicked = output<CommonCode>();
 
   columnDefs: ColDef[] = [
     {
@@ -115,8 +94,8 @@ export class CommonCodeGridComponent implements OnInit {
     { headerName: '설명',          field: 'cmt',                   width: 300 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.id;
+  getRowId: GetRowIdFunc<CommonCode> = (params: GetRowIdParams<CommonCode>) => {
+    return params.data.codeId!;
   };
 
   ngOnInit(): void {
@@ -139,11 +118,11 @@ export class CommonCodeGridComponent implements OnInit {
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: any): void {
-    this.rowDoubleClicked.emit(event.data);
+  rowDbClicked(event: RowDoubleClickedEvent<CommonCode>): void {
+    this.rowDoubleClicked.emit(event.data!);
   }
 
-  private onEditButtonClick(e: any): void {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}): void {
     this.editButtonClicked.emit(e.rowData);
   }
 

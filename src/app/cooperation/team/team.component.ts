@@ -44,7 +44,7 @@ import { TeamFormComponent } from './team-form.component';
 
 <div style="height:300px">
   @defer {
-  <app-team-grid [list]="gridList"
+  <app-team-grid [data]="gridList"
     (editButtonClicked)="editTeam($event)"
     (rowDoubleClicked)="editTeam($event)">
   </app-team-grid>
@@ -60,7 +60,7 @@ import { TeamFormComponent } from './team-form.component';
     (nzOnClose)="drawer.team.visible = false">
 
     <app-team-form *nzDrawerContent
-      [initLoadId]="drawer.team.initLoadId"
+      [formInitId]="drawer.team.formInitId"
       (formSaved)="getGridList('d')"
       (formDeleted)="getGridList('d')"
       (formClosed)="drawer.team.visible = false">
@@ -119,9 +119,9 @@ export class TeamComponent implements OnInit {
   grid = viewChild.required(TeamGridComponent);
 
   drawer: {
-    team: { visible: boolean, initLoadId: string },
+    team: { visible: boolean, formInitId: string },
   } = {
-    team: { visible: false, initLoadId: '' }
+    team: { visible: false, formInitId: '' }
   }
 
   gridList: TeamModel[] = [];
@@ -131,12 +131,12 @@ export class TeamComponent implements OnInit {
   }
 
   newTeam() {
-    this.drawer.team.initLoadId = '';
+    this.drawer.team.formInitId = '';
     this.drawer.team.visible = true;
   }
 
-  editTeam(team: Team) {
-    this.drawer.team.initLoadId = team.teamId;
+  editTeam(team: any) {
+    this.drawer.team.formInitId = team.teamId;
     this.drawer.team.visible = true;
   }
 

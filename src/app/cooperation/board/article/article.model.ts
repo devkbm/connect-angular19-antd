@@ -4,6 +4,7 @@ export interface Article {
   articleId: string;
   boardId: string;
   articleParentId: string;
+  userId: string;
   title: string;
   contents: string;
   pwd: string;

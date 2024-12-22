@@ -211,16 +211,16 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
       appIcon           : new FormControl<string | null>(null)
   });
 
-  initLoadId = input<{menuGroupCode: string, menuCode: string}>();
+  formInitId = input<{menuGroupCode: string, menuCode: string}>();
 
   constructor() {
 
     effect(() => {
-      if (this.initLoadId()) {
-        if (this.initLoadId()?.menuGroupCode && this.initLoadId()?.menuCode) {
-          this.get(this.initLoadId()?.menuGroupCode!, this.initLoadId()?.menuCode!);
-        } else if (this.initLoadId()?.menuGroupCode && !this.initLoadId()?.menuCode) {
-          this.newForm(this.initLoadId()?.menuGroupCode!);
+      if (this.formInitId()) {
+        if (this.formInitId()?.menuGroupCode && this.formInitId()?.menuCode) {
+          this.get(this.formInitId()?.menuGroupCode!, this.formInitId()?.menuCode!);
+        } else if (this.formInitId()?.menuGroupCode && !this.formInitId()?.menuCode) {
+          this.newForm(this.formInitId()?.menuGroupCode!);
         }
       }
     });

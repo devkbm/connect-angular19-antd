@@ -1,11 +1,11 @@
 import { Component, OnInit, inject, output } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 import { CheckboxRendererComponent } from 'src/app/third-party/ag-grid/renderer/checkbox-renderer.component';
 
@@ -19,6 +19,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { UserService } from './user.service';
 import { User } from './user.model';
+
 
 
 @Component({
@@ -42,42 +43,16 @@ import { User } from './user.model';
   </ag-grid-angular>
   `
 })
-export class UserGridComponent implements OnInit {
-
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  userList: User[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class UserGridComponent extends AgGridCommon implements OnInit {
 
   private userService = inject(UserService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = {
-    sortable: true,
-    resizable: true
-  };
+  rowClicked = output<User>();
+  rowDoubleClicked = output<User>();
+  editButtonClicked = output<User>();
+
+  userList: User[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -149,8 +124,8 @@ export class UserGridComponent implements OnInit {
     }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-    return params.data.userId;
+  getRowId: GetRowIdFunc<User> = (params: GetRowIdParams<User>) => {
+    return params.data.userId!;
   };
 
   ngOnInit() {
@@ -169,22 +144,16 @@ export class UserGridComponent implements OnInit {
       );
   }
 
-  private onEditButtonClick(e: any) {
+  rowClickedEvent(event: RowClickedEvent<User>) {
+    this.rowClicked.emit(event.data!);
+  }
+
+  rowDbClicked(event: RowDoubleClickedEvent<User>) {
+    this.rowDoubleClicked.emit(event.data!);
+  }
+
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
-  }
-
-  rowClickedEvent(event: any) {
-    const selectedRows = this.gridApi.getSelectedRows();
-
-    this.rowClicked.emit(selectedRows[0]);
-  }
-
-  rowDbClicked(event: any) {
-    this.rowDoubleClicked.emit(event.data);
-  }
-
-  getSelectedRow() {
-    return this.gridApi.getSelectedRows()[0];
   }
 
 }

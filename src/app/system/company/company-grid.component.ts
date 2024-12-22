@@ -2,22 +2,22 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import { ModuleRegistry, ClientSideRowModelModule, RowSelectionModule } from 'ag-grid-community';
-import { themeBalham, GetRowIdFunc, GetRowIdParams, RowSelectionOptions, colorSchemeDark } from 'ag-grid-community';
-import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
-
+import { GetRowIdFunc, GetRowIdParams } from 'ag-grid-community';
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RowSelectionModule,
 ]);
+
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Company } from './company.model';
 import { CompanyGridService } from './company-grid.service';
-
 
 @Component({
   selector: 'app-company-grid',
@@ -28,7 +28,7 @@ import { CompanyGridService } from './company-grid.service';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="_data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -41,38 +41,16 @@ import { CompanyGridService } from './company-grid.service';
   `,
   styles: []
 })
-export class CompanyGridComponent implements OnInit {
-  //#region Ag-grid Api
-  public theme = themeBalham.withPart(colorSchemeDark);
-  gridApi: any;
-  gridColumnApi: any;
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-  }
-
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  //#endregion
-
-  _list: Company[] = [];
-
-  rowClicked = output<any>();
-  rowDoubleClicked = output<any>();
-  editButtonClicked = output<any>();
-
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "singleRow",
-    checkboxes: false,
-    enableClickSelection: true
-  };
+export class CompanyGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(CompanyGridService);
   private appAlarmService = inject(AppAlarmService);
 
-  defaultColDef: ColDef = { sortable: true, resizable: true };
+  rowClicked = output<Company>();
+  rowDoubleClicked = output<Company>();
+  editButtonClicked = output<Company>();
+
+  _data: Company[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -100,8 +78,8 @@ export class CompanyGridComponent implements OnInit {
     { headerName: '설립일',         field: 'establishmentDate',           width: 100 }
   ];
 
-  getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
-      return params.data.companyCode;
+  getRowId: GetRowIdFunc<Company> = (params: GetRowIdParams<Company>) => {
+    return params.data.companyCode!;
   };
 
   ngOnInit(): void {
@@ -109,28 +87,25 @@ export class CompanyGridComponent implements OnInit {
   }
 
   getList(): void {
-
     this.service
         .getList()
         .subscribe(
           (model: ResponseList<Company>) => {
-            this._list = model.data;
+            this._data = model.data;
             this.appAlarmService.changeMessage(model.message);
           }
         );
   }
 
-  rowClickedFunc(event: any): void {
-    const selectedRows = this.gridApi.getSelectedRows();
-    console.log(selectedRows);
-    this.rowClicked.emit(selectedRows[0]);
+  rowClickedFunc(event: RowClickedEvent<Company>) {
+    this.rowClicked.emit(event.data!);
   }
 
-  rowDoubleClickedFunc(event: any): void {
-    this.rowDoubleClicked.emit(event.data);
+  rowDoubleClickedFunc(event: RowDoubleClickedEvent<Company>) {
+    this.rowDoubleClicked.emit(event.data!);
   }
 
-  onEditButtonClick(e: any): void {
+  onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
   }
 

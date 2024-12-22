@@ -22,7 +22,7 @@ import { UserFormComponent } from './user-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-user-form *nzDrawerContent
-          [initLoadId]="drawer().initLoadId"
+          [formInitId]="drawer().formInitId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -45,7 +45,7 @@ import { UserFormComponent } from './user-form.component';
 })
 export class UserFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, initLoadId: any}>();
+  drawer = input.required<{visible: boolean, formInitId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<UserFormComponent>(UserFormComponent);
