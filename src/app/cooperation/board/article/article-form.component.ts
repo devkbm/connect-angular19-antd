@@ -40,7 +40,7 @@ import { SessionManager } from 'src/app/core/session-manager';
     ArticleFileUploadComponent
   ],
   template: `
-    <!--{{fg.getRawValue() | json}}-->
+    {{fg.getRawValue() | json}}
     <!--{{fileList | json}}-->
 
     <form nz-form [formGroup]="fg" [nzLayout]="'vertical'" #form>
@@ -126,6 +126,9 @@ import { SessionManager } from 'src/app/core/session-manager';
 export class ArticleFormComponent implements OnInit, AfterViewInit {
   //public Editor = ClassicEditor;
 
+  private boardService= inject(ArticleService);
+  private renderer = inject(Renderer2);
+
   editorConfig = {
     //plugins: [ Font ],
     toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor','heading', '|', 'bold', 'italic' ]
@@ -164,9 +167,6 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
 
   uploader = viewChild.required(ArticleFileUploadComponent);
 
-  private boardService= inject(ArticleService);
-  private activatedRoute = inject(ActivatedRoute);
-  private renderer = inject(Renderer2);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -198,6 +198,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
+    /*
     if (this.activatedRoute.snapshot.params['boardId']) {
       this.boardId = this.activatedRoute.snapshot.params['boardId'];
     }
@@ -205,6 +206,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     if (this.activatedRoute.snapshot.params['formInitId']) {
       this.formInitId = this.activatedRoute.snapshot.params['formInitId'];
     }
+      */
 
     if (this.formInitId()) {
       this.get(this.formInitId());
@@ -241,6 +243,10 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   modifyForm(formData: Article): void {
     this.fg.reset();
     this.fg.patchValue(formData);
+
+    // boardId, articleId는 base64로 암호화
+    this.fg.controls.boardId.setValue(btoa(this.fg.controls.boardId.value!));
+    this.fg.controls.articleId.setValue(btoa(this.fg.controls.articleId.value!));
   }
 
   closeForm(): void {

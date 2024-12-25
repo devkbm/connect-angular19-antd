@@ -308,7 +308,7 @@ export class BoardComponent implements AfterViewInit {
 
     const url = this.router.serializeUrl(
       //this.router.createUrlTree([`/article-view`, {article: JSON.stringify(article)}])  // /grw/boarda
-      this.router.createUrlTree([`/article-view`, {id: articleIdParam}])  // /grw/boarda
+      this.router.createUrlTree([`/article-view`, {articleId: articleIdParam}])  // /grw/boarda
     );
     const popOption = 'scrollbars=yes, menubar=no, resizable=no, top=0, left=0, width=800, height=800';
     var windowObjectReference = this.winRef.nativeWindow.open(url, '_blank', popOption);

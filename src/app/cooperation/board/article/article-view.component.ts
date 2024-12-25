@@ -47,16 +47,16 @@ export class ArticleViewComponent {
 
   private service= inject(ArticleService);
 
-  id = input<string>();
+  articleId = input<string>();
 
   article: Article | null = null;
   fileList: any = [];
 
   constructor() {
     effect(() => {
-      if (this.id()) {
-        console.log(this.id());
-        this.get(this.id());
+      if (this.articleId()) {
+        console.log(this.articleId());
+        this.get(this.articleId());
       }
     })
   }
@@ -70,7 +70,7 @@ export class ArticleViewComponent {
               this.article = model.data;
               this.fileList = model.data.fileList;
 
-              this.updateHitCount(this.article.articleId, SessionManager.getUserId());
+              this.updateHitCount(this.articleId(), SessionManager.getUserId());
             }
           }
         );
