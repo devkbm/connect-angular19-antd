@@ -17,7 +17,7 @@ export interface UploadedFile {
 }
 
 @Component({
-  selector: 'app-article-file-upload',
+  selector: 'app-post-file-upload',
   imports: [
     CommonModule,
     FileUploadModule,

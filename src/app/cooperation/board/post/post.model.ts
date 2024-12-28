@@ -1,9 +1,9 @@
-import { ArticleRead } from './article-read.model';
+import { PostRead } from './post-read.model';
 
-export interface Article {
-  articleId: string;
+export interface Post {
+  postId: string;
   boardId: string;
-  articleParentId: string;
+  postParentId: string;
   userId: string;
   title: string;
   contents: string;
@@ -13,7 +13,7 @@ export interface Article {
   toDate: string;
   seq: number;
   depth: number;
-  articleChecks: ArticleRead[];
+  articleChecks: PostRead[];
   fileList: string[];
   file: File;
   editable: boolean

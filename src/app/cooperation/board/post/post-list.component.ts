@@ -1,19 +1,19 @@
 import { Component, effect, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ArticleService } from './article.service';
+import { PostService } from './post.service';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { ArticleListRowComponent } from './article-list-row.component';
-import { ArticleList } from './article-list.model';
+import { ArticleListRowComponent } from './post-list-row.component';
+import { PostList } from './post-list.model';
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
 
 // 무한 스크롤 적용 필요
 // https://www.npmjs.com/package/ngx-infinite-scroll
 
 @Component({
-  selector: 'app-article-list',
+  selector: 'app-post-list',
   imports: [
     CommonModule,
     NzListModule,
@@ -50,12 +50,12 @@ import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
       -->
 
       <!--{{this.pageable | json}}-->
-      @for (article of articles; track article.articleId; let idx = $index) {
-        <app-article-list-row
+      @for (article of articles; track article.postId; let idx = $index) {
+        <app-post-list-row
           [article]="article"
           (viewClicked)="onViewClicked(article)"
           (editClicked)="onEditClicked(article)">
-        </app-article-list-row>
+        </app-post-list-row>
 
         @if (idx < articles.length - 1) {
           <hr class="hr-line">
@@ -75,14 +75,14 @@ import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
 })
 export class ArticleListComponent {
 
-  private service = inject(ArticleService);
-  articles: ArticleList[] = [];
+  private service = inject(PostService);
+  articles: PostList[] = [];
 
   boardId = input<string>();
   height = input<string>('100%');
 
-  articleEditClicked = output<ArticleList>();
-  articleViewClicked = output<ArticleList>();
+  articleEditClicked = output<PostList>();
+  articleViewClicked = output<PostList>();
 
   pageable: {page: number, isLast: boolean} = {page: 0, isLast: false};
 
@@ -99,7 +99,7 @@ export class ArticleListComponent {
     this.service
         .getArticleSlice(boardId, undefined, undefined, page)
         .subscribe(
-          (model: ResponseSpringslice<ArticleList>) => {
+          (model: ResponseSpringslice<PostList>) => {
             if (model.numberOfElements > 0) {
               if (model.first) this.articles = [];
 

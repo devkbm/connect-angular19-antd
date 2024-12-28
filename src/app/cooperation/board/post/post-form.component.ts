@@ -19,14 +19,14 @@ import { GlobalProperty } from 'src/app/core/global-property';
 
 //import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular';
-import { ArticleService } from './article.service';
-import { Article } from './article.model';
-import { ArticleFileUploadComponent } from './article-file-upload.component';
+import { PostService } from './post.service';
+import { Post } from './post.model';
+import { ArticleFileUploadComponent } from './post-file-upload.component';
 import { SessionManager } from 'src/app/core/session-manager';
 
 
 @Component({
-  selector: 'app-article-form',
+  selector: 'app-post-form',
   imports: [
     CommonModule,
     FormsModule,
@@ -78,10 +78,10 @@ import { SessionManager } from 'src/app/core/session-manager';
       </app-nz-file-upload>
       -->
 
-      <app-article-file-upload
+      <app-post-file-upload
         [(uploadedFileList)]="fileList"
         (uploadCompleted)="save()">
-      </app-article-file-upload>
+      </app-post-file-upload>
 
     </form>
 
@@ -126,7 +126,7 @@ import { SessionManager } from 'src/app/core/session-manager';
 export class ArticleFormComponent implements OnInit, AfterViewInit {
   //public Editor = ClassicEditor;
 
-  private boardService= inject(ArticleService);
+  private boardService= inject(PostService);
   private renderer = inject(Renderer2);
 
   editorConfig = {
@@ -156,7 +156,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   fileUploadUrl: any;
 
   textData: any;
-  article!: Article;
+  article!: Post;
 
   @Input() boardId!: string;
 
@@ -174,8 +174,8 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
 
   fg = inject(FormBuilder).group({
     boardId         : new FormControl<string | null>(null, { validators: [Validators.required] }),
-    articleId       : new FormControl<string | null>(null, { validators: [Validators.required] }),
-    articleParentId : new FormControl<string | null>(null),
+    postId          : new FormControl<string | null>(null, { validators: [Validators.required] }),
+    postParentId    : new FormControl<string | null>(null),
     userId          : new FormControl<string | null>(null),
     title           : new FormControl<string | null>(null, { validators: [Validators.required] }),
     contents        : new FormControl<string | null>(null),
@@ -240,13 +240,13 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     this.focusInput();
   }
 
-  modifyForm(formData: Article): void {
+  modifyForm(formData: Post): void {
     this.fg.reset();
     this.fg.patchValue(formData);
 
     // boardId, articleId는 base64로 암호화
     this.fg.controls.boardId.setValue(btoa(this.fg.controls.boardId.value!));
-    this.fg.controls.articleId.setValue(btoa(this.fg.controls.articleId.value!));
+    this.fg.controls.postId.setValue(btoa(this.fg.controls.postId.value!));
   }
 
   closeForm(): void {
@@ -262,7 +262,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   get(id: any): void {
     this.boardService.getArticle(id)
         .subscribe(
-          (model: ResponseObject<Article>) => {
+          (model: ResponseObject<Post>) => {
             if (model.data) {
               this.article = model.data;
 
@@ -293,7 +293,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     this.boardService
         .saveArticleJson(this.fg.getRawValue())
         .subscribe(
-          (model: ResponseObject<Article>) => {
+          (model: ResponseObject<Post>) => {
             //console.log(model);
             this.formSaved.emit(this.fg.getRawValue());
             console.log(window.opener);
@@ -311,7 +311,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     console.log(id);
     this.boardService.deleteArticle(id)
       .subscribe(
-        (model: ResponseObject<Article>) => {
+        (model: ResponseObject<Post>) => {
           this.formDeleted.emit(this.fg.getRawValue());
 
           // 팝업 호출한 경우 재조회 후 팝업 종료

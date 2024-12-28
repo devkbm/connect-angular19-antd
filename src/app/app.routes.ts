@@ -3,8 +3,8 @@ import { AppLayoutComponent } from 'src/app/app-layout/app-layout.component';
 import { AuthGuardChildFunction } from 'src/app/core/service/auth-guard.service';
 import { LoginComponent } from 'src/app/login/login.component';
 
-import { ArticleFormComponent } from './cooperation/board/article/article-form.component';
-import { ArticleViewComponent } from './cooperation/board/article/article-view.component';
+import { ArticleFormComponent } from './cooperation/board/post/post-form.component';
+import { ArticleViewComponent } from './cooperation/board/post/post-view.component';
 import { Oauth2LoginSuccessComponent } from './login/oauth2-login-success.component';
 
 export const routes: Routes = [

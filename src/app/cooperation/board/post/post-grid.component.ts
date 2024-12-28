@@ -15,12 +15,12 @@ import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/bu
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { ArticleService } from './article.service';
-import { Article } from './article.model';
+import { PostService } from './post.service';
+import { Post } from './post.model';
 
 
 @Component({
-  selector: 'app-article-grid',
+  selector: 'app-post-grid',
   imports: [
     CommonModule,
     AgGridAngular
@@ -45,13 +45,13 @@ import { Article } from './article.model';
 export class ArticleGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
-  private boardService = inject(ArticleService);
+  private boardService = inject(PostService);
 
-  rowClicked = output<Article | undefined>();
-  rowDoubleClicked = output<Article | undefined>();
-  editButtonClicked = output<Article | undefined>();
+  rowClicked = output<Post | undefined>();
+  rowDoubleClicked = output<Post | undefined>();
+  editButtonClicked = output<Post | undefined>();
 
-  _data: Article[] = [];
+  _data: Post[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -100,8 +100,8 @@ export class ArticleGridComponent extends AgGridCommon implements OnInit {
     }
   ];
 
-  getRowId: GetRowIdFunc<Article> = (params: GetRowIdParams<Article>) => {
-    return params.data.articleId;
+  getRowId: GetRowIdFunc<Post> = (params: GetRowIdParams<Post>) => {
+    return params.data.postId;
   };
 
   ngOnInit() {
@@ -112,19 +112,19 @@ export class ArticleGridComponent extends AgGridCommon implements OnInit {
     this.boardService
         .getArticleList(fkBoard)
         .subscribe(
-          (model: ResponseList<Article>) => {
+          (model: ResponseList<Post>) => {
             this._data = model.data;
             this.appAlarmService.changeMessage(model.message);
           }
         );
   }
 
-  rowClickedEvent(params: RowClickedEvent<Article>) {
+  rowClickedEvent(params: RowClickedEvent<Post>) {
     const selectedRows = params.api.getSelectedRows();
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(params: RowDoubleClickedEvent<Article>) {
+  rowDbClicked(params: RowDoubleClickedEvent<Post>) {
     this.rowDoubleClicked.emit(params.data);
   }
 

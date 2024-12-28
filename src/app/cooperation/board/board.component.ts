@@ -16,11 +16,11 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { WindowRef } from 'src/app/core/window-ref';
 import { BoardTreeComponent } from './board-hierarcy/board-tree.component';
 
-import { ArticleFormComponent } from './article/article-form.component';
-import { ArticleViewComponent } from './article/article-view.component';
-import { ArticleGridComponent } from './article/article-grid.component';
-import { ArticleListComponent } from './article/article-list.component';
-import { ArticleList } from './article/article-list.model';
+import { ArticleFormComponent } from './post/post-form.component';
+import { ArticleViewComponent } from './post/post-view.component';
+import { ArticleGridComponent } from './post/post-grid.component';
+import { ArticleListComponent } from './post/post-list.component';
+import { PostList } from './post/post-list.model';
 
 export interface TabArticle {
   tabName: string;
@@ -82,17 +82,17 @@ export interface TabArticle {
 <nz-tabset [(nzSelectedIndex)]="tabIndex" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)">
   <nz-tab [nzTitle]="tabTitle">
     <div id="grid-wrapper" class="grid">
-      <app-article-list
+      <app-post-list
         [boardId]="drawer.board.formInitId"
         (articleEditClicked)="popupEditArticle($event)"
         (articleViewClicked)="showArticle($event)">
-      </app-article-list>
+      </app-post-list>
     </div>
   </nz-tab>
   @for (tab of tabs; track tab.articleId) {
   <nz-tab [nzClosable]="$index >= 0" [nzTitle]="tab.tabName">
-    <app-article-view [id]="tab.articleId">
-    </app-article-view>
+    <app-post-view [id]="tab.articleId">
+    </app-post-view>
   </nz-tab>
   }
 </nz-tabset>
@@ -104,13 +104,13 @@ export interface TabArticle {
     [nzVisible]="drawer.articleForm.visible"
     nzTitle="게시글 등록"
     (nzOnClose)="drawer.articleForm.visible = false">
-    <app-article-form #articleForm *nzDrawerContent
+    <app-post-form #articleForm *nzDrawerContent
       [boardId]="drawer.board.formInitId"
       [formInitId]="this.drawer.articleForm.formInitId"
       (formSaved)="getArticleGridData()"
       (formDeleted)="getArticleGridData()"
       (formClosed)="drawer.articleForm.visible = false">
-    </app-article-form>
+    </app-post-form>
 </nz-drawer>
 
 <nz-drawer
@@ -120,8 +120,8 @@ export interface TabArticle {
     [nzVisible]="drawer.articleView.visible"
     nzTitle="게시글 조회"
     (nzOnClose)="drawer.articleView.visible = false">
-    <app-article-view [id]="drawer.articleView.id" *nzDrawerContent>
-    </app-article-view>
+    <app-post-view [id]="drawer.articleView.id" *nzDrawerContent>
+    </app-post-view>
 </nz-drawer>
 
 
@@ -262,9 +262,9 @@ export class BoardComponent implements AfterViewInit {
     windowObjectReference.focus();
   }
 
-  popupEditArticle(article: ArticleList) {
+  popupEditArticle(article: PostList) {
     const boardId = btoa(this.drawer.board.formInitId);
-    const articleId = btoa(article.articleId);
+    const articleId = btoa(article.postId);
 
     const url = this.router.serializeUrl(
       this.router.createUrlTree([`/article-edit`, boardId, articleId])  // /grw/boarda
@@ -289,14 +289,14 @@ export class BoardComponent implements AfterViewInit {
     this.drawer.articleForm.visible = true;
   }
 
-  showArticle(article: ArticleList) {
-    this.drawer.articleView.id = article.articleId;
+  showArticle(article: PostList) {
+    this.drawer.articleView.id = article.postId;
     this.drawer.articleView.title = article.title;
 
     if (this.drawer.articleView.use) {
       this.addTabArticleView();
     } else {
-      this.popupArticleView(article.articleId);
+      this.popupArticleView(article.postId);
     }
   }
 

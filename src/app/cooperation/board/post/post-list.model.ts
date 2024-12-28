@@ -1,6 +1,6 @@
-export interface ArticleList {
+export interface PostList {
   boardId: string;
-  articleId: string;
+  postId: string;
   writerName: string;
   writerImage: string;
   title: string;

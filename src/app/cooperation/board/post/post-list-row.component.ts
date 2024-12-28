@@ -1,6 +1,6 @@
 import { Component, Signal, computed, input, output } from '@angular/core';
 
-import { ArticleList } from './article-list.model';
+import { PostList } from './post-list.model';
 import { GlobalProperty } from 'src/app/core/global-property';
 
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -8,7 +8,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-    selector: 'app-article-list-row',
+    selector: 'app-post-list-row',
     imports: [
       NzAvatarModule,
       NzButtonModule,
@@ -55,7 +55,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 })
 export class ArticleListRowComponent {
 
-  article = input<ArticleList>();
+  article = input<PostList>();
 
   imageSrc = computed(() => {
     if (this.article()?.writerImage) {
@@ -66,8 +66,8 @@ export class ArticleListRowComponent {
     }
   });
 
-  viewClicked = output<ArticleList>();
-  editClicked = output<ArticleList>();
+  viewClicked = output<PostList>();
+  editClicked = output<PostList>();
 
   onViewClicked(article: any) {
     this.viewClicked.emit(article);

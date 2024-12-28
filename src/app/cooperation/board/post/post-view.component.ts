@@ -5,14 +5,14 @@ import { NzFileUploadComponent } from 'src/app/third-party/ng-zorro/nz-file-uplo
 import { TrustHtmlPipe } from "src/app/core/pipe/trust-html.pipe";
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { ArticleService } from './article.service';
-import { Article } from './article.model';
+import { PostService } from './post.service';
+import { Post } from './post.model';
 import { SessionManager } from 'src/app/core/session-manager';
 import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-download/nz-file-download.component';
-import { ArticleFileUploadComponent } from './article-file-upload.component';
+import { ArticleFileUploadComponent } from './post-file-upload.component';
 
 @Component({
-  selector: 'app-article-view',
+  selector: 'app-post-view',
   imports: [
     TrustHtmlPipe,
     NzPageHeaderModule,
@@ -30,10 +30,10 @@ import { ArticleFileUploadComponent } from './article-file-upload.component';
 <!--<app-nz-file-upload [fileList]="fileList"></app-nz-file-upload>-->
 <app-nz-file-download [fileList]="fileList" [height]="'100px'"></app-nz-file-download>
 
-<app-article-file-upload
+<app-post-file-upload
   [isUploadBtnVisible]="false"
   [(uploadedFileList)]="fileList">
-</app-article-file-upload>
+</app-post-file-upload>
 
 <div [innerHTML]="article?.contents | trustHtml"></div>
   `,
@@ -45,11 +45,11 @@ nz-page-header {
 })
 export class ArticleViewComponent {
 
-  private service= inject(ArticleService);
+  private service= inject(PostService);
 
   articleId = input<string>();
 
-  article: Article | null = null;
+  article: Post | null = null;
   fileList: any = [];
 
   constructor() {
@@ -65,7 +65,7 @@ export class ArticleViewComponent {
     this.service
         .getArticle(id)
         .subscribe(
-          (model: ResponseObject<Article>) => {
+          (model: ResponseObject<Post>) => {
             if (model.data) {
               this.article = model.data;
               this.fileList = model.data.fileList;

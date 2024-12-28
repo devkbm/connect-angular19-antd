@@ -7,16 +7,16 @@ import { ResponseObject } from '../../../core/model/response-object';
 import { ResponseList } from '../../../core/model/response-list';
 
 import { Board } from './board.model';
-import { Article } from './article.model';
+import { Post } from './post.model';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
-import { ArticleList } from './article-list.model';
+import { PostList } from './post-list.model';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArticleService extends DataService {
+export class PostService extends DataService {
 
   constructor() {
       super('/api/grw');
@@ -37,7 +37,7 @@ export class ArticleService extends DataService {
   }
 
 
-  getArticleList(boardId: string, title?: string, contents?: string): Observable<ResponseList<Article>> {
+  getArticleList(boardId: string, title?: string, contents?: string): Observable<ResponseList<Post>> {
     let url = `${this.API_URL}/board/article?boardId=${boardId}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -53,13 +53,13 @@ export class ArticleService extends DataService {
     }
 
     return this.http
-      .get<ResponseList<Article>>(url, options)
+      .get<ResponseList<Post>>(url, options)
       .pipe(
         //  catchError((err) => Observable.throw(err))
       );
   }
 
-  getArticleSlice(boardId: string, title?: string, contents?: string, page: number = 0, size: number = 10): Observable<ResponseSpringslice<ArticleList>> {
+  getArticleSlice(boardId: string, title?: string, contents?: string, page: number = 0, size: number = 10): Observable<ResponseSpringslice<PostList>> {
     let url = `${this.API_URL}/board/article_slice?boardId=${boardId}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -77,14 +77,14 @@ export class ArticleService extends DataService {
     url = url + '&page='+ page + '&size='+ size;
 
     return this.http
-      .get<ResponseSpringslice<ArticleList>>(url, options)
+      .get<ResponseSpringslice<PostList>>(url, options)
       .pipe(
         //  catchError((err) => Observable.throw(err))
       );
   }
 
 
-  getArticle(id: number): Observable<ResponseObject<Article>> {
+  getArticle(id: number): Observable<ResponseObject<Post>> {
     const url = `${this.API_URL}/board/article/${id}`;
     const options = {
         headers: this.getAuthorizedHttpHeaders(),
@@ -92,13 +92,13 @@ export class ArticleService extends DataService {
       };
 
     return this.http
-      .get<ResponseObject<Article>>(url, options)
+      .get<ResponseObject<Post>>(url, options)
       .pipe(
          // catchError((err) => Observable.throw(err))
       );
   }
 
-  saveArticle(article: Article): Observable<ResponseObject<Article>> {
+  saveArticle(article: Post): Observable<ResponseObject<Post>> {
     const url = `${this.API_URL}/board/article`;
     const options = {
         headers: this.getAuthorizedMultiPartHeaders(),
@@ -107,7 +107,7 @@ export class ArticleService extends DataService {
 
     let formData = new FormData();
 
-    formData.append('articleId',    String(article.articleId));
+    formData.append('articleId',    String(article.postId));
     formData.append('boardId',      String(article.boardId));
     // formData.append('ppkArticle',   article.ppkArticle.toString());
     formData.append('title',        article.title);
@@ -123,13 +123,13 @@ export class ArticleService extends DataService {
     }
 
     return this.http
-      .post<ResponseObject<Article>>(url, formData, options)
+      .post<ResponseObject<Post>>(url, formData, options)
       .pipe(
         //  catchError((err) => Observable.throw(err))
       );
   }
 
-  saveArticleJson(article: any): Observable<ResponseObject<Article>> {
+  saveArticleJson(article: any): Observable<ResponseObject<Post>> {
     const url = `${this.API_URL}/board/article`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -137,13 +137,13 @@ export class ArticleService extends DataService {
     };
 
     return this.http
-      .post<ResponseObject<Article>>(url, article, options)
+      .post<ResponseObject<Post>>(url, article, options)
       .pipe(
           //catchError((err) => Observable.throw(err))
       );
   }
 
-  deleteArticle(id: any): Observable<ResponseObject<Article>> {
+  deleteArticle(id: any): Observable<ResponseObject<Post>> {
     const url = `${this.API_URL}/board/article/${id}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -151,7 +151,7 @@ export class ArticleService extends DataService {
     };
 
     return this.http
-      .delete<ResponseObject<Article>>(url, options)
+      .delete<ResponseObject<Post>>(url, options)
       .pipe(
         //catchError((err) => Observable.throw(err))
       );

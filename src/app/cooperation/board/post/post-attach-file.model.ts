@@ -1,4 +1,4 @@
-export interface AttachFile {
+export interface PostAttachFile {
   fileId: string;
   fileName: string;
 }
