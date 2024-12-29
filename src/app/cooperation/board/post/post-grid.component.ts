@@ -42,7 +42,7 @@ import { Post } from './post.model';
     </ag-grid-angular>
   `
 })
-export class ArticleGridComponent extends AgGridCommon implements OnInit {
+export class PostGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
   private boardService = inject(PostService);
@@ -110,7 +110,7 @@ export class ArticleGridComponent extends AgGridCommon implements OnInit {
 
   getArticleList(fkBoard: any): void {
     this.boardService
-        .getArticleList(fkBoard)
+        .getList(fkBoard)
         .subscribe(
           (model: ResponseList<Post>) => {
             this._data = model.data;

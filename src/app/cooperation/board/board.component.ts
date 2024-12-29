@@ -18,8 +18,8 @@ import { BoardTreeComponent } from './board-hierarcy/board-tree.component';
 
 import { ArticleFormComponent } from './post/post-form.component';
 import { ArticleViewComponent } from './post/post-view.component';
-import { ArticleGridComponent } from './post/post-grid.component';
-import { ArticleListComponent } from './post/post-list.component';
+import { PostGridComponent } from './post/post-grid.component';
+import { PostListComponent } from './post/post-list.component';
 import { PostList } from './post/post-list.model';
 
 export interface TabArticle {
@@ -48,7 +48,7 @@ export interface TabArticle {
     ArticleFormComponent,
     //BoardFormComponent,
     //BoardManagementComponent,
-    ArticleListComponent
+    PostListComponent
   ],
   template: `
 <div nz-row>
@@ -84,8 +84,8 @@ export interface TabArticle {
     <div id="grid-wrapper" class="grid">
       <app-post-list
         [boardId]="drawer.board.formInitId"
-        (articleEditClicked)="popupEditArticle($event)"
-        (articleViewClicked)="showArticle($event)">
+        (editClicked)="popupEditArticle($event)"
+        (viewClicked)="showArticle($event)">
       </app-post-list>
     </div>
   </nz-tab>
@@ -168,8 +168,8 @@ export interface TabArticle {
 export class BoardComponent implements AfterViewInit {
 
   boardTree = viewChild.required(BoardTreeComponent);
-  articleGrid = viewChild.required(ArticleGridComponent);
-  articleList =  viewChild.required(ArticleListComponent);
+  articleGrid = viewChild.required(PostGridComponent);
+  articleList =  viewChild.required(PostListComponent);
 
 
   drawer: {
@@ -227,7 +227,7 @@ export class BoardComponent implements AfterViewInit {
     this.drawer.articleView.visible = false;
 
     //this.articleGrid().getArticleList(this.drawer.board.initLoadId);
-    this.articleList().getArticleList(this.drawer.board.formInitId);
+    this.articleList().getList(this.drawer.board.formInitId);
   }
 
   getBoardTree(): void {
@@ -264,10 +264,10 @@ export class BoardComponent implements AfterViewInit {
 
   popupEditArticle(article: PostList) {
     const boardId = btoa(this.drawer.board.formInitId);
-    const articleId = btoa(article.postId);
+    const postId = btoa(article.postId);
 
     const url = this.router.serializeUrl(
-      this.router.createUrlTree([`/article-edit`, boardId, articleId])  // /grw/boarda
+      this.router.createUrlTree([`/article-edit`, boardId, postId])  // /grw/boarda
     );
     const popOption = 'scrollbars=yes, menubar=no, resizable=no, top=0, left=0, width=800, height=800';
     var windowObjectReference = this.winRef.nativeWindow.open(url, '_blank', popOption);
@@ -296,19 +296,20 @@ export class BoardComponent implements AfterViewInit {
     if (this.drawer.articleView.use) {
       this.addTabArticleView();
     } else {
+      console.log(article);
       this.popupArticleView(article.postId);
     }
   }
 
   //popupArticleView(article: ArticleList) {
-  popupArticleView(articleId: string) {
-    const articleIdParam = btoa(articleId);
-    console.log(articleId);
-    console.log(articleIdParam);
+  popupArticleView(postId: string) {
+    const postIdParam = btoa(postId);
+    console.log(postId);
+    console.log(postIdParam);
 
     const url = this.router.serializeUrl(
       //this.router.createUrlTree([`/article-view`, {article: JSON.stringify(article)}])  // /grw/boarda
-      this.router.createUrlTree([`/article-view`, {articleId: articleIdParam}])  // /grw/boarda
+      this.router.createUrlTree([`/article-view`, {postId: postIdParam}])  // /grw/boarda
     );
     const popOption = 'scrollbars=yes, menubar=no, resizable=no, top=0, left=0, width=800, height=800';
     var windowObjectReference = this.winRef.nativeWindow.open(url, '_blank', popOption);

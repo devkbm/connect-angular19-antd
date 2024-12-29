@@ -5,7 +5,7 @@ import { PostService } from './post.service';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { ArticleListRowComponent } from './post-list-row.component';
+import { PostListRowComponent } from './post-list-row.component';
 import { PostList } from './post-list.model';
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
 
@@ -19,7 +19,7 @@ import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
     NzListModule,
     NzButtonModule,
     InfiniteScrollDirective,
-    ArticleListRowComponent
+    PostListRowComponent
   ],
   template: `
     <div
@@ -50,14 +50,14 @@ import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
       -->
 
       <!--{{this.pageable | json}}-->
-      @for (article of articles; track article.postId; let idx = $index) {
+      @for (post of posts; track post.postId; let idx = $index) {
         <app-post-list-row
-          [article]="article"
-          (viewClicked)="onViewClicked(article)"
-          (editClicked)="onEditClicked(article)">
+          [post]="post"
+          (viewClicked)="onViewClicked(post)"
+          (editClicked)="onEditClicked(post)">
         </app-post-list-row>
 
-        @if (idx < articles.length - 1) {
+        @if (idx < posts.length - 1) {
           <hr class="hr-line">
         }
       }
@@ -73,52 +73,52 @@ import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
     }
   `
 })
-export class ArticleListComponent {
+export class PostListComponent {
 
   private service = inject(PostService);
-  articles: PostList[] = [];
+  posts: PostList[] = [];
 
   boardId = input<string>();
   height = input<string>('100%');
 
-  articleEditClicked = output<PostList>();
-  articleViewClicked = output<PostList>();
+  editClicked = output<PostList>();
+  viewClicked = output<PostList>();
 
   pageable: {page: number, isLast: boolean} = {page: 0, isLast: false};
 
   constructor() {
     effect(() => {
       if (this.boardId()) {
-        this.getArticleList(this.boardId());
+        this.getList(this.boardId());
       }
     })
 
   }
 
-  getArticleList(boardId: any, page: number = 0): void {
+  getList(boardId: any, page: number = 0): void {
     this.service
-        .getArticleSlice(boardId, undefined, undefined, page)
+        .getSlice(boardId, undefined, undefined, page)
         .subscribe(
           (model: ResponseSpringslice<PostList>) => {
             if (model.numberOfElements > 0) {
-              if (model.first) this.articles = [];
+              if (model.first) this.posts = [];
 
-              this.articles.push(...model.content);
+              this.posts.push(...model.content);
               this.pageable ={page: model.number, isLast: model.last};
             } else {
-              this.articles = [];
+              this.posts = [];
             }
             //this.appAlarmService.changeMessage(model.message);
           }
         );
   }
 
-  onEditClicked(article: any) {
-    this.articleEditClicked.emit(article);
+  onEditClicked(post: any) {
+    this.editClicked.emit(post);
   }
 
-  onViewClicked(article: any) {
-    this.articleViewClicked.emit(article);
+  onViewClicked(post: any) {
+    this.viewClicked.emit(post);
   }
 
   onScroll(ev: any) {
@@ -126,7 +126,7 @@ export class ArticleListComponent {
     //console.log(ev);
 
     if (!this.pageable.isLast) {
-      this.getArticleList(this.boardId(), this.pageable.page + 1);
+      this.getList(this.boardId(), this.pageable.page + 1);
     }
   }
 

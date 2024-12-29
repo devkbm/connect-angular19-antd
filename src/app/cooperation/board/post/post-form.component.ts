@@ -21,7 +21,7 @@ import { GlobalProperty } from 'src/app/core/global-property';
 import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 import { PostService } from './post.service';
 import { Post } from './post.model';
-import { ArticleFileUploadComponent } from './post-file-upload.component';
+import { PostFileUploadComponent } from './post-file-upload.component';
 import { SessionManager } from 'src/app/core/session-manager';
 
 
@@ -37,7 +37,7 @@ import { SessionManager } from 'src/app/core/session-manager';
     NzInputCkeditorComponent,
     NzCrudButtonGroupComponent,
     //NzFileUploadComponent,
-    ArticleFileUploadComponent
+    PostFileUploadComponent
   ],
   template: `
     {{fg.getRawValue() | json}}
@@ -165,7 +165,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   upload = viewChild.required<NzUploadComponent>('upload');
   ckEditor = viewChild.required<CKEditorComponent>('ckEditor');
 
-  uploader = viewChild.required(ArticleFileUploadComponent);
+  uploader = viewChild.required(PostFileUploadComponent);
 
 
   formSaved = output<any>();
@@ -260,7 +260,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: any): void {
-    this.boardService.getArticle(id)
+    this.boardService.get(id)
         .subscribe(
           (model: ResponseObject<Post>) => {
             if (model.data) {
@@ -309,7 +309,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
 
   remove(id: any): void {
     console.log(id);
-    this.boardService.deleteArticle(id)
+    this.boardService.delete(id)
       .subscribe(
         (model: ResponseObject<Post>) => {
           this.formDeleted.emit(this.fg.getRawValue());

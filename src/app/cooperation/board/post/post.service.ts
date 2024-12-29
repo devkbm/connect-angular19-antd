@@ -37,8 +37,8 @@ export class PostService extends DataService {
   }
 
 
-  getArticleList(boardId: string, title?: string, contents?: string): Observable<ResponseList<Post>> {
-    let url = `${this.API_URL}/board/article?boardId=${boardId}`;
+  getList(boardId: string, title?: string, contents?: string): Observable<ResponseList<Post>> {
+    let url = `${this.API_URL}/board/post?boardId=${boardId}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -59,8 +59,8 @@ export class PostService extends DataService {
       );
   }
 
-  getArticleSlice(boardId: string, title?: string, contents?: string, page: number = 0, size: number = 10): Observable<ResponseSpringslice<PostList>> {
-    let url = `${this.API_URL}/board/article_slice?boardId=${boardId}`;
+  getSlice(boardId: string, title?: string, contents?: string, page: number = 0, size: number = 10): Observable<ResponseSpringslice<PostList>> {
+    let url = `${this.API_URL}/board/post_slice?boardId=${boardId}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -84,8 +84,8 @@ export class PostService extends DataService {
   }
 
 
-  getArticle(id: number): Observable<ResponseObject<Post>> {
-    const url = `${this.API_URL}/board/article/${id}`;
+  get(id: number): Observable<ResponseObject<Post>> {
+    const url = `${this.API_URL}/board/post/${id}`;
     const options = {
         headers: this.getAuthorizedHttpHeaders(),
         withCredentials: true
@@ -98,8 +98,8 @@ export class PostService extends DataService {
       );
   }
 
-  saveArticle(article: Post): Observable<ResponseObject<Post>> {
-    const url = `${this.API_URL}/board/article`;
+  save(article: Post): Observable<ResponseObject<Post>> {
+    const url = `${this.API_URL}/board/post`;
     const options = {
         headers: this.getAuthorizedMultiPartHeaders(),
         withCredentials: true
@@ -130,7 +130,7 @@ export class PostService extends DataService {
   }
 
   saveArticleJson(article: any): Observable<ResponseObject<Post>> {
-    const url = `${this.API_URL}/board/article`;
+    const url = `${this.API_URL}/board/post`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -143,8 +143,8 @@ export class PostService extends DataService {
       );
   }
 
-  deleteArticle(id: any): Observable<ResponseObject<Post>> {
-    const url = `${this.API_URL}/board/article/${id}`;
+  delete(id: any): Observable<ResponseObject<Post>> {
+    const url = `${this.API_URL}/board/post/${id}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -175,7 +175,7 @@ export class PostService extends DataService {
   }
 
   updateHitCount(id: number, userId: string): Observable<ResponseObject<void>> {
-    const url = `${this.API_URL}/board/article/hitcnt`;
+    const url = `${this.API_URL}/board/post/hitcnt`;
     const param = {id: id, userId: userId};
 
     const options = {

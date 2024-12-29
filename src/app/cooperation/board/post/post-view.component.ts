@@ -9,7 +9,7 @@ import { PostService } from './post.service';
 import { Post } from './post.model';
 import { SessionManager } from 'src/app/core/session-manager';
 import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-download/nz-file-download.component';
-import { ArticleFileUploadComponent } from './post-file-upload.component';
+import { PostFileUploadComponent } from './post-file-upload.component';
 
 @Component({
   selector: 'app-post-view',
@@ -18,12 +18,12 @@ import { ArticleFileUploadComponent } from './post-file-upload.component';
     NzPageHeaderModule,
     NzFileUploadComponent,
     NzFileDownloadComponent,
-    ArticleFileUploadComponent
+    PostFileUploadComponent
   ],
   template: `
-<nz-page-header nzTitle="제목" [nzSubtitle]="article?.title">
+<nz-page-header nzTitle="제목" [nzSubtitle]="post?.title">
   <nz-page-header-content>
-      {{article?.fromDate}}
+      {{post?.fromDate}}
   </nz-page-header-content>
 </nz-page-header>
 첨부파일 <br/>
@@ -35,7 +35,7 @@ import { ArticleFileUploadComponent } from './post-file-upload.component';
   [(uploadedFileList)]="fileList">
 </app-post-file-upload>
 
-<div [innerHTML]="article?.contents | trustHtml"></div>
+<div [innerHTML]="post?.contents | trustHtml"></div>
   `,
   styles: `
 nz-page-header {
@@ -47,30 +47,30 @@ export class ArticleViewComponent {
 
   private service= inject(PostService);
 
-  articleId = input<string>();
+  postId = input<string>();
 
-  article: Post | null = null;
+  post: Post | null = null;
   fileList: any = [];
 
   constructor() {
     effect(() => {
-      if (this.articleId()) {
-        console.log(this.articleId());
-        this.get(this.articleId());
+      console.log(this.postId());
+      if (this.postId()) {
+        this.get(this.postId());
       }
     })
   }
 
   get(id: any): void {
     this.service
-        .getArticle(id)
+        .get(id)
         .subscribe(
           (model: ResponseObject<Post>) => {
             if (model.data) {
-              this.article = model.data;
+              this.post = model.data;
               this.fileList = model.data.fileList;
 
-              this.updateHitCount(this.articleId(), SessionManager.getUserId());
+              this.updateHitCount(this.postId(), SessionManager.getUserId());
             }
           }
         );

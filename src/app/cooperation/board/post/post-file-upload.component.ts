@@ -162,7 +162,7 @@ export interface UploadedFile {
     }
   `
 })
-export class ArticleFileUploadComponent {
+export class PostFileUploadComponent {
 
   uploadUrl: string = GlobalProperty.serverUrl + '/api/system/file';
   uploader: FileUploader;
