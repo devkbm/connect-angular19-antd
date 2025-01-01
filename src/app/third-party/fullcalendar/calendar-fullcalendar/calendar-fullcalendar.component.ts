@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/core';
+import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, DateRangeInput } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -11,6 +11,11 @@ import listPlugin from '@fullcalendar/list';
 import ko from '@fullcalendar/core/locales/ko';
 
 import { createEventId, INITIAL_EVENTS } from './event-util';
+import { HolidayService } from 'src/app/system/holiday/holiday.service';
+import { ResponseList } from 'src/app/core/model/response-list';
+import { DateInfo } from 'src/app/system/holiday/holiday.model';
+import { WorkCalendarEventService } from 'src/app/cooperation/work-calendar/event/work-calendar-event.service';
+import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-calendar-event.model';
 
 @Component({
   selector: 'app-calendar-fullcalendar',
@@ -47,15 +52,21 @@ export class CalendarFullcalendarComponent {
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
     },
     initialView: 'dayGridMonth',
-    initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+    initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed'
+    //events: this.eventData,
     weekends: true,
     editable: true,
     selectable: true,
     selectMirror: true,
     dayMaxEvents: true,
     dayCellClassNames: (arg) => {
-      const isHoliday = this.holidays.map((value: Date, index: number, array: Date[]): number => value.getTime())
-                                     .includes(arg.date.getTime());
+      //const isHoliday = this.holidays.map((value: Date, index: number, array: Date[]): number => value.getTime())
+      //                               .includes(arg.date.getTime());
+
+      const isHoliday = this.holidayList().filter((value: DateInfo, index: number, array: DateInfo[]) => value.holiday !== null)
+                                          .map((value: DateInfo, index: number, array: DateInfo[]): number => new Date(value.date!+'T00:00:00').getTime() )
+                                          .includes(arg.date.getTime());
+      //console.log(arg.date, arg.date.getTime(), isHoliday);
       if (isHoliday) {
         return [ 'fc-day-cell-holiday' ];
       }
@@ -83,7 +94,55 @@ export class CalendarFullcalendarComponent {
     new Date('2024-12-25T00:00:00'),
   ];
 
-  constructor(private changeDetector: ChangeDetectorRef) {
+  holidayList = signal<DateInfo[]>([]);
+
+  holidayService = inject(HolidayService);
+  changeDetector = inject(ChangeDetectorRef);
+
+  constructor() {
+    this.getHolidayList('20250101','20251231');
+    this.getEvents();
+  }
+
+  getHolidayList(fromDate: string, toDate: string) {
+    this.holidayService
+          .getHolidayList(fromDate, toDate)
+           .subscribe(
+            (model: ResponseList<DateInfo>) => {
+              //console.log(model.data);
+              this.holidayList.set(model.data);
+            }
+          );
+  }
+
+  private service = inject(WorkCalendarEventService);
+  eventData: EventInput[] = [];
+
+  getEvents() {
+    const param = {
+      fkWorkCalendar : 1,
+      fromDate: '20250101',
+      toDate: '20250131'
+    };
+
+    this.service
+        .getWorkScheduleList(param)
+        .subscribe(
+            (model: ResponseList<WorkCalendarEvent>) => {
+              let data: any[] = [];
+
+              model.data.forEach(e => data.push({
+                id: e.id,
+                title: e.text,
+                start: e.start as string,
+                end: e.end as string,
+                barColor: e.color
+              }));
+              this.eventData = data;
+              this.calendarOptions().events = this.eventData;
+              this.changeDetector.detectChanges();
+            }
+        );
   }
 
   handleWeekendsToggle() {
