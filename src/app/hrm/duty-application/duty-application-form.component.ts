@@ -103,7 +103,7 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
         <div nz-col nzSpan="12">
           <nz-form-item-custom for="fromDate" label="근태 시작일" required>
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
-              <nz-date-picker nzId="fromDate" formControlName="fromDate">
+              <nz-date-picker nzId="fromDate" formControlName="fromDate" [nzFormat]="'yyyy-MM-dd'">
               </nz-date-picker>
             </nz-form-control>
           </nz-form-item-custom>
@@ -196,13 +196,19 @@ export class DutyApplicationFormComponent implements OnInit {
       dutyTime: 8
     });
 
-    this.fg.get('fromDate')?.valueChanges.subscribe(x => {
-      if (x) this.getDutyDateList(x, formatDate(this.fg.value.toDate!,'YYYY-MM-dd','ko-kr'));
+
+    this.fg.controls.fromDate.valueChanges.subscribe(fromDate => {
+      if (fromDate) {
+        this.getDutyDateList(formatDate(fromDate,'YYYY-MM-dd','ko-kr'), formatDate(this.fg.controls.toDate.value!,'YYYY-MM-dd','ko-kr'));
+      }
     });
-    this.fg.get('toDate')?.valueChanges.subscribe(x => {
-      if (x) this.getDutyDateList(formatDate(this.fg.value.fromDate!,'YYYY-MM-dd','ko-kr'), x);
+    this.fg.controls.toDate.valueChanges.subscribe(toDate => {
+      if (toDate) {
+        this.getDutyDateList(formatDate(this.fg.controls.fromDate.value!,'YYYY-MM-dd','ko-kr'), formatDate(toDate,'YYYY-MM-dd','ko-kr'));
+      }
     });
-    this.getDutyDateList(formatDate(this.fg.value.fromDate!,'YYYY-MM-dd','ko-kr'), formatDate(this.fg.value.fromDate!,'YYYY-MM-dd','ko-kr'));
+
+    this.getDutyDateList(formatDate(this.fg.controls.fromDate.value!,'YYYY-MM-dd','ko-kr'), formatDate(this.fg.controls.toDate.value!,'YYYY-MM-dd','ko-kr'));
   }
 
   modifyForm(formData: DutyApplication) {
@@ -264,6 +270,8 @@ export class DutyApplicationFormComponent implements OnInit {
   }
 
   getDutyDateList(fromDate: string, toDate: string) {
+    console.log(fromDate, toDate);
+
     this.service
         .getDutyDateList(fromDate, toDate)
         .subscribe(

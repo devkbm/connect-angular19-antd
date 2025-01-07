@@ -29,12 +29,12 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
   template: `
 
 <ng-template #header>
-  <nz-page-header-custom title="부서코드 등록" subtitle="This is a subtitle"></nz-page-header-custom>
+  <nz-page-header-custom title="근태신청 등록" subtitle="This is a subtitle"></nz-page-header-custom>
 </ng-template>
 
 <ng-template #search>
   <div nz-row class="btn-group">
-
+  sdfsdf
   </div>
 </ng-template>
 
