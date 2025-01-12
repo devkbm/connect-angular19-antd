@@ -72,8 +72,8 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
       width: 70,
       cellStyle: {'text-align': 'center'}
     },
-    { headerName: '근태신청ID',         field: 'dutyId',              width: 150 },
-    { headerName: '사원번호',           field: 'staffId',             width: 80 },
+    { headerName: '근태신청ID',         field: 'id',              width: 80 },
+    { headerName: '사원번호',           field: 'staffNo',             width: 80 },
     { headerName: '근태코드',           field: 'dutyCode',            width: 80 },
     { headerName: '근태사유',           field: 'dutyReason',          width: 80 },
     { headerName: '근태시작일시',       field: 'dutyStartDateTime',   width: 80 },
@@ -85,12 +85,12 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
   };
 
   ngOnInit() {
-    this.getGridList('');
+    this.getGridList('TEST');
   }
 
-  public getGridList(typeId: string): void {
+  public getGridList(staffNo: string): void {
     const params = {
-      dutyCode : typeId
+      staffId : staffNo
     };
 
     this.dutyApplicationService

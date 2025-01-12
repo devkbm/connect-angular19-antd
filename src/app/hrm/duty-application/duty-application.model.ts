@@ -1,6 +1,6 @@
 export interface DutyApplication {
   dutyId: string | null;
-  staffId: string | null;
+  staffNo: string | null;
   dutyCode: string | null;
 	dutyReason: string | null;
 	fromDate: string | null;

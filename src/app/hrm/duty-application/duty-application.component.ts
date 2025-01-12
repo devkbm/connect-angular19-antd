@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -11,6 +11,7 @@ import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.component';
 
 @Component({
   selector: 'app-duty-application',
@@ -34,7 +35,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
 <ng-template #search>
   <div nz-row class="btn-group">
-  sdfsdf
+    <button (click)="getList()"></button>
   </div>
 </ng-template>
 
@@ -85,6 +86,8 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 })
 export class DutyApplicationComponent implements OnInit, AfterViewInit {
 
+  grid = viewChild.required(DutyApplicationGridComponent);
+
   constructor() {
   }
 
@@ -94,5 +97,7 @@ export class DutyApplicationComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
   }
 
-
+  getList() {
+    this.grid().getGridList("TEST");
+  }
 }

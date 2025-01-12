@@ -64,10 +64,10 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
         </div>
 
         <div nz-col nzSpan="12">
-          <nz-form-item-custom for="staffId" label="직원">
+          <nz-form-item-custom for="staffNo" label="직원">
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <nz-input-select-staff required
-                formControlName="staffId" itemId="staffId"
+                formControlName="staffNo" itemId="staffNo"
                 placeholder="Please select">
               </nz-input-select-staff>
             </nz-form-control>
@@ -138,8 +138,7 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
       (closeClick)="closeForm()">
     </app-nz-crud-button-group>
 
-    <div class="footer">
-    </div>
+
 
 
   `,
@@ -173,7 +172,7 @@ export class DutyApplicationFormComponent implements OnInit {
 
   fg = inject(FormBuilder).group({
     dutyId            : new FormControl<string | null>(null, { validators: Validators.required }),
-    staffId           : new FormControl<string | null>(null, { validators: Validators.required }),
+    staffNo           : new FormControl<string | null>(null, { validators: Validators.required }),
     dutyCode          : new FormControl<string | null>(null),
     dutyReason        : new FormControl<string | null>(null),
     fromDate          : new FormControl<string | null>(null),
@@ -189,7 +188,7 @@ export class DutyApplicationFormComponent implements OnInit {
 
   newForm() {
     this.fg.reset();
-    this.fg.controls.staffId.enable();
+    this.fg.controls.staffNo.enable();
     this.fg.patchValue({
       fromDate: formatDate(new Date(),'YYYY-MM-dd','ko-kr'),
       toDate: formatDate(new Date(),'YYYY-MM-dd','ko-kr'),
