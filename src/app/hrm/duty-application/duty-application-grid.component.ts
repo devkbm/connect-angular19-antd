@@ -74,10 +74,12 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
     },
     { headerName: '근태신청ID',         field: 'id',              width: 80 },
     { headerName: '사원번호',           field: 'staffNo',             width: 80 },
+    { headerName: '사원명',             field: 'staffName',             width: 80 },
     { headerName: '근태코드',           field: 'dutyCode',            width: 80 },
+    { headerName: '근태구분',           field: 'dutyName',            width: 80 },
     { headerName: '근태사유',           field: 'dutyReason',          width: 80 },
-    { headerName: '근태시작일시',       field: 'dutyStartDateTime',   width: 80 },
-    { headerName: '근태근태종료일시',   field: 'dutyEndDateTime',     width: 80 }
+    { headerName: '근태시작일시',       field: 'fromDate',   width: 80 },
+    { headerName: '근태근태종료일시',   field: 'toDate',     width: 80 }
   ];
 
   getRowId: GetRowIdFunc<DutyApplication> = (params: GetRowIdParams<DutyApplication>) => {
