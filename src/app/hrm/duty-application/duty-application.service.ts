@@ -8,6 +8,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { DutyApplication } from './duty-application.model';
 import { DutyDate } from './duty-application.model';
+import { DutyApplicationGrid } from './duty-application-grid.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class DutyApplicationService extends DataService {
    * 근태신청정보를 조회한다.
    * @param params 조회조건
    */
-  getList(params: any): Observable<ResponseList<DutyApplication>> {
+  getList(params: any): Observable<ResponseList<DutyApplicationGrid>> {
     const url = `${this.API_URL}/dutyapplication`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -30,8 +31,8 @@ export class DutyApplicationService extends DataService {
       params: params
     };
 
-    return this.http.get<ResponseList<DutyApplication>>(url, options).pipe(
-      catchError(this.handleError<ResponseList<DutyApplication>>('getDutyApplicationList', undefined))
+    return this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
+      catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
     );
   }
 

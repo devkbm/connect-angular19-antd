@@ -18,6 +18,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { DutyApplicationService } from './duty-application.service';
 import { DutyApplication } from './duty-application.model';
+import { DutyApplicationGrid } from './duty-application-grid.model';
 
 
 @Component({
@@ -48,11 +49,11 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
   private appAlarmService = inject(AppAlarmService);
   private dutyApplicationService = inject(DutyApplicationService);
 
-  _data: DutyApplication[] = [];
+  _data: DutyApplicationGrid[] = [];
 
-  rowClicked = output<DutyApplication | undefined>();
-  rowDoubleClicked = output<DutyApplication | undefined>();
-  editButtonClicked = output<DutyApplication | undefined>();
+  rowClicked = output<DutyApplicationGrid>();
+  rowDoubleClicked = output<DutyApplicationGrid>();
+  editButtonClicked = output<DutyApplicationGrid>();
 
   columnDefs: ColDef[] = [
     {
@@ -82,8 +83,8 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
     { headerName: '근태근태종료일시',   field: 'toDate',     width: 80 }
   ];
 
-  getRowId: GetRowIdFunc<DutyApplication> = (params: GetRowIdParams<DutyApplication>) => {
-    return params.data.dutyId!;
+  getRowId: GetRowIdFunc<DutyApplicationGrid> = (params: GetRowIdParams<DutyApplicationGrid>) => {
+    return params.data.id!;
   };
 
   ngOnInit() {
@@ -98,7 +99,7 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
     this.dutyApplicationService
         .getList(params)
         .subscribe(
-          (model: ResponseList<DutyApplication>) => {
+          (model: ResponseList<DutyApplicationGrid>) => {
             if (model.data) {
               this._data = model.data;
             } else {
@@ -115,8 +116,8 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: RowDoubleClickedEvent<DutyApplication>) {
-    this.rowDoubleClicked.emit(event.data);
+  rowDbClicked(event: RowDoubleClickedEvent<DutyApplicationGrid>) {
+    this.rowDoubleClicked.emit(event.data!);
   }
 
   onEditButtonClick(e: {event: PointerEvent, rowData: any}) {

@@ -12,6 +12,11 @@ import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-pag
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.component';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { SessionManager } from 'src/app/core/session-manager';
+import { DutyApplication } from './duty-application.model';
+import { DutyApplicationGrid } from './duty-application-grid.model';
 
 @Component({
   selector: 'app-duty-application',
@@ -20,6 +25,8 @@ import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.compon
     FormsModule,
     ReactiveFormsModule,
     NzDatePickerModule,
+    NzGridModule,
+    NzButtonModule,
     NzCrudButtonGroupComponent,
     NzPageHeaderCustomComponent,
     DutyDateListComponent,
@@ -35,14 +42,19 @@ import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.compon
 
 <ng-template #search>
   <div nz-row class="btn-group">
-    <button (click)="getList()"></button>
+    <div nz-col [nzSpan]="24" style="text-align: right;">
+      {{staffNo}}
+      <button nz-button (click)="getList()">
+          <span nz-icon nzType="search" nzTheme="outline"></span>조회
+        </button>
+    </div>
   </div>
 </ng-template>
 
 <app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}">
   <div class="grid-wrapper">
 
-    <app-duty-application-grid>
+    <app-duty-application-grid (rowClicked)="gridRowClicked($event)">
     </app-duty-application-grid>
 
     <app-duty-application-form>
@@ -87,6 +99,9 @@ import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.compon
 export class DutyApplicationComponent implements OnInit, AfterViewInit {
 
   grid = viewChild.required(DutyApplicationGridComponent);
+  form = viewChild.required(DutyApplicationFormComponent);
+
+  staffNo = SessionManager.getUserId();
 
   constructor() {
   }
@@ -99,5 +114,10 @@ export class DutyApplicationComponent implements OnInit, AfterViewInit {
 
   getList() {
     this.grid().getGridList("TEST");
+  }
+
+  gridRowClicked(row: DutyApplicationGrid) {
+    console.log(row);
+    this.form().get(row.id!);
   }
 }
