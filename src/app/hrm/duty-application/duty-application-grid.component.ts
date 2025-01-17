@@ -1,6 +1,7 @@
 
 import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -14,10 +15,11 @@ ModuleRegistry.registerModules([
 ]);
 
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { GlobalProperty } from 'src/app/core/global-property';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { DutyApplicationService } from './duty-application.service';
-import { DutyApplication } from './duty-application.model';
 import { DutyApplicationGrid } from './duty-application-grid.model';
 
 
@@ -88,7 +90,8 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
   };
 
   ngOnInit() {
-    this.getGridList('TEST');
+    //this.getGridList('TEST');
+    this.getList('TEST');
   }
 
   public getGridList(staffNo: string): void {
@@ -122,6 +125,31 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
 
   onEditButtonClick(e: {event: PointerEvent, rowData: any}) {
     this.editButtonClicked.emit(e.rowData);
+  }
+
+  // GlobalProperty.serverUrl
+
+  http = inject(HttpClient);
+
+  getList(params: any) {
+    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: params
+    };
+
+    this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
+    ).subscribe(
+      (model: ResponseList<DutyApplicationGrid>) => {
+        if (model.data) {
+          this._data = model.data;
+        } else {
+          this._data = [];
+        }
+      }
+    );
   }
 
 }

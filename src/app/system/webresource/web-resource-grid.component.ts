@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { WebResourceService } from './web-resource.service';
 import { WebResource } from './web-resource.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-web-resource-grid',
@@ -62,12 +65,12 @@ export class WebResourceGridComponent extends AgGridCommon {
 
   private service = inject(WebResourceService);
   private appAlarmService = inject(AppAlarmService);
+  http = inject(HttpClient);
 
   rowClicked = output<WebResource>();
   rowDoubleClicked = output<WebResource>();
   editButtonClicked = output<WebResource>();
 
-  isLoading: boolean = false;
   _list: WebResource[] = [];
 
   columnDefs: ColDef[] = [
@@ -105,16 +108,32 @@ export class WebResourceGridComponent extends AgGridCommon {
   }
 
   public getList(params?: any): void {
-    this.isLoading = true;
+    /*
     this.service
         .getList(params)
         .subscribe(
           (model: ResponseList<WebResource>) => {
             this._list = model.data;
-            this.isLoading = false;
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+
+    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const options = {
+        headers: getAuthorizedHttpHeaders(),
+        withCredentials: true,
+        params: params
+     };
+
+    this.http.get<ResponseList<WebResource>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseList<WebResource>) => {
+        this._list = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   rowClickedEvent(event: RowClickedEvent<WebResource>) {
