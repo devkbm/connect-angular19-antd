@@ -63,7 +63,6 @@ import { HttpClient } from '@angular/common/http';
 })
 export class WebResourceGridComponent extends AgGridCommon {
 
-  private service = inject(WebResourceService);
   private appAlarmService = inject(AppAlarmService);
   http = inject(HttpClient);
 
@@ -108,17 +107,6 @@ export class WebResourceGridComponent extends AgGridCommon {
   }
 
   public getList(params?: any): void {
-    /*
-    this.service
-        .getList(params)
-        .subscribe(
-          (model: ResponseList<WebResource>) => {
-            this._list = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/system/webresource`;
     const options = {
         headers: getAuthorizedHttpHeaders(),

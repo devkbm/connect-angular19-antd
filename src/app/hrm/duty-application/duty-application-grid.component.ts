@@ -49,6 +49,7 @@ import { DutyApplicationGrid } from './duty-application-grid.model';
 export class DutyApplicationGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
   private dutyApplicationService = inject(DutyApplicationService);
 
   _data: DutyApplicationGrid[] = [];
@@ -129,7 +130,7 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
 
   // GlobalProperty.serverUrl
 
-  http = inject(HttpClient);
+
 
   getList(params: any) {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
