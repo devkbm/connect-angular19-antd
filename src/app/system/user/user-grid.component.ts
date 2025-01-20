@@ -19,6 +19,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { UserService } from './user.service';
 import { User } from './user.model';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { HttpClient } from '@angular/common/http';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 
@@ -47,6 +50,7 @@ export class UserGridComponent extends AgGridCommon implements OnInit {
 
   private userService = inject(UserService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   rowClicked = output<User>();
   rowDoubleClicked = output<User>();
@@ -133,7 +137,7 @@ export class UserGridComponent extends AgGridCommon implements OnInit {
   }
 
   getUserList(params?: any): void {
-
+    /*
     this.userService
         .getUserList(params)
         .subscribe(
@@ -142,6 +146,24 @@ export class UserGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
       );
+    */
+
+    const url = GlobalProperty.serverUrl + '/api/system/user';
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: params
+    };
+
+    this.http.get<ResponseList<User>>(url, options).pipe(
+    //    catchError(this.handleError<ResponseList<User>>('getUserList', undefined))
+    ).subscribe(
+      (model: ResponseList<User>) => {
+        this.userList = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
+
   }
 
   rowClickedEvent(event: RowClickedEvent<User>) {

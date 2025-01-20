@@ -18,6 +18,9 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
 import { WordService } from './word.service';
 import { Word } from './word.model';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -46,6 +49,7 @@ export class WordGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(WordService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   rowClicked = output<Word>();
   rowDoubleClicked = output<Word>();
@@ -86,6 +90,7 @@ export class WordGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(params?: any): void {
+    /*
     this.service
         .getList()
         .subscribe(
@@ -98,6 +103,25 @@ export class WordGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + '/api/system/word';
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<Word>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<Word>>('getList', undefined))
+    ).subscribe(
+      (model: ResponseList<Word>) => {
+        if (model.data) {
+          this.list = model.data;
+        } else {
+          this.list = [];
+        }
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   rowClickedFunc(event: RowClickedEvent<Word>) {

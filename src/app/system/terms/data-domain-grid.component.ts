@@ -18,6 +18,9 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
 import { DataDomainService } from './data-domain.service';
 import { DataDomain } from './data-domain.model';
+import { HttpClient } from '@angular/common/http';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { GlobalProperty } from 'src/app/core/global-property';
 
 @Component({
   selector: 'app-data-domain-grid',
@@ -45,6 +48,7 @@ export class DataDomainGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(DataDomainService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   rowClicked = output<DataDomain>();
   rowDoubleClicked = output<DataDomain>();
@@ -86,6 +90,7 @@ export class DataDomainGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(params?: any) {
+    /*
     this.service
         .getList()
         .subscribe(
@@ -98,6 +103,25 @@ export class DataDomainGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + '/api/system/datadomin';
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<DataDomain>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<DataDomain>>('getList', undefined))
+    ).subscribe(
+      (model: ResponseList<DataDomain>) => {
+        if (model.data) {
+          this.list = model.data;
+        } else {
+          this.list = [];
+        }
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   rowClickedFunc(event: RowClickedEvent<DataDomain>) {

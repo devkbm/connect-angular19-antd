@@ -18,6 +18,9 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { TermService } from './term.service';
 import { Term } from './term.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-term-grid',
@@ -44,6 +47,7 @@ export class TermGridComponent extends AgGridCommon implements OnInit {
 
   private termService = inject(TermService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   rowClicked = output<Term>();
   rowDoubleClicked = output<Term>();
@@ -88,6 +92,7 @@ export class TermGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(params?: any): void {
+    /*
     this.termService
         .getTermList(params)
         .subscribe(
@@ -100,6 +105,26 @@ export class TermGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + '/api/system/terms';
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: params
+    };
+
+    this.http.get<ResponseList<Term>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<Term>>('getTermList', undefined))
+    ).subscribe(
+      (model: ResponseList<Term>) => {
+        if (model.data) {
+          this.termList = model.data;
+        } else {
+          this.termList = [];
+        }
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   rowClickedFunc(event: RowClickedEvent<Term>) {
