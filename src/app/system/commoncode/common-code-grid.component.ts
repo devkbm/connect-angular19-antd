@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { CommonCodeService } from './common-code.service';
 import { CommonCode } from './common-code.model';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -45,6 +48,7 @@ export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
 
   private commonCodeService = inject(CommonCodeService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   commonCodeList: CommonCode[] = [];
 
@@ -103,6 +107,7 @@ export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
   }
 
   getCommonCodeList(params?: any): void {
+    /*
     this.commonCodeService
         .getCodeList(params)
         .subscribe(
@@ -111,6 +116,23 @@ export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+
+    const url = GlobalProperty.serverUrl + `/api/system/code`;
+    const options = {
+        headers: getAuthorizedHttpHeaders(),
+        withCredentials: true,
+        params: params
+      };
+
+    this.http.get<ResponseList<CommonCode>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseList<CommonCode>) => {
+        this.commonCodeList = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   selectionChanged(event: any): void {

@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Company } from './company.model';
 import { CompanyGridService } from './company-grid.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-company-grid',
@@ -45,6 +48,7 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(CompanyGridService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   rowClicked = output<Company>();
   rowDoubleClicked = output<Company>();
@@ -87,6 +91,7 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(): void {
+    /*
     this.service
         .getList()
         .subscribe(
@@ -95,6 +100,24 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const options = {
+        headers: getAuthorizedHttpHeaders(),
+        withCredentials: true,
+        //params: params
+      };
+
+    this.http.get<ResponseList<Company>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    )
+    .subscribe(
+      (model: ResponseList<Company>) => {
+        this._data = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
+
   }
 
   rowClickedFunc(event: RowClickedEvent<Company>) {

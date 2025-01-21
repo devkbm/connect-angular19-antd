@@ -17,6 +17,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { BizCode } from './biz-code.model';
 import { BizCodeService } from './biz-code.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -45,6 +48,7 @@ export class BizCodeGridComponent extends AgGridCommon {
 
   private service = inject(BizCodeService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   _list: BizCode[] = [];
 
@@ -83,6 +87,7 @@ export class BizCodeGridComponent extends AgGridCommon {
   };
 
   getList(typeId: string): void {
+    /*
     this.service
         .getList(typeId)
         .subscribe(
@@ -92,7 +97,22 @@ export class BizCodeGridComponent extends AgGridCommon {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + `/${typeId}/bizcode`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
 
+    this.http.get<ResponseList<BizCode>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<BizCode>>('getList', undefined))
+    ).subscribe(
+      (model: ResponseList<BizCode>) => {
+        this._list = model.data;
+
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   rowClickedFunc(event: RowClickedEvent<BizCode>) {

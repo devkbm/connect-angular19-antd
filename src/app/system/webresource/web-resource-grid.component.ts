@@ -64,7 +64,7 @@ import { HttpClient } from '@angular/common/http';
 export class WebResourceGridComponent extends AgGridCommon {
 
   private appAlarmService = inject(AppAlarmService);
-  http = inject(HttpClient);
+  private http = inject(HttpClient);
 
   rowClicked = output<WebResource>();
   rowDoubleClicked = output<WebResource>();

@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { MenuService } from './menu.service';
 import { MenuGroup } from './menu-group.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-menu-group-grid',
@@ -44,6 +47,7 @@ export class MenuGroupGridComponent extends AgGridCommon implements OnInit {
 
   private menuService = inject(MenuService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   rowClicked = output<MenuGroup>();
   rowDoubleClicked = output<MenuGroup>();
@@ -102,8 +106,28 @@ export class MenuGroupGridComponent extends AgGridCommon implements OnInit {
   }
 
   getMenuGroupList(params?: any): void {
+    /*
     this.menuService
         .getMenuGroupList(params)
+        .subscribe(
+          (model: ResponseList<MenuGroup>) => {
+            this.menuGroupList = model.data;
+            this.appAlarmService.changeMessage(model.message);
+          }
+        );
+    */
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: params
+    };
+
+    this.http
+        .get<ResponseList<MenuGroup>>(url, options)
+        .pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseList<MenuGroup>) => {
             this.menuGroupList = model.data;
