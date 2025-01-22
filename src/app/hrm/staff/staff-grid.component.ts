@@ -17,6 +17,9 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { StaffService } from './staff.service';
 import { Staff } from './staff.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-grid',
@@ -44,6 +47,7 @@ export class StaffGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(StaffService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   list: Staff[] = [];
 
@@ -83,6 +87,7 @@ export class StaffGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(params?: any): void {
+    /*
     this.service
         .getStaffList(params)
         .subscribe(
@@ -91,6 +96,25 @@ export class StaffGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
+    const obj:any = params;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: obj
+    };
+
+    this.http.get<ResponseList<Staff>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<Staff>>('getStaffList', undefined))
+    )
+    .subscribe(
+      (model: ResponseList<Staff>) => {
+        this.list = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   rowClickedFunc(event: RowClickedEvent<Staff>) {

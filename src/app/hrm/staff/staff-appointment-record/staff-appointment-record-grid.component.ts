@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffAppointmentRecordService } from './staff-appointment-record.service';
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-appointment-record-grid',
@@ -44,6 +47,7 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon implements
 
   private appAlarmService = inject(AppAlarmService);
   private service = inject(StaffAppointmentRecordService);
+  private http = inject(HttpClient);
 
   _list: StaffAppointmentRecord[] = [];
 
@@ -98,6 +102,7 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon implements
   }
 
   getList(staffNo: string): void {
+    /*
     this.service
         .getList(staffNo)
         .subscribe(
@@ -106,6 +111,22 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon implements
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffNo}/record`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<StaffAppointmentRecord>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<StaffAppointmentRecord>>('getList', undefined))
+    ).subscribe(
+      (model: ResponseList<StaffAppointmentRecord>) => {
+        this._list = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   selectionChanged(event: any) {

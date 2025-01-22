@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NzListModule } from 'ng-zorro-antd/list';
 
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffDutyResponsibility } from './staff-duty-responsibility.model';
 import { StaffDutyResponsibilityService } from './staff-duty-responsibility.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-duty-responsibility-list',
@@ -24,6 +27,8 @@ import { StaffDutyResponsibilityService } from './staff-duty-responsibility.serv
   styles: []
 })
 export class StaffDutyResponsibilityListComponent implements OnInit, AfterViewInit, OnChanges {
+
+  private http = inject(HttpClient);
 
   _list: StaffDutyResponsibility[] = [];
 
@@ -46,6 +51,7 @@ export class StaffDutyResponsibilityListComponent implements OnInit, AfterViewIn
   }
 
   getList(staffId: string) {
+    /*
     this.service
         .getList(staffId)
         .subscribe(
@@ -53,6 +59,20 @@ export class StaffDutyResponsibilityListComponent implements OnInit, AfterViewIn
             this._list = model.data;
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/dutyresponsibility`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<StaffDutyResponsibility>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<StaffDutyResponsibility>>('getCurrentAppointment', undefined))
+    ).subscribe(
+      (model: ResponseList<StaffDutyResponsibility>) => {
+        this._list = model.data;
+      }
+    );
   }
 
 }

@@ -8,6 +8,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { PostListRowComponent } from './post-list-row.component';
 import { PostList } from './post-list.model';
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
+import { HttpClient } from '@angular/common/http';
+import { ResponseList } from 'src/app/core/model/response-list';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 // 무한 스크롤 적용 필요
 // https://www.npmjs.com/package/ngx-infinite-scroll
@@ -75,7 +79,9 @@ import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
 })
 export class PostListComponent {
 
+  private http = inject(HttpClient);
   private service = inject(PostService);
+
   posts: PostList[] = [];
 
   boardId = input<string>();
@@ -92,10 +98,10 @@ export class PostListComponent {
         this.getList(this.boardId());
       }
     })
-
   }
 
-  getList(boardId: any, page: number = 0): void {
+  getList(boardId: any, page: number = 0, size: number = 10): void {
+    /*
     this.service
         .getSlice(boardId, undefined, undefined, page)
         .subscribe(
@@ -111,6 +117,30 @@ export class PostListComponent {
             //this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    let url = GlobalProperty.serverUrl + `/api/grw/board/post_slice?boardId=${boardId}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    url = url + '&page='+ page + '&size='+ size;
+
+    this.http.get<ResponseSpringslice<PostList>>(url, options).pipe(
+        //  catchError((err) => Observable.throw(err))
+      ).subscribe(
+        (model: ResponseSpringslice<PostList>) => {
+          if (model.numberOfElements > 0) {
+            if (model.first) this.posts = [];
+
+            this.posts.push(...model.content);
+            this.pageable ={page: model.number, isLast: model.last};
+          } else {
+            this.posts = [];
+          }
+          //this.appAlarmService.changeMessage(model.message);
+        }
+      );
   }
 
   onEditClicked(post: any) {

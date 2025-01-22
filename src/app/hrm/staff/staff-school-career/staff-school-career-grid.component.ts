@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffSchoolCareerService } from './staff-school-career.service';
 import { StaffSchoolCareer } from './staff-school-career.model';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -46,6 +49,7 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnIn
 
   private appAlarmService = inject(AppAlarmService);
   private service = inject(StaffSchoolCareerService);
+  private http = inject(HttpClient);
 
   protected _list: StaffSchoolCareer[] = [];
 
@@ -98,6 +102,7 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnIn
   }
 
   getList(staffId: string): void {
+    /*
     this.service
         .getList(staffId)
         .subscribe(
@@ -106,6 +111,22 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnIn
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/schoolcareer`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<StaffSchoolCareer>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<StaffSchoolCareer>>('getList', undefined))
+    ).subscribe(
+      (model: ResponseList<StaffSchoolCareer>) => {
+        this._list = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   selectionChanged(event: any) {

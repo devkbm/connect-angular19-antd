@@ -18,6 +18,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffFamily } from './staff-family.model';
 import { StaffFamilyService } from './staff-family.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-family-grid',
@@ -45,6 +48,7 @@ export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges 
 
   private appAlarmService = inject(AppAlarmService);
   private service = inject(StaffFamilyService);
+  private http = inject(HttpClient);
 
   protected _list: StaffFamily[] = [];
 
@@ -91,6 +95,7 @@ export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges 
   }
 
   getList(staffId: string): void {
+    /*
     this.service
         .getList(staffId)
         .subscribe(
@@ -99,6 +104,21 @@ export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges 
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/family`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<StaffFamily>>(url, options).pipe(
+    //  catchError(this.handleError<ResponseList<StaffFamily>>('getList', undefined))
+    ).subscribe(
+      (model: ResponseList<StaffFamily>) => {
+        this._list = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   selectionChanged(event: any) {

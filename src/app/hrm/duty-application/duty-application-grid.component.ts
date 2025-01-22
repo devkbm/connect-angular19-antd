@@ -96,10 +96,7 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
   }
 
   public getGridList(staffNo: string): void {
-    const params = {
-      staffId : staffNo
-    };
-
+    /*
     this.dutyApplicationService
         .getList(params)
         .subscribe(
@@ -112,6 +109,33 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
             this.appAlarmService.changeMessage(model?.message);
           }
         );
+    */
+
+    const params = {
+      staffId : staffNo
+    };
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: params
+    };
+
+    this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
+      //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
+    ).subscribe(
+      (model: ResponseList<DutyApplicationGrid>) => {
+        if (model.data) {
+          this._data = model.data;
+        } else {
+          this._data = [];
+        }
+        this.appAlarmService.changeMessage(model?.message);
+      }
+    )
+
+
   }
 
   selectionChanged(event: any) {

@@ -17,6 +17,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { PostService } from './post.service';
 import { Post } from './post.model';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -46,6 +49,7 @@ export class PostGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
   private boardService = inject(PostService);
+  private http = inject(HttpClient);
 
   rowClicked = output<Post | undefined>();
   rowDoubleClicked = output<Post | undefined>();
@@ -108,7 +112,8 @@ export class PostGridComponent extends AgGridCommon implements OnInit {
     //this.setWidthAndHeight('100%', '100%');
   }
 
-  getArticleList(fkBoard: any): void {
+  getArticleList(boardId: any): void {
+    /*
     this.boardService
         .getList(fkBoard)
         .subscribe(
@@ -117,6 +122,17 @@ export class PostGridComponent extends AgGridCommon implements OnInit {
             this.appAlarmService.changeMessage(model.message);
           }
         );
+    */
+
+    let url = GlobalProperty.serverUrl + `/api/grw/board/post?boardId=${boardId}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<Post>>(url, options).pipe(
+      //  catchError((err) => Observable.throw(err))
+    );
   }
 
   rowClickedEvent(params: RowClickedEvent<Post>) {
