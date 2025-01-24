@@ -79,6 +79,7 @@ import { SessionManager } from 'src/app/core/session-manager';
       -->
 
       <app-post-file-upload
+        [attachedFileList]="attachedFileList"
         [(uploadedFileList)]="fileList"
         (uploadCompleted)="save()">
       </app-post-file-upload>
@@ -133,6 +134,8 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     //plugins: [ Font ],
     toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor','heading', '|', 'bold', 'italic' ]
   };
+
+  attachedFileList: any = [];
 
   fileList: any = [
     /*{
@@ -267,8 +270,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
               this.article = model.data;
 
               this.modifyForm(model.data);
-              this.fileList = model.data.fileList;
-
+              this.attachedFileList = model.data.fileList;
               //this.ckEditor.writeValue(model.data.contents);
             } else {
               this.newForm(null);

@@ -51,7 +51,7 @@ export interface UploadedFile {
     }
 
     <div class="col-md-9" style="margin-bottom: 40px">
-      <p>파일 개수 : {{ uploader.queue.length + this.uploadedFileList().length }}</p>
+      <p>파일 개수 : {{ uploader.queue.length + this.attachedFileList().length }}</p>
 
       <table class="table">
         <thead>
@@ -67,7 +67,7 @@ export interface UploadedFile {
         </thead>
 
         <tbody>
-          @for (file of this.uploadedFileList(); track file.uid) {
+          @for (file of this.attachedFileList(); track file.uid) {
           <tr>
             <td><a [href]="file.url" download> {{file.name}}</a></td>
             <td style="text-align: right">{{ file.size/1024/1024 | number:'.2' }} MB</td>
@@ -169,6 +169,8 @@ export class PostFileUploadComponent {
 
   isUploadBtnVisible = input<boolean>(true);
 
+  attachedFileList = input<UploadedFile[]>([]);
+
   uploadedFileList = model<UploadedFile[]>([]);
   uploadCompleted = output<UploadedFile[]>();
 
@@ -181,11 +183,11 @@ export class PostFileUploadComponent {
 
     this.uploader.response.subscribe( (res: any) => {
       // 개별 파일로 업로드 처리되어 첫번째 response 데이터만 리스트에 추가
+      //console.log(JSON.parse(res)[0]);
       this.uploadedFileList().push(JSON.parse(res)[0]);
     });
 
     this.uploader.onCompleteAll = () => {
-      //console.log('업로드 완료');
       this.uploadCompleted.emit(this.uploadedFileList());
     };
   }
