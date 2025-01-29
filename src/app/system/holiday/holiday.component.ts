@@ -20,6 +20,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot/calendar-daypilot-navigator.component';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 
 @Component({
   selector: 'app-holiday',
@@ -30,6 +32,7 @@ import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot
     NzFormModule,
     NzIconModule,
     NzButtonModule,
+    NzTabsModule,
     NzDatePickerModule,
     NzDividerModule,
     NzPageHeaderCustomComponent,
@@ -37,7 +40,8 @@ import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot
     HolidayGridComponent,
     HolidayFormDrawerComponent,
     CalendarDaypilotNavigatorComponent,
-    ShapeComponent
+    ShapeComponent,
+    CalendarFullcalendarComponent
 ],
   template: `
 <ng-template #header>
@@ -71,30 +75,32 @@ import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot
 </ng-template>
 
 <app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}">
-  <div class="container">
-    <div>
+<nz-tabset>
+  <nz-tab nzTitle="공휴일 등록">
       <h3 class="grid-title">공휴일 목록</h3>
-    </div>
+      <div class="grid-wrapper">
+        <!--{{holidayGrid.filteredList() | json}}-->
+        <app-holiday-grid
+            (rowClicked)="holidayGridRowClicked($event)"
+            (editButtonClicked)="edit($event)"
+            (rowDoubleClicked)="edit($event)">
+        </app-holiday-grid>
 
-    <div class="grid-wrapper">
-    <!--
-      <app-holiday-calendar>
-      </app-holiday-calendar>
-    -->
-      @defer {
-      <app-calendar-daypilot-navigator
-        [events]="grid().filteredList()"
-        (selectChanged)="navigatorSelectChanged($event)">
-      </app-calendar-daypilot-navigator>
-      }
-      <!--{{holidayGrid.filteredList() | json}}-->
-      <app-holiday-grid
-          (rowClicked)="holidayGridRowClicked($event)"
-          (editButtonClicked)="edit($event)"
-          (rowDoubleClicked)="edit($event)">
-      </app-holiday-grid>
-    </div>
-  </div>
+        @defer {
+        <app-calendar-daypilot-navigator
+          [events]="grid().filteredList()"
+          (selectChanged)="navigatorSelectChanged($event)">
+        </app-calendar-daypilot-navigator>
+        }
+      </div>
+
+  </nz-tab>
+  <nz-tab nzTitle="달력">
+    <app-calendar-fullcalendar></app-calendar-fullcalendar>
+  </nz-tab>
+
+</nz-tabset>
+
 </app-shape>
 
 <app-holiday-form-drawer
@@ -119,7 +125,7 @@ import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot
 .grid-wrapper {
   height: 100%;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 1fr 200px;
 }
 
 .container {
