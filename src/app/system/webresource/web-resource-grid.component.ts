@@ -1,5 +1,6 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, effect, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -15,12 +16,12 @@ ModuleRegistry.registerModules([
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { WebResourceService } from './web-resource.service';
 import { WebResource } from './web-resource.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-web-resource-grid',
@@ -29,9 +30,12 @@ import { HttpClient } from '@angular/common/http';
     AgGridAngular
   ],
   template: `
+    <!-- [rowData]="_list" -->
+     {{listResource.value()!.data | json }}
+    <button (click)="listResource.reload()">reload</button>
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="listResource.value()!.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -43,13 +47,6 @@ import { HttpClient } from '@angular/common/http';
     </ag-grid-angular>
   `,
   styles: [`
-    nz-spin {
-      height:100%
-    }
-    /** nz-spin component 하위 엘리먼트 크기 조정 */
-    :host .ant-spin-container.ng-star-inserted {
-      height: 100%;
-    }
 
     ag-grid-angular {
       -webkit-touch-callout: none;
@@ -104,7 +101,25 @@ export class WebResourceGridComponent extends AgGridCommon {
   constructor() {
     super();
     this.getList();
+    //this.listResource.reload();
+
+    effect(() => {
+      console.log(this.listResource.value());
+    })
   }
+
+  listResource = rxResource({
+    request: () => ({
+      resourceId: '11',
+      resourceName: ''
+    }),
+    loader: ({request}) => this.http.get<ResponseList<WebResource>>(
+      GlobalProperty.serverUrl + `/api/system/webresource`, {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: {}
+    })
+  })
 
   public getList(params?: any): void {
     const url = GlobalProperty.serverUrl + `/api/system/webresource`;
