@@ -62,6 +62,16 @@ export class SessionManager {
       return item;
     }
     */
+
+    const menuGroupList = JSON.parse(sessionStorage.getItem('menuGroupList') as string);
+    const sessionMenuGroup    = sessionStorage.getItem('selectedMenuGroup') as string;
+    let menuGroupUrl = '';
+    for (const menuGroup of menuGroupList) {
+      if (menuGroup.menuGroupCode === sessionMenuGroup) {
+        menuGroupUrl = menuGroup.menuGroupUrl;
+      }
+    }
+
     const obj = JSON.parse(sessionStorage.getItem('menuList') as string);
     let names: MenuBreadCrumb[] = new Array();
     // 현재 화면에 해당하는 메뉴 탐색
@@ -69,7 +79,7 @@ export class SessionManager {
       for (const child of children) {
         names.push({name: child.title, isLink: child.menuType === 'ITEM' ? true : false, url: child.url, marked: false});
         if (child.leaf) {
-          if (window.location.pathname === '/' + child.url) {
+          if (window.location.pathname === '/' + menuGroupUrl + '/' + child.url) {
             names[names.length-1].marked = true;
             return true;
           } else {
@@ -86,6 +96,7 @@ export class SessionManager {
     }
     find(obj);
 
+    //console.log(names);
     return names;
   }
 
