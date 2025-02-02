@@ -1,10 +1,12 @@
-import { Component, input, model, output } from '@angular/core';
+import { Component, inject, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FileUploadModule, FileUploader } from 'ng2-file-upload';
 
 import { GlobalProperty } from 'src/app/core/global-property';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { HttpClient } from '@angular/common/http';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 export interface UploadedFile {
   uid: string;
@@ -69,7 +71,7 @@ export interface UploadedFile {
         <tbody>
           @for (file of this.attachedFileList(); track file.uid) {
           <tr>
-            <td><a [href]="file.url" download> {{file.name}}</a></td>
+            <td><a [href]="file.url" download> {{file.name}}</a><button (click)="deleteFile(this.postId(), file.uid)">delete</button></td>
             <td style="text-align: right">{{ file.size/1024/1024 | number:'.2' }} MB</td>
           </tr>
           }
@@ -169,10 +171,14 @@ export class PostFileUploadComponent {
 
   isUploadBtnVisible = input<boolean>(true);
 
-  attachedFileList = input<UploadedFile[]>([]);
+  postId = input<string>('');
+
+  attachedFileList = model<UploadedFile[]>([]);
 
   uploadedFileList = model<UploadedFile[]>([]);
   uploadCompleted = output<UploadedFile[]>();
+
+  private http = inject(HttpClient);
 
   constructor() {
 
@@ -198,6 +204,26 @@ export class PostFileUploadComponent {
 
   isUpload(): boolean {
     return this.uploader.queue.length > 0 ? true : false;
+  }
+
+  deleteFile(postId: string, fileId: string) {
+    let url = GlobalProperty.serverUrl + `/api/grw/board/post/${postId}/file/${fileId}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.delete<boolean>(url, options).pipe(
+      //  catchError((err) => Observable.throw(err))
+    ).subscribe(
+      () => {
+        this.attachedFileList.set(
+          this.attachedFileList().filter( uploadedFile => {
+            return uploadedFile.uid !== fileId;
+          })
+        );
+      }
+    );
   }
 
 }

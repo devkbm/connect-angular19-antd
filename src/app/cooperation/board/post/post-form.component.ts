@@ -79,8 +79,9 @@ import { SessionManager } from 'src/app/core/session-manager';
       -->
 
       <app-post-file-upload
+        [postId]="this.fg.controls.postId.value!"
         [attachedFileList]="attachedFileList"
-        [(uploadedFileList)]="fileList"
+        [(uploadedFileList)]="uploadedfileList"
         (uploadCompleted)="save()">
       </app-post-file-upload>
 
@@ -137,7 +138,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
 
   attachedFileList: any = [];
 
-  fileList: any = [
+  uploadedfileList: any = [
     /*{
       uid: '1',
       name: 'xxx.png',
@@ -237,7 +238,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     this.fg.controls.boardId.setValue(boardId);
 
     this.fg.controls.userId.setValue(SessionManager.getUserId());
-    this.fileList = [];
+    this.uploadedfileList = [];
     this.textData = null;
 
     this.focusInput();
@@ -333,7 +334,7 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     console.log(param);
     if (param.type === 'success') {
       // this.fileList = param.file.response;
-      this.fileList.push(param.file.response[0]);
+      this.uploadedfileList.push(param.file.response[0]);
     }
   }
 
@@ -346,8 +347,14 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
   convertFileList() {
     const attachFileIdList: any = [];
 
-    if (this.fileList instanceof Array) {
-      this.fileList.forEach( (element: any) => {
+    if (this.attachedFileList instanceof Array) {
+      this.attachedFileList.forEach( (element: any) => {
+        attachFileIdList.push(String(element.uid));
+      });
+    }
+
+    if (this.uploadedfileList instanceof Array) {
+      this.uploadedfileList.forEach( (element: any) => {
         attachFileIdList.push(String(element.uid));
       });
     }
