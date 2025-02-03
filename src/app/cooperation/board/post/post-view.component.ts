@@ -43,7 +43,7 @@ nz-page-header {
 }
   `
 })
-export class ArticleViewComponent {
+export class PostViewComponent {
 
   private service= inject(PostService);
 

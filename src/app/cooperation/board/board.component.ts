@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ViewContainerRef, inject, viewChild } from '@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -13,18 +12,18 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 
-import { WindowRef } from 'src/app/core/window-ref';
 import { BoardTreeComponent } from './board-hierarcy/board-tree.component';
 
-import { ArticleFormComponent } from './post/post-form.component';
-import { ArticleViewComponent } from './post/post-view.component';
+import { PostFormComponent } from './post/post-form.component';
+import { PostViewComponent } from './post/post-view.component';
 import { PostGridComponent } from './post/post-grid.component';
 import { PostListComponent } from './post/post-list.component';
 import { PostList } from './post/post-list.model';
+import { WindowRef } from 'src/app/core/window-ref';
 
-export interface TabArticle {
+export interface TabInfo {
   tabName: string;
-  articleId: string;
+  postId: string;
 }
 
 @Component({
@@ -44,8 +43,8 @@ export interface TabArticle {
 
     //ArticleGridComponent,
     BoardTreeComponent,
-    ArticleViewComponent,
-    ArticleFormComponent,
+    PostViewComponent,
+    PostFormComponent,
     //BoardFormComponent,
     //BoardManagementComponent,
     PostListComponent
@@ -59,7 +58,7 @@ export interface TabArticle {
     <button nz-button (click)="getBoardTree()">
       <span nz-icon nzType="search" nzTheme="outline"></span>조회
     </button>
-    <button nz-button (click)="newArticle()">
+    <button nz-button (click)="newPost()">
       <span nz-icon nzType="form" nzTheme="outline"></span>게시글 등록
     </button>
   </div>
@@ -84,14 +83,14 @@ export interface TabArticle {
     <div id="grid-wrapper" class="grid">
       <app-post-list
         [boardId]="drawer.board.formInitId"
-        (editClicked)="popupEditArticle($event)"
-        (viewClicked)="showArticle($event)">
+        (editClicked)="editPost($event)"
+        (viewClicked)="viewPost($event)">
       </app-post-list>
     </div>
   </nz-tab>
-  @for (tab of tabs; track tab.articleId) {
+  @for (tab of tabs; track tab.postId) {
   <nz-tab [nzClosable]="$index >= 0" [nzTitle]="tab.tabName">
-    <app-post-view [id]="tab.articleId">
+    <app-post-view [postId]="tab.postId">
     </app-post-view>
   </nz-tab>
   }
@@ -105,7 +104,7 @@ export interface TabArticle {
     nzTitle="게시글 등록"
     (nzOnClose)="drawer.postForm.visible = false">
     <app-post-form #articleForm *nzDrawerContent
-      [boardId]="drawer.board.formInitId"
+      [boardId]="drawer.postForm.boardId"
       [formInitId]="this.drawer.postForm.formInitId"
       (formSaved)="getArticleGridData()"
       (formDeleted)="getArticleGridData()"
@@ -168,22 +167,24 @@ export interface TabArticle {
 export class BoardComponent implements AfterViewInit {
 
   boardTree = viewChild.required(BoardTreeComponent);
-  articleGrid = viewChild.required(PostGridComponent);
-  articleList =  viewChild.required(PostListComponent);
-
+  postGrid = viewChild.required(PostGridComponent);
+  postList =  viewChild.required(PostListComponent);
 
   drawer: {
     board: { visible: boolean, formInitId: any },
-    postForm: { use: boolean, visible: boolean, formInitId: any },
-    postView: { use: boolean, visible: boolean, id: any, title: string }
+    postForm: { visible: boolean, boardId: string, formInitId: any },
+    postView: { visible: boolean, id: any, title: string }
   } = {
     board: { visible: false, formInitId: null },
-    postForm: { use: false, visible: false, formInitId: null },
-    postView: { use: false, visible: false, id: null, title: '' }
+    postForm: { visible: false, boardId: '', formInitId: null },
+    postView: { visible: false, id: null, title: '' }
   }
 
+  editMethod: 'tab' | 'popup' = 'popup';
+  viewMethod: 'tab' | 'popup' = 'popup';
+
   tabIndex: number = 0;
-  tabs: TabArticle[] = [];
+  tabs: TabInfo[] = [];
   tabTitle: any;
 
   /**
@@ -196,23 +197,24 @@ export class BoardComponent implements AfterViewInit {
   private winRef = inject(WindowRef);
   private router = inject(Router);
 
-  ngAfterViewInit(): void {
-    this.getBoardTree();
-
+  constructor() {
     window.addEventListener('message', (event) => {
       // 팝업에서 온 메시지가 아니라면 아무 작업도 하지 않는다.
-      //if (event.origin !== 'http://localhost:4200') {
-      //  return;
-      //}
+      if (event.origin !== 'http://localhost:4200') {
+        return;
+      }
 
-      //console.log(this.drawer.board.initLoadId);
-      //console.log(event.data);
       //console.log(event);
+
       // BoardId가 저장한 게시글의 boardId가 일치하면 재조회
       if (btoa(this.drawer.board.formInitId) === event.data) {
         this.getArticleGridData();
       }
     }, false);
+  }
+
+  ngAfterViewInit(): void {
+    this.getBoardTree();
   }
 
   setBoardSelect(item: any): void {
@@ -227,7 +229,7 @@ export class BoardComponent implements AfterViewInit {
     this.drawer.postView.visible = false;
 
     //this.articleGrid().getArticleList(this.drawer.board.initLoadId);
-    this.articleList().getList(this.drawer.board.formInitId);
+    this.postList().getList(this.drawer.board.formInitId);
   }
 
   getBoardTree(): void {
@@ -235,23 +237,23 @@ export class BoardComponent implements AfterViewInit {
     this.boardTree().getboardHierarchy();
   }
 
-  newArticle(): void {
+  newPost(): void {
     if (this.drawer.board.formInitId === null || this.drawer.board.formInitId === undefined)  {
       this.message.create('error', '게시판을 선택해주세요.');
       return;
     }
 
-    if (this.drawer.postForm.use) {
-      this.drawer.postForm.formInitId = null;
-      this.drawer.postForm.visible = true;
+    //if (this.drawer.postForm.use) {
+    if (this.editMethod == 'tab') {
+      this.newPostTab();
     } else {
-      this.popupNewArticle();
+      this.newPostPopup();
     }
 
   }
 
   // 게시글 등록 폼 팝업으로 오픈
-  popupNewArticle() {
+  newPostPopup() {
     const boardId = btoa(this.drawer.board.formInitId);
 
     const url = this.router.serializeUrl(
@@ -262,9 +264,25 @@ export class BoardComponent implements AfterViewInit {
     windowObjectReference.focus();
   }
 
-  popupEditArticle(article: PostList) {
+  newPostTab() {
+    this.drawer.postForm.boardId = btoa(this.drawer.board.formInitId);
+    this.drawer.postForm.formInitId = null;
+    this.drawer.postForm.visible = true;
+  }
+
+  editPost(item: any) {
+    console.log(item);
+
+    if (this.editMethod == 'tab') {
+      this.editPostTab(item.boardId, item.postId);
+    } else {
+      this.editPostPopup(item);
+    }
+  }
+
+  editPostPopup(post: PostList) {
     const boardId = btoa(this.drawer.board.formInitId);
-    const postId = btoa(article.postId);
+    const postId = btoa(post.postId);
 
     const url = this.router.serializeUrl(
       this.router.createUrlTree([`/post-edit`, boardId, postId])  // /grw/boarda
@@ -274,13 +292,10 @@ export class BoardComponent implements AfterViewInit {
     windowObjectReference.focus();
   }
 
-  selectArticle(item: any) {
-    this.drawer.postView.id = item.articleId;
-    this.drawer.postForm.formInitId = item.articleId;
-  }
+  editPostTab(boardId: string, postId: string) {
+    this.drawer.postForm.boardId = btoa(boardId);
+    this.drawer.postForm.formInitId = btoa(postId);
 
-  editArticleByButton(item: any) {
-    this.drawer.postForm.formInitId = item.articleId;
     if (this.drawer.postForm.formInitId === null || this.drawer.postForm.formInitId === undefined) {
       this.message.create('error', '게시글을 선택해주세요.');
       return;
@@ -289,23 +304,19 @@ export class BoardComponent implements AfterViewInit {
     this.drawer.postForm.visible = true;
   }
 
-  showArticle(article: PostList) {
+  viewPost(article: PostList) {
     this.drawer.postView.id = article.postId;
     this.drawer.postView.title = article.title;
 
-    if (this.drawer.postView.use) {
-      this.addTabArticleView();
+    if (this.viewMethod == 'tab') {
+      this.viewPostTab();
     } else {
-      console.log(article);
-      this.popupArticleView(article.postId);
+      this.viewPostPopup(article.postId);
     }
   }
 
-  //popupArticleView(article: ArticleList) {
-  popupArticleView(postId: string) {
+  viewPostPopup(postId: string) {
     const postIdParam = btoa(postId);
-    console.log(postId);
-    console.log(postIdParam);
 
     const url = this.router.serializeUrl(
       //this.router.createUrlTree([`/article-view`, {article: JSON.stringify(article)}])  // /grw/boarda
@@ -316,9 +327,8 @@ export class BoardComponent implements AfterViewInit {
     windowObjectReference.focus();
   }
 
-  addTabArticleView(): void {
+  viewPostTab(): void {
     let title: string | null = '';
-    console.log(this.drawer.postView);
     const title_lentgh = this.drawer.postView.title.length as number;
     if (title_lentgh > 8) {
       title = this.drawer.postView.title.substring(0, 8) + '...';
@@ -326,15 +336,15 @@ export class BoardComponent implements AfterViewInit {
       title = this.drawer.postView.title as string;
     }
 
-    const articleId = this.drawer.postView.id;
-    const newTab: TabArticle = {
+    const postId = btoa(this.drawer.postView.id);
+    const newTab: TabInfo = {
       tabName: title,
-      articleId: articleId
+      postId: postId
     }
 
     let tabIndex = null;
     for (const index in this.tabs) {
-      if (this.tabs[index].articleId === this.drawer.postView.id) {
+      if (this.tabs[index].postId === this.drawer.postView.id) {
         tabIndex = index;
       }
     }
@@ -350,10 +360,6 @@ export class BoardComponent implements AfterViewInit {
 
   closeTab({ index }: { index: number }): void {
     this.tabs.splice(index-1, 1);
-  }
-
-  print(item: any): void {
-    console.log(item);
   }
 
 }

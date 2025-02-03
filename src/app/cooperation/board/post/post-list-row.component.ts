@@ -61,7 +61,6 @@ export class PostListRowComponent {
     if (this.post()?.writerImage) {
       return GlobalProperty.serverUrl + '/api/system/fileimage/' + this.post()?.writerImage;
     } else {
-      console.log('asdf');
       return undefined;
     }
   });

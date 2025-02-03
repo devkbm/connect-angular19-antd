@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, Renderer2, inject, input, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, Renderer2, effect, inject, input, output, viewChild } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -125,7 +125,7 @@ import { SessionManager } from 'src/app/core/session-manager';
 
   `]
 })
-export class ArticleFormComponent implements OnInit, AfterViewInit {
+export class PostFormComponent implements AfterViewInit {
   //public Editor = ClassicEditor;
 
   private boardService= inject(PostService);
@@ -171,7 +171,6 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
 
   uploader = viewChild.required(PostFileUploadComponent);
 
-
   formSaved = output<any>();
   formDeleted = output<any>();
   formClosed = output<any>();
@@ -184,45 +183,25 @@ export class ArticleFormComponent implements OnInit, AfterViewInit {
     title           : new FormControl<string | null>(null, { validators: [Validators.required] }),
     contents        : new FormControl<string | null>(null),
     attachFile      : new FormControl<any>(null)
-    /*
-    pwd             : string;
-    hitCnt          : string;
-    fromDate        : string;
-    toDate          : string;
-    seq             : number;
-    depth           : number;
-    articleChecks   : ArticleRead[];
-    fileList        : string[];
-    file            : File;
-    editable        : boolean
-    */
   });
 
   formInitId = input<string>('');
 
-  ngOnInit(): void {
-
-    /*
-    if (this.activatedRoute.snapshot.params['boardId']) {
-      this.boardId = this.activatedRoute.snapshot.params['boardId'];
-    }
-
-    if (this.activatedRoute.snapshot.params['formInitId']) {
-      this.formInitId = this.activatedRoute.snapshot.params['formInitId'];
-    }
-      */
-
-    if (this.formInitId()) {
-      this.get(this.formInitId());
-    } else {
-      this.newForm(this.boardId);
-    }
-
+  constructor() {
     this.fileUploadUrl = GlobalProperty.serverUrl + '/common/file/';
     this.fileUploadHeader = {
       Authorization: sessionStorage.getItem('token')
       /*'Content-Type': 'multipart/form-data'*/
     };
+
+    effect(() => {
+      console.log(this.formInitId());
+      if (this.formInitId()) {
+        this.get(this.formInitId());
+      } else {
+        this.newForm(this.boardId);
+      }
+    })
   }
 
   ngAfterViewInit(): void {
