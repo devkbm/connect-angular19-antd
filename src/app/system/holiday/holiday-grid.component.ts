@@ -30,6 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     AgGridAngular
   ],
   template: `
+  <!-- [style.height]="'100%'" -->
     <ag-grid-angular
       [theme]="theme"
       [rowData]="gridList()"

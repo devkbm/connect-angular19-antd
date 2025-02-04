@@ -75,32 +75,31 @@ import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/ca
 </ng-template>
 
 <app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}">
-<nz-tabset>
-  <nz-tab nzTitle="공휴일 등록">
+  <nz-tabset>
+    <nz-tab nzTitle="달력">
+    <ng-template nz-tab>
+      <app-calendar-fullcalendar></app-calendar-fullcalendar>
+    </ng-template>
+    </nz-tab>
+
+    <nz-tab nzTitle="공휴일 등록">
+    <ng-template nz-tab>
       <h3 class="grid-title">공휴일 목록</h3>
-      <div class="grid-wrapper">
-        <!--{{holidayGrid.filteredList() | json}}-->
+      <div class="grid-wrapper" >
         <app-holiday-grid
-            (rowClicked)="holidayGridRowClicked($event)"
-            (editButtonClicked)="edit($event)"
-            (rowDoubleClicked)="edit($event)">
+          (rowClicked)="holidayGridRowClicked($event)"
+          (editButtonClicked)="edit($event)"
+          (rowDoubleClicked)="edit($event)">
         </app-holiday-grid>
 
-        @defer {
         <app-calendar-daypilot-navigator
           [events]="grid().filteredList()"
           (selectChanged)="navigatorSelectChanged($event)">
         </app-calendar-daypilot-navigator>
-        }
       </div>
-
-  </nz-tab>
-  <nz-tab nzTitle="달력">
-    <app-calendar-fullcalendar></app-calendar-fullcalendar>
-  </nz-tab>
-
-</nz-tabset>
-
+    </ng-template>
+    </nz-tab>
+  </nz-tabset>
 </app-shape>
 
 <app-holiday-form-drawer
@@ -123,7 +122,7 @@ import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/ca
 }
 
 .grid-wrapper {
-  height: 100%;
+  height: calc(100vh - 306px);
   display: grid;
   grid-template-columns: 1fr 200px;
 }
