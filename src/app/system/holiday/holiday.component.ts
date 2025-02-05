@@ -22,6 +22,7 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
 import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot/calendar-daypilot-navigator.component';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
+import { DateSelectArg } from '@fullcalendar/core/index.js';
 
 @Component({
   selector: 'app-holiday',
@@ -75,10 +76,14 @@ import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/ca
 </ng-template>
 
 <app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}">
-  <nz-tabset>
+  <nz-tabset [(nzSelectedIndex)]="tab.index">
     <nz-tab nzTitle="달력">
     <ng-template nz-tab>
-      <app-calendar-fullcalendar></app-calendar-fullcalendar>
+      <div [style]="'height: calc(100vh - 272px)'">
+        <app-calendar-fullcalendar
+          (dayClicked)="newHoliday2($event)"
+        ></app-calendar-fullcalendar>
+      </div>
     </ng-template>
     </nz-tab>
 
@@ -141,6 +146,7 @@ export class HolidayComponent implements AfterViewInit {
   private appAlarmService = inject(AppAlarmService);
 
   grid = viewChild.required(HolidayGridComponent);
+  calendar = viewChild.required(CalendarFullcalendarComponent);
 
   query: {
     holiday : { key: string, value: string, list: {label: string, value: string}[], year: Date },
@@ -162,6 +168,12 @@ export class HolidayComponent implements AfterViewInit {
     holiday: { visible: false, formInitId: null }
   }
 
+  tab: {
+    index: number
+  } = {
+    index : 0
+  }
+
   ngAfterViewInit(): void {
     this.getHolidayList();
   }
@@ -176,6 +188,9 @@ export class HolidayComponent implements AfterViewInit {
 
   getHolidayList(): void {
 
+    this.closeDrawer();
+
+
     let params: any = new Object();
     if ( this.query.holiday.value !== '') {
       params[this.query.holiday.key] = this.query.holiday.value;
@@ -183,8 +198,19 @@ export class HolidayComponent implements AfterViewInit {
 
     const date: Date = this.query.holiday.year;
 
-    this.closeDrawer();
-    this.grid().getGridList(date.getFullYear()+'0101', date.getFullYear()+'1231');
+    if ( this.tab.index == 0 ) {
+      this.calendar().getHolidayList(date.getFullYear()+'0101', date.getFullYear()+'1231');
+    } else {
+      this.grid().getGridList(date.getFullYear()+'0101', date.getFullYear()+'1231');
+    }
+
+  }
+
+  newHoliday2(selectInfo: DateSelectArg) {
+    console.log(selectInfo);
+
+    this.drawer.holiday.formInitId = selectInfo.startStr;
+    this.openDrawer();
   }
 
   newHoliday(): void {

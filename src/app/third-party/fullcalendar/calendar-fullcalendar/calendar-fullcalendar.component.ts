@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, output, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, DateRangeInput } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -30,13 +30,18 @@ import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-
   `,
   styles: `
     .fc { /* the calendar root */
-      height: calc(100vh - 244px);
+      //height: calc(100vh - 300px);
+      height: 100%;
       margin: 0 auto;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarFullcalendarComponent {
+
+  dayClicked = output<DateSelectArg>();
+
+  calendar = viewChild.required(FullCalendarComponent);
 
   calendarOptions = signal<CalendarOptions>({
     locale: 'ko',
@@ -153,6 +158,8 @@ export class CalendarFullcalendarComponent {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
+    this.dayClicked.emit(selectInfo);
+    /*
     const title = prompt('Please enter a new title for your event');
     const calendarApi = selectInfo.view.calendar;
 
@@ -167,6 +174,7 @@ export class CalendarFullcalendarComponent {
         allDay: selectInfo.allDay
       });
     }
+    */
   }
 
   handleEventClick(clickInfo: EventClickArg) {

@@ -101,7 +101,7 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
           }
         );
     */
-    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const url = GlobalProperty.serverUrl + `/api/system/company`;
     const options = {
         headers: getAuthorizedHttpHeaders(),
         withCredentials: true,
