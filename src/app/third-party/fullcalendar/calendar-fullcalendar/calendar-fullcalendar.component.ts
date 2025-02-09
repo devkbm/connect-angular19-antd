@@ -150,6 +150,12 @@ export class CalendarFullcalendarComponent {
         );
   }
 
+  setEvents(events: any[]) {
+    this.eventData = events;
+    this.calendarOptions().events = this.eventData;
+    this.changeDetector.detectChanges();
+  }
+
   handleWeekendsToggle() {
     this.calendarOptions.update((options) => ({
       ...options,

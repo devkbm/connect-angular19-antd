@@ -1,19 +1,5 @@
 // @import 'src/app/third-party/fullcalendar/calendar-fullcalendar/fullcalendar-custom.scss';
 
-/* Full Calendar 6 */
-.fc-day-sun a {       // Sunday Header, Cell Text
-  color: red;
-}
-.fc-day-sat a {       // Saterday Header, Cell Text
-  color: blue;
-}
-
-.fc-day-cell-holiday {
-  .fc-daygrid-day-number {
-    color:red;
-  }
-}
-
 /* Dark Theme Custom */
 :root {
   --main-page-bg-color: red;
@@ -47,8 +33,30 @@
   --fc-bg-event-color: rgb(143, 223, 130);
   --fc-bg-event-opacity: 0.3;
   --fc-highlight-color: rgba(188, 232, 241, 0.3);
-  --fc-today-bg-color: #c9006425;
+  //--fc-today-bg-color: #c9006425;
+  --fc-today-bg-color: gray;
   --fc-now-indicator-color: red;
+
+
+}
+
+/* Full Calendar 6 */
+.fc-day a {
+  color: silver;
+}
+
+.fc-day-sun a {       // Sunday Header, Cell Text
+  color: rgb(192, 35, 35);
+}
+
+.fc-day-sat a {       // Saturday Header, Cell Text
+  color: rgb(72, 72, 224);
+}
+
+.fc-day-cell-holiday {
+  .fc-daygrid-day-number {
+    color:red;
+  }
 }
 
 a.fc-event.fc-daygrid-event[href] {

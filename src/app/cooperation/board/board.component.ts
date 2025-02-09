@@ -203,7 +203,6 @@ export class BoardComponent implements AfterViewInit {
       if (event.origin !== 'http://localhost:4200') {
         return;
       }
-
       //console.log(event);
 
       // BoardId가 저장한 게시글의 boardId가 일치하면 재조회
