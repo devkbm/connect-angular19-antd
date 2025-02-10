@@ -19,12 +19,12 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { DutyApplicationService } from './duty-application.service';
-import { DutyApplicationGrid } from './duty-application-grid.model';
+import { AttendanceApplicationService } from './attendance-application.service';
+import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 
 
 @Component({
-  selector: 'app-duty-application-grid',
+  selector: 'app-attendance-application-grid',
   imports: [
     CommonModule,
     AgGridAngular
@@ -46,17 +46,17 @@ import { DutyApplicationGrid } from './duty-application-grid.model';
   styles: [`
   `]
 })
-export class DutyApplicationGridComponent extends AgGridCommon implements OnInit {
+export class AttendanceApplicationGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
   private http = inject(HttpClient);
-  private dutyApplicationService = inject(DutyApplicationService);
+  private dutyApplicationService = inject(AttendanceApplicationService);
 
-  _data: DutyApplicationGrid[] = [];
+  _data: AttendanceApplicationGrid[] = [];
 
-  rowClicked = output<DutyApplicationGrid>();
-  rowDoubleClicked = output<DutyApplicationGrid>();
-  editButtonClicked = output<DutyApplicationGrid>();
+  rowClicked = output<AttendanceApplicationGrid>();
+  rowDoubleClicked = output<AttendanceApplicationGrid>();
+  editButtonClicked = output<AttendanceApplicationGrid>();
 
   columnDefs: ColDef[] = [
     {
@@ -86,7 +86,7 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
     { headerName: '근태근태종료일시',   field: 'toDate',     width: 80 }
   ];
 
-  getRowId: GetRowIdFunc<DutyApplicationGrid> = (params: GetRowIdParams<DutyApplicationGrid>) => {
+  getRowId: GetRowIdFunc<AttendanceApplicationGrid> = (params: GetRowIdParams<AttendanceApplicationGrid>) => {
     return params.data.id!;
   };
 
@@ -122,10 +122,10 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
       params: params
     };
 
-    this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
+    this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
     ).subscribe(
-      (model: ResponseList<DutyApplicationGrid>) => {
+      (model: ResponseList<AttendanceApplicationGrid>) => {
         if (model.data) {
           this._data = model.data;
         } else {
@@ -144,7 +144,7 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
     this.rowClicked.emit(selectedRows[0]);
   }
 
-  rowDbClicked(event: RowDoubleClickedEvent<DutyApplicationGrid>) {
+  rowDbClicked(event: RowDoubleClickedEvent<AttendanceApplicationGrid>) {
     this.rowDoubleClicked.emit(event.data!);
   }
 
@@ -164,10 +164,10 @@ export class DutyApplicationGridComponent extends AgGridCommon implements OnInit
       params: params
     };
 
-    this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
+    this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
     ).subscribe(
-      (model: ResponseList<DutyApplicationGrid>) => {
+      (model: ResponseList<AttendanceApplicationGrid>) => {
         if (model.data) {
           this._data = model.data;
         } else {

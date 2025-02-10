@@ -1,4 +1,4 @@
-export interface DutyApplicationGrid {
+export interface AttendanceApplicationGrid {
   id: string | null;
   staffNo: string | null;
   staffName: string | null;

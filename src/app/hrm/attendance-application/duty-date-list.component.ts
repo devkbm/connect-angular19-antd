@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { DutyDate } from './duty-application.model';
+import { AttendanceDate } from './attendance-application.model';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -28,7 +28,7 @@ import { FormsModule } from '@angular/forms';
 export class DutyDateListComponent implements OnInit {
 
   @Input() height = '100%';
-  @Input() data: DutyDate[] = [];
+  @Input() data: AttendanceDate[] = [];
 
   fontColor: string = 'black';
 
@@ -37,7 +37,7 @@ export class DutyDateListComponent implements OnInit {
   ngOnInit() {
   }
 
-  getFontColor(item: DutyDate) {
+  getFontColor(item: AttendanceDate) {
     let fontColor = 'white';
 
     if (item.isHoliday || item.isSunday) fontColor = 'red';   // RED SERIES

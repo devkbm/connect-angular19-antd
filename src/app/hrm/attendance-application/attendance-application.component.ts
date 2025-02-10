@@ -2,8 +2,8 @@ import { Component, OnInit, AfterViewInit, viewChild, inject } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { DutyApplicationFormComponent } from './duty-application-form.component';
-import { DutyApplicationGridComponent } from './duty-application-grid.component';
+import { AttendanceApplicationFormComponent } from './attendance-application-form.component';
+import { AttendanceApplicationGridComponent } from './attendance-application-grid.component';
 import { DutyDateListComponent } from './duty-date-list.component';
 
 
@@ -15,14 +15,15 @@ import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.compon
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { SessionManager } from 'src/app/core/session-manager';
-import { DutyApplication } from './duty-application.model';
-import { DutyApplicationGrid } from './duty-application-grid.model';
+import { AttendanceApplication } from './attendance-application.model';
+import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
 import { ResponseList } from 'src/app/core/model/response-list';
+import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
 
 @Component({
   selector: 'app-duty-application',
@@ -37,8 +38,8 @@ import { ResponseList } from 'src/app/core/model/response-list';
     NzCrudButtonGroupComponent,
     NzPageHeaderCustomComponent,
     DutyDateListComponent,
-    DutyApplicationGridComponent,
-    DutyApplicationFormComponent,
+    AttendanceApplicationGridComponent,
+    AttendanceApplicationFormComponent,
     ShapeComponent,
     CalendarFullcalendarComponent
 ],
@@ -65,21 +66,28 @@ import { ResponseList } from 'src/app/core/model/response-list';
   <nz-tabset [(nzSelectedIndex)]="tab.index">
     <nz-tab nzTitle="달력">
       <div style="height: calc(100vh - 272px)">
-        <app-calendar-fullcalendar>
+        <app-calendar-fullcalendar
+          (dayClicked)="dayClicked($event)"
+          (eventClicked)="itemClicked($event)"
+        >
 
         </app-calendar-fullcalendar>
       </div>
     </nz-tab>
     <nz-tab nzTitle="리스트">
       <div style="height: calc(100vh - 272px)">
-        <app-duty-application-grid (rowClicked)="gridRowClicked($event)">
-        </app-duty-application-grid>
+        <app-attendance-application-grid (rowClicked)="gridRowClicked($event)">
+        </app-attendance-application-grid>
       </div>
     </nz-tab>
   </nz-tabset>
 
-    <app-duty-application-form>
-    </app-duty-application-form>
+    <app-attendance-application-form
+      (formClosed)="getList()"
+      (formDeleted)="getList()"
+      (formSaved)="getList()"
+    >
+    </app-attendance-application-form>
   </div>
 </app-shape>
   `,
@@ -117,18 +125,18 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
   `
 })
-export class DutyApplicationComponent implements OnInit, AfterViewInit {
+export class AttendanceApplicationComponent implements OnInit, AfterViewInit {
 
   private http = inject(HttpClient);
 
-  grid = viewChild.required(DutyApplicationGridComponent);
-  form = viewChild.required(DutyApplicationFormComponent);
+  grid = viewChild.required(AttendanceApplicationGridComponent);
+  form = viewChild.required(AttendanceApplicationFormComponent);
 
   calendar = viewChild.required(CalendarFullcalendarComponent);
 
   staffNo = SessionManager.getUserId();
 
-  _data: DutyApplicationGrid[] = [];
+  _data: AttendanceApplicationGrid[] = [];
 
   tab: {
     index: number
@@ -150,11 +158,10 @@ export class DutyApplicationComponent implements OnInit, AfterViewInit {
     this.getGridList("TEST");
   }
 
-  gridRowClicked(row: DutyApplicationGrid) {
+  gridRowClicked(row: AttendanceApplicationGrid) {
     console.log(row);
     this.form().get(row.id!);
   }
-
 
   getGridList(staffNo: string): void {
     const params = {
@@ -168,10 +175,10 @@ export class DutyApplicationComponent implements OnInit, AfterViewInit {
       params: params
     };
 
-    this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
+    this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
     ).subscribe(
-      (model: ResponseList<DutyApplicationGrid>) => {
+      (model: ResponseList<AttendanceApplicationGrid>) => {
         //model.data ? this._data = model.data : this._data = [];
         this._data = model.data ? model.data : [];
 
@@ -190,5 +197,15 @@ export class DutyApplicationComponent implements OnInit, AfterViewInit {
     )
   }
 
+  dayClicked(item: DateSelectArg) {
+    console.log(item);
+    this.form().newForm(item.startStr);
+  }
+
+  itemClicked(item: EventClickArg) {
+    //console.log(item.event);
+    const id = item.event.id;
+    this.form().get(id);
+  }
 
 }

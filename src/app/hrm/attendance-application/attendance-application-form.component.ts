@@ -10,8 +10,8 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
 import { HrmCode } from '../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../hrm-code/hrm-code.service';
-import { DutyDate, DutyApplication } from './duty-application.model';
-import { DutyApplicationService } from './duty-application.service';
+import { AttendanceDate, AttendanceApplication } from './attendance-application.model';
+import { AttendanceApplicationService } from './attendance-application.service';
 import { DutyDateListComponent } from './duty-date-list.component';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -24,7 +24,7 @@ import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud
 import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-input-select-staff/nz-input-select-staff.component';
 
 @Component({
-  selector: 'app-duty-application-form',
+  selector: 'app-attendance-application-form',
   imports: [
     CommonModule,
     FormsModule,
@@ -155,14 +155,14 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
     }
   `]
 })
-export class DutyApplicationFormComponent implements OnInit {
+export class AttendanceApplicationFormComponent implements OnInit {
 
   /**
    * 근태신청분류 - HR1001
    */
   dutyCodeList: HrmCode[] = [];
 
-  private service = inject(DutyApplicationService);
+  private service = inject(AttendanceApplicationService);
   private hrmCodeService = inject(HrmCodeService);
   private appAlarmService = inject(AppAlarmService);
 
@@ -177,24 +177,23 @@ export class DutyApplicationFormComponent implements OnInit {
     dutyReason        : new FormControl<string | null>(null),
     fromDate          : new FormControl<string | null>(null),
     toDate            : new FormControl<string | null>(null),
-    selectedDate      : new FormControl<DutyDate[] | null>(null),
+    selectedDate      : new FormControl<AttendanceDate[] | null>(null),
     dutyTime          : new FormControl<number | null>(null)
   });
 
   ngOnInit() {
     this.getDutyCodeList();
-    this.newForm();
+    //this.newForm();
   }
 
-  newForm() {
+  newForm(startDate: string) {
     this.fg.reset();
     this.fg.controls.staffNo.enable();
     this.fg.patchValue({
-      fromDate: formatDate(new Date(),'YYYY-MM-dd','ko-kr'),
-      toDate: formatDate(new Date(),'YYYY-MM-dd','ko-kr'),
+      fromDate: formatDate(startDate,'YYYY-MM-dd','ko-kr'),
+      toDate: formatDate(startDate,'YYYY-MM-dd','ko-kr'),
       dutyTime: 8
     });
-
 
     this.fg.controls.fromDate.valueChanges.subscribe(fromDate => {
       if (fromDate) {
@@ -210,7 +209,7 @@ export class DutyApplicationFormComponent implements OnInit {
     this.getDutyDateList(formatDate(this.fg.controls.fromDate.value!,'YYYY-MM-dd','ko-kr'), formatDate(this.fg.controls.toDate.value!,'YYYY-MM-dd','ko-kr'));
   }
 
-  modifyForm(formData: DutyApplication) {
+  modifyForm(formData: AttendanceApplication) {
     this.fg.patchValue(formData);
     this.fg.get('staffId')?.disable();
   }
@@ -223,7 +222,7 @@ export class DutyApplicationFormComponent implements OnInit {
     this.service
         .get(id)
         .subscribe(
-          (model: ResponseObject<DutyApplication>) => {
+          (model: ResponseObject<AttendanceApplication>) => {
             this.modifyForm(model.data);
             this.appAlarmService.changeMessage(model.message);
           }
@@ -235,7 +234,7 @@ export class DutyApplicationFormComponent implements OnInit {
     this.service
         .save(this.fg.getRawValue())
         .subscribe(
-          (model: ResponseObject<DutyApplication>) => {
+          (model: ResponseObject<AttendanceApplication>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
@@ -246,7 +245,7 @@ export class DutyApplicationFormComponent implements OnInit {
     this.service
         .remove(this.fg.value.dutyId!)
         .subscribe(
-          (model: ResponseObject<DutyApplication>) => {
+          (model: ResponseObject<AttendanceApplication>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
@@ -274,7 +273,7 @@ export class DutyApplicationFormComponent implements OnInit {
     this.service
         .getDutyDateList(fromDate, toDate)
         .subscribe(
-          (model: ResponseList<DutyDate>) => {
+          (model: ResponseList<AttendanceDate>) => {
             console.log(model.data);
             this.fg.get('selectedDate')?.setValue(model.data);
             //this.dutyCodeList = model.data;

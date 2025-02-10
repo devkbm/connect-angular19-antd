@@ -6,14 +6,14 @@ import { map, tap, catchError } from 'rxjs/operators';
 import { DataService } from 'src/app/core/service/data.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { DutyApplication } from './duty-application.model';
-import { DutyDate } from './duty-application.model';
-import { DutyApplicationGrid } from './duty-application-grid.model';
+import { AttendanceApplication } from './attendance-application.model';
+import { AttendanceDate } from './attendance-application.model';
+import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DutyApplicationService extends DataService {
+export class AttendanceApplicationService extends DataService {
 
   constructor() {
     super('/api/hrm');
@@ -23,7 +23,7 @@ export class DutyApplicationService extends DataService {
    * 근태신청정보를 조회한다.
    * @param params 조회조건
    */
-  getList(params: any): Observable<ResponseList<DutyApplicationGrid>> {
+  getList(params: any): Observable<ResponseList<AttendanceApplicationGrid>> {
     const url = `${this.API_URL}/dutyapplication`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -31,8 +31,8 @@ export class DutyApplicationService extends DataService {
       params: params
     };
 
-    return this.http.get<ResponseList<DutyApplicationGrid>>(url, options).pipe(
-      catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
+    return this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
+      catchError(this.handleError<ResponseList<AttendanceApplicationGrid>>('getDutyApplicationList', undefined))
     );
   }
 
@@ -40,15 +40,15 @@ export class DutyApplicationService extends DataService {
    * 근태신청정보를 조회한다.
    * @param id 근태신청Id
    */
-  get(id: string): Observable<ResponseObject<DutyApplication>> {
+  get(id: string): Observable<ResponseObject<AttendanceApplication>> {
     const url = `${this.API_URL}/dutyapplication/${id}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
     };
 
-    return this.http.get<ResponseObject<DutyApplication>>(url, options).pipe(
-      catchError(this.handleError<ResponseObject<DutyApplication>>('getDutyApplication', undefined))
+    return this.http.get<ResponseObject<AttendanceApplication>>(url, options).pipe(
+      catchError(this.handleError<ResponseObject<AttendanceApplication>>('getDutyApplication', undefined))
     );
   }
 
@@ -56,14 +56,14 @@ export class DutyApplicationService extends DataService {
    * 근태신청정보를 저장한다.
    * @param dutyApplication 근태신청정보
    */
-  save(dutyApplication: DutyApplication): Observable<ResponseObject<DutyApplication>> {
+  save(dutyApplication: AttendanceApplication): Observable<ResponseObject<AttendanceApplication>> {
     const url = `${this.API_URL}/dutyapplication`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
     };
-    return this.http.post<ResponseObject<DutyApplication>>(url, dutyApplication, options).pipe(
-      catchError(this.handleError<ResponseObject<DutyApplication>>('saveDutyApplication', undefined))
+    return this.http.post<ResponseObject<AttendanceApplication>>(url, dutyApplication, options).pipe(
+      catchError(this.handleError<ResponseObject<AttendanceApplication>>('saveDutyApplication', undefined))
     );
   }
 
@@ -71,29 +71,29 @@ export class DutyApplicationService extends DataService {
    * 근태신청정보를 저장한다.
    * @param id 근태신청Id
    */
-  remove(id: string): Observable<ResponseObject<DutyApplication>> {
+  remove(id: string): Observable<ResponseObject<AttendanceApplication>> {
     const url = `${this.API_URL}/dutyapplication/${id}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
     };
     return this.http
-              .delete<ResponseObject<DutyApplication>>(url, options)
+              .delete<ResponseObject<AttendanceApplication>>(url, options)
               .pipe(
-                catchError(this.handleError<ResponseObject<DutyApplication>>('deleteDutyApplication', undefined))
+                catchError(this.handleError<ResponseObject<AttendanceApplication>>('deleteDutyApplication', undefined))
               );
   }
 
 
-  getDutyDateList(fromDate: string, toDate: string): Observable<ResponseList<DutyDate>> {
+  getDutyDateList(fromDate: string, toDate: string): Observable<ResponseList<AttendanceDate>> {
     const url = `${this.API_URL}/dutyapplication/period/${fromDate}/${toDate}`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
       withCredentials: true
     };
 
-    return this.http.get<ResponseList<DutyDate>>(url, options).pipe(
-      catchError(this.handleError<ResponseList<DutyDate>>('getDutyDateList', undefined))
+    return this.http.get<ResponseList<AttendanceDate>>(url, options).pipe(
+      catchError(this.handleError<ResponseList<AttendanceDate>>('getDutyDateList', undefined))
     );
   }
 

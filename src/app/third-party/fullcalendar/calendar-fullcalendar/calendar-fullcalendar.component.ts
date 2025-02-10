@@ -40,6 +40,7 @@ import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-
 export class CalendarFullcalendarComponent {
 
   dayClicked = output<DateSelectArg>();
+  eventClicked = output<EventClickArg>();
 
   calendar = viewChild.required(FullCalendarComponent);
 
@@ -60,9 +61,10 @@ export class CalendarFullcalendarComponent {
     initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed'
     //events: this.eventData,
     weekends: true,
-    editable: true,
+    editable: false,
+    eventStartEditable: false,
     selectable: true,
-    selectMirror: true,
+    //selectMirror: true,
     dayMaxEvents: true,
     dayCellClassNames: (arg) => {
       //const isHoliday = this.holidays.map((value: Date, index: number, array: Date[]): number => value.getTime())
@@ -79,7 +81,7 @@ export class CalendarFullcalendarComponent {
     },
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this),
+    //eventsSet: this.handleEvents.bind(this),
     /*
     dayHeaderClassNames: (arg) => {
       console.log(arg);
@@ -184,9 +186,12 @@ export class CalendarFullcalendarComponent {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
+    this.eventClicked.emit(clickInfo);
+    /*
     if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
       clickInfo.event.remove();
     }
+      */
   }
 
   handleEvents(events: EventApi[]) {

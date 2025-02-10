@@ -1,15 +1,15 @@
-export interface DutyApplication {
+export interface AttendanceApplication {
   dutyId: string | null;
   staffNo: string | null;
   dutyCode: string | null;
 	dutyReason: string | null;
 	fromDate: string | null;
 	toDate: string | null;
-	selectedDate: DutyDate[] | null;
+	selectedDate: AttendanceDate[] | null;
 	dutyTime: number | null;
 }
 
-export interface DutyDate {
+export interface AttendanceDate {
   date: string;
   isSelected: boolean;
   isHoliday: boolean;
