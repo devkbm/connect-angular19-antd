@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, viewChild, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AttendanceApplicationFormComponent } from './attendance-application-form.component';
@@ -134,7 +134,7 @@ export class AttendanceApplicationComponent implements OnInit, AfterViewInit {
 
   calendar = viewChild.required(CalendarFullcalendarComponent);
 
-  staffNo = SessionManager.getUserId();
+  staffNo = SessionManager.getStaffNo();
 
   _data: AttendanceApplicationGrid[] = [];
 
@@ -198,8 +198,10 @@ export class AttendanceApplicationComponent implements OnInit, AfterViewInit {
   }
 
   dayClicked(item: DateSelectArg) {
-    console.log(item);
-    this.form().newForm(item.startStr);
+    //console.log(item);
+    let toDate = item.end;
+    toDate.setDate(toDate.getDate() -1);
+    this.form().newForm(item.startStr, formatDate(toDate,'YYYY-MM-dd','ko-kr'));
   }
 
   itemClicked(item: EventClickArg) {

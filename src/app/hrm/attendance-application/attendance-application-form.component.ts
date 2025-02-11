@@ -58,7 +58,7 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
         <div nz-col nzSpan="12">
           <nz-form-item-custom for="dutyId" label="근태신청ID" required>
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
-              <input nz-input id="dutyId" formControlName="dutyId" required/>
+              <input nz-input id="dutyId" formControlName="dutyId" readonly placeholder="신규"/>
             </nz-form-control>
           </nz-form-item-custom>
         </div>
@@ -128,7 +128,6 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
       </div>
     </form>
 
-
     <app-nz-crud-button-group
       [isSavePopupConfirm]="false"
       [deleteVisible]="true"
@@ -137,9 +136,6 @@ import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-inp
       (deleteClick)="remove()"
       (closeClick)="closeForm()">
     </app-nz-crud-button-group>
-
-
-
 
   `,
   styles: [`
@@ -186,15 +182,16 @@ export class AttendanceApplicationFormComponent implements OnInit {
     //this.newForm();
   }
 
-  newForm(startDate: string) {
+  newForm(startDate: string, toDate: string) {
     this.fg.reset();
     this.fg.controls.staffNo.enable();
     this.fg.patchValue({
       fromDate: formatDate(startDate,'YYYY-MM-dd','ko-kr'),
-      toDate: formatDate(startDate,'YYYY-MM-dd','ko-kr'),
+      toDate: formatDate(toDate,'YYYY-MM-dd','ko-kr'),
       dutyTime: 8
     });
 
+    /*
     this.fg.controls.fromDate.valueChanges.subscribe(fromDate => {
       if (fromDate) {
         this.getDutyDateList(formatDate(fromDate,'YYYY-MM-dd','ko-kr'), formatDate(this.fg.controls.toDate.value!,'YYYY-MM-dd','ko-kr'));
@@ -205,6 +202,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
         this.getDutyDateList(formatDate(this.fg.controls.fromDate.value!,'YYYY-MM-dd','ko-kr'), formatDate(toDate,'YYYY-MM-dd','ko-kr'));
       }
     });
+    */
 
     this.getDutyDateList(formatDate(this.fg.controls.fromDate.value!,'YYYY-MM-dd','ko-kr'), formatDate(this.fg.controls.toDate.value!,'YYYY-MM-dd','ko-kr'));
   }

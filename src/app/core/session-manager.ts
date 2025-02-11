@@ -36,6 +36,10 @@ export class SessionManager {
     return sessionStorage.getItem('userId');
   }
 
+  static getStaffNo(): string | null {
+    return sessionStorage.getItem('staffNo');
+  }
+
   static getMenuList(): any {
     return JSON.parse(sessionStorage.getItem('menuList') as string);
   }
