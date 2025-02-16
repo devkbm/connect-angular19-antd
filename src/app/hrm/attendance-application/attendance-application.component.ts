@@ -4,18 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AttendanceApplicationFormComponent } from './attendance-application-form.component';
 import { AttendanceApplicationGridComponent } from './attendance-application-grid.component';
-import { DutyDateListComponent } from './duty-date-list.component';
 
 
-import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { ShapeComponent } from "src/app/core/app/shape.component";
-import { HolidayGridComponent } from 'src/app/system/holiday/holiday-grid.component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { SessionManager } from 'src/app/core/session-manager';
-import { AttendanceApplication } from './attendance-application.model';
 import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
@@ -35,9 +31,7 @@ import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
     NzGridModule,
     NzButtonModule,
     NzTabsModule,
-    NzCrudButtonGroupComponent,
     NzPageHeaderCustomComponent,
-    DutyDateListComponent,
     AttendanceApplicationGridComponent,
     AttendanceApplicationFormComponent,
     ShapeComponent,

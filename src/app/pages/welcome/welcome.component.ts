@@ -10,7 +10,6 @@ import { NzInputDateTimeComponent } from 'src/app/third-party/ng-zorro/nz-input-
 import { NzInputRadioGroupComponent } from 'src/app/third-party/ng-zorro/nz-input-radio-group/nz-input-radio-group.component';
 
 import { DutyDateListComponent } from './duty-date-list.component';
-import { NzInputTreeSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select/nz-input-tree-select.component';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
@@ -34,7 +33,6 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
     NzInputCkeditorComponent,
     NzInputDateTimeComponent,
     NzInputRadioGroupComponent,
-    NzInputTreeSelectComponent,
     DutyDateListComponent,
     NzInputSelectComponent
   ],

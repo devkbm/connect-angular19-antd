@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
 
-import { MyWorkCalendarListComponent } from './calendar/my-work-calendar-list.component';
 import { WorkCalendarEventFormDrawerComponent } from './event/work-calendar-event-form-drawer.component';
 import { WorkCalendarFormDrawerComponent } from './calendar/work-calendar-form-drawer.component';
 import { NewDateSelectedArgs, WorkCalendarViewComponent } from './calendar-view/work-calendar-view.component';
@@ -23,9 +22,7 @@ import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.
     CommonModule,
     NzButtonModule,
     NzIconModule,
-    MyWorkCalendarListComponent,
     MyWorkCalendarGridComponent,
-    WorkCalendarFormComponent,
     WorkCalendarViewComponent,
     CalendarDaypilotNavigatorComponent,
     WorkCalendarEventFormDrawerComponent,

@@ -12,7 +12,6 @@ import { WorkCalendarService } from './work-calendar.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzInputNgxColorsComponent } from 'src/app/third-party/ngx-colors/nz-input-ngx-colors.component';
@@ -26,7 +25,6 @@ import { NzInputNgxColorsComponent } from 'src/app/third-party/ngx-colors/nz-inp
     ReactiveFormsModule,
     NzFormModule,
     NzInputModule,
-    NzCrudButtonGroupComponent,
     NzFormItemCustomComponent,
     NzInputSelectComponent,
     NzInputNgxColorsComponent,

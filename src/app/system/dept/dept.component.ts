@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DeptTreeComponent } from './dept-tree.component';
 import { DeptFormComponent } from './dept-form.component';
-import { CheckableDeptTreeComponent } from './checkable-dept-tree.component';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -27,7 +26,6 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
     NzDividerModule,
     NzPageHeaderCustomComponent,
     DeptTreeComponent,
-    CheckableDeptTreeComponent,
     DeptFormComponent,
     ShapeComponent
 ],

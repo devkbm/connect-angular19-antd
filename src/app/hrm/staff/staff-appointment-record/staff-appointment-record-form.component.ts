@@ -20,7 +20,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
-import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzInputTreeSelectDeptComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select-dept/nz-input-tree-select-dept.component';
 
 
@@ -34,7 +33,6 @@ import { NzInputTreeSelectDeptComponent } from 'src/app/third-party/ng-zorro/nz-
     NzInputModule,
     NzDatePickerModule,
     NzDividerModule,
-    NzCrudButtonGroupComponent,
     NzInputTreeSelectDeptComponent,
     NzFormItemCustomComponent,
     NzInputSelectComponent,

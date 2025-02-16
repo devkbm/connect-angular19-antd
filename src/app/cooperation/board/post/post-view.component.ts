@@ -1,7 +1,6 @@
 import { Component, inject, effect, input } from '@angular/core';
 
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzFileUploadComponent } from 'src/app/third-party/ng-zorro/nz-file-upload/nz-file-upload.component';
 import { TrustHtmlPipe } from "src/app/core/pipe/trust-html.pipe";
 
 import { ResponseObject } from 'src/app/core/model/response-object';
@@ -16,7 +15,6 @@ import { PostFileUploadComponent } from './post-file-upload.component';
   imports: [
     TrustHtmlPipe,
     NzPageHeaderModule,
-    NzFileUploadComponent,
     NzFileDownloadComponent,
     PostFileUploadComponent
   ],
