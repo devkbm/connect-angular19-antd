@@ -16,6 +16,7 @@ export interface NewDateSelectedArgs {
   workCalendarId: number;
   start: Date;
   end: Date;
+  allDay: boolean;
 }
 
 @Component({
@@ -152,7 +153,8 @@ export class WorkCalendarViewComponent implements AfterViewInit {
                 title: e.text,
                 start: e.start as string,
                 end: e.end as string,
-                barColor: e.color
+                backgroundColor: e.color,
+                allDay: e.allDay
               }));
 
               this.calendar2().setEvents(data2);
@@ -171,10 +173,11 @@ export class WorkCalendarViewComponent implements AfterViewInit {
 
   onDateClick(params: any): void {
     let endDate: Date = params.end;
+    let allDay: boolean = true;
     //console.log(this.calendar().mode());
 
-    /*
-    if (this.calendar().mode() === 'Month') {
+    //if (this.calendar().mode() === 'Month') {
+    if (this.calendar2().calendar().getApi().view.type === 'dayGridMonth') {
       // 선택한 날 + 1일 0시로 설정되어 있어서 전날 23시 59분 59초로 강제로 변경
       endDate = new Date(params.end);
       endDate.setDate(endDate.getDate() - 1);
@@ -182,10 +185,16 @@ export class WorkCalendarViewComponent implements AfterViewInit {
       endDate.setMinutes(59);
       endDate.setSeconds(59);
       endDate.setMilliseconds(999);
+
+      allDay = true;
+    } else {
+
+      allDay = false;
     }
-    */
-    console.log(endDate);
-    const eventArgs: NewDateSelectedArgs = {workCalendarId: this.fkWorkCalendar, start: params.start, end: endDate};
+
+    //console.log(endDate);
+
+    const eventArgs: NewDateSelectedArgs = {workCalendarId: this.fkWorkCalendar, start: params.start, end: endDate, allDay: allDay};
     this.newDateSelected.emit(eventArgs);
   }
 

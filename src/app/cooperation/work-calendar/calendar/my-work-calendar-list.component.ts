@@ -1,5 +1,7 @@
-import { Component, EventEmitter, OnInit, Output, inject, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+import { NzCheckboxModule, NzCheckboxOption } from 'ng-zorro-antd/checkbox';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
@@ -10,8 +12,13 @@ import { WorkCalendar } from './work-calendar.model';
 
 @Component({
   selector: 'app-my-work-calendar-list',
-  imports: [ CommonModule ],
+  imports: [ FormsModule, NzCheckboxModule ],
   template: `
+
+    <nz-checkbox-group
+      [nzOptions]="options"
+      [(ngModel)]="value"
+    ></nz-checkbox-group>
   <!--
     <mat-selection-list #list (selectionChange)="selectionChanged($event, list)" color="primary">
       @for (item of workGroupList; track item.workCalendarId) {
@@ -26,17 +33,17 @@ import { WorkCalendar } from './work-calendar.model';
     -->
   `,
   styles: [`
-    .mat-mdc-list-base {
-      --mdc-list-list-item-label-text-color: white;
-      --mdc-list-list-item-supporting-text-color: white;
-      --mdc-list-list-item-trailing-supporting-text-color: white;
-      --mdc-list-list-item-disabled-label-text-color: gray;
-      --mdc-list-list-item-hover-label-text-color: white;
-      --mdc-list-list-item-focus-label-text-color: white;
-    }
+
   `]
 })
 export class MyWorkCalendarListComponent implements OnInit {
+
+  value: Array<string | number> = ['Apple', 'Orange'];
+  options: NzCheckboxOption[] = [
+    { label: 'Apple', value: 'Apple' },
+    { label: 'Pear', value: 'Pear' },
+    { label: 'Orange', value: 'Orange' }
+  ];
 
   workGroupList: WorkCalendar[] = [];
 

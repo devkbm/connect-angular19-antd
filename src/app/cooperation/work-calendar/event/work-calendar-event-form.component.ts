@@ -25,6 +25,7 @@ export interface NewFormValue {
   workCalendarId: number;
   start: Date;
   end: Date;
+  allDay: boolean;
 }
 
 @Component({
@@ -234,6 +235,10 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
 
     this.fg.controls.start.setValue(formatDate(params.start,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
     this.fg.controls.end.setValue(formatDate(params.end,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
+
+    this.fg.controls.allDay.setValue(params.allDay);
+
+    this.isAllDay.set(params.allDay);
 
     this.focusInput();
   }

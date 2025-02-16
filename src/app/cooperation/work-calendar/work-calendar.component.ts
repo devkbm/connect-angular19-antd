@@ -1,4 +1,4 @@
-import { Component, OnInit, viewChild } from '@angular/core';
+import { Component, viewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DayPilot } from '@daypilot/daypilot-lite-angular';
@@ -15,6 +15,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot/calendar-daypilot-navigator.component';
 import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.component';
+import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.component";
 
 @Component({
   selector: 'app-work-calendar',
@@ -26,8 +27,9 @@ import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.
     WorkCalendarViewComponent,
     CalendarDaypilotNavigatorComponent,
     WorkCalendarEventFormDrawerComponent,
-    WorkCalendarFormDrawerComponent
-  ],
+    WorkCalendarFormDrawerComponent,
+    MyWorkCalendarListComponent
+],
   template: `
     <button nz-button (click)="getMyWorkGroupList()">
       <span nz-icon nzType="search" nzTheme="outline"></span>조회
@@ -55,6 +57,9 @@ import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.
           (rowClicked)="workGroupSelect($event)"
           (rowDoubleClicked)="modifyWorkGroup($event)">
       </app-my-work-calendar-grid>
+      <app-my-work-calendar-list>
+
+      </app-my-work-calendar-list>
       }
 
       @defer {
@@ -82,8 +87,8 @@ import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.
   `,
   styles: `
     .grid-wrapper {
-      //height: calc(100% - 32px);
-      height: 100%;
+      height: calc(100% - 32px);
+      //height: 100%;
       display: grid;
       grid-template-rows: 220px 1fr;
       grid-template-columns: 200px 1fr;
@@ -104,7 +109,7 @@ import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.
     }
   `
 })
-export class WorkCalendarComponent implements OnInit {
+export class WorkCalendarComponent implements AfterViewInit {
 
   myWorkGroupGrid = viewChild.required(MyWorkCalendarGridComponent);
   workCalendar = viewChild.required(WorkCalendarViewComponent);
@@ -125,7 +130,7 @@ export class WorkCalendarComponent implements OnInit {
     schedule: { visible: false, formInitId: -1 }
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.getMyWorkGroupList();
   }
 
@@ -177,7 +182,7 @@ export class WorkCalendarComponent implements OnInit {
     const today: Date = new Date();
     const from: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), 0);
     const to: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours() + 1, 0);
-    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formInitId, start: from, end: to};
+    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formInitId, start: from, end: to, allDay: true};
 
     this.drawer.schedule.formInitId = -1;
   }
@@ -194,7 +199,7 @@ export class WorkCalendarComponent implements OnInit {
     //const to: Date = param.end;
     //to.setDate(to.getDate() -1);
 
-    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formInitId, start: param.start, end: param.end};
+    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formInitId, start: param.start, end: param.end, allDay: param.allDay};
     this.drawer.schedule.formInitId = -1;
 
     this.openScheduleDrawer();

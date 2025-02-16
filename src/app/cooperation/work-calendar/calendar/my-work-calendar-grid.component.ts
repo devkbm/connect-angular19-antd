@@ -71,8 +71,9 @@ export class MyWorkCalendarGridComponent extends AgGridCommon implements OnInit 
       headerName: '',
       width: 10,
       suppressSizeToFit: true,
-      cellStyle: (params: any) => {
-        return {backgroundColor: params.data.color};
+      cellStyle: params => {
+        console.log(params);
+        return {'background-color': params.data.color};
       }
     },
     {
