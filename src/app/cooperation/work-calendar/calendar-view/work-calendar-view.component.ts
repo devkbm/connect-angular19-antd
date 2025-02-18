@@ -179,13 +179,14 @@ export class WorkCalendarViewComponent implements AfterViewInit {
     //if (this.calendar().mode() === 'Month') {
     if (this.calendar2().calendar().getApi().view.type === 'dayGridMonth') {
       // 선택한 날 + 1일 0시로 설정되어 있어서 전날 23시 59분 59초로 강제로 변경
+      /*
       endDate = new Date(params.end);
       endDate.setDate(endDate.getDate() - 1);
       endDate.setHours(23);
       endDate.setMinutes(59);
       endDate.setSeconds(59);
       endDate.setMilliseconds(999);
-
+      */
       allDay = true;
     } else {
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, input, signal, effect, Renderer2, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
 import { formatDate } from '@angular/common';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
@@ -20,6 +20,7 @@ import { NzInputDateTimeComponent, TimeFormat } from 'src/app/third-party/ng-zor
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { pairwise } from 'rxjs';
 
 export interface NewFormValue {
   workCalendarId: number;
@@ -182,24 +183,58 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   isAllDay = signal<boolean>(false);
 
   constructor() {
+
+    this.fg.controls.start.valueChanges.pipe(pairwise()).subscribe(([prev, next]: [any, any]) => {
+      //console.log(prev,next);
+      if (this.isAllDay() && prev !== next) {
+        let date = new Date(next);
+        this.removeTime(date);
+        this.fg.controls.start.setValue(formatDate(date,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
+      }
+    });
+
+    this.fg.controls.end.valueChanges.pipe(pairwise()).subscribe(([prev, next]: [any, any]) => {
+      if (this.isAllDay() && prev !== next) {
+        let date = new Date(next);
+        this.removeTime(date);
+        this.fg.controls.end.setValue(formatDate(date,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
+      }
+    });
+
+    /*
+    this.fg.controls.start.events.subscribe(event => {
+      if (event instanceof ValueChangeEvent) {
+        let date = event.value;
+        this.removeTime(date);
+        this.fg.controls.start.setValue(formatDate(date,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
+      }
+    });
+    */
+
     effect(() => {
       if (this.isAllDay()) {
         let start = new Date(this.fg.controls.start.value!) as Date;
+        this.removeTime(start);
         console.log(start);
-        start.setHours(0);
-        start.setMinutes(0);
-        start.setSeconds(0);
-        start.setMilliseconds(0);
         this.fg.controls.start.setValue(formatDate(start,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
 
         let end = new Date(this.fg.controls.end.value!) as Date;
-        end.setHours(23);
-        end.setMinutes(59);
-        end.setSeconds(59);
-        end.setMilliseconds(999);
+        this.removeTime(end);
         this.fg.controls.end.setValue(formatDate(end,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
       }
     })
+
+  }
+
+  // 시분초 제거
+  removeTime(date: Date): Date {
+
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+
+    return date;
   }
 
   ngOnInit(): void {
