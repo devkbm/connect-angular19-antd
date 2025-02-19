@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { WebResourceGridComponent } from './web-resource-grid.component';
-import { WebResourceService } from './web-resource.service';
 import { WebResource } from './web-resource.model';
 
 import { ButtonTemplate, NzButtonsComponent } from 'src/app/third-party/ng-zorro/nz-buttons/nz-buttons.component';
@@ -17,6 +16,9 @@ import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-pag
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { WebResourceFormDrawerComponent } from './web-resource-form-drawer.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-web-resource',
@@ -128,7 +130,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 })
 export class WebResourceComponent implements OnInit {
 
-  private service = inject(WebResourceService);
+  private http = inject(HttpClient);
 
   grid = viewChild.required(WebResourceGridComponent);
 
@@ -203,13 +205,19 @@ export class WebResourceComponent implements OnInit {
   delete(): void {
     const id = this.grid().getSelectedRows()[0].resourceId;
 
-    this.service
-        .delete(id)
-        .subscribe(
-          (model: ResponseObject<WebResource>) => {
-            this.getList();
-          }
-        );
+    const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+    this.http.delete<ResponseObject<WebResource>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseObject<WebResource>) => {
+        this.getList();
+      }
+    );
+
   }
 
   resourceGridRowClicked(item: any): void {

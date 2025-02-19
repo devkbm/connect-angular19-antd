@@ -15,6 +15,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -107,7 +110,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
 
   resourceTypeList: ResouceTypeEnum[] = [];
 
-  private service = inject(WebResourceService);
+  private http = inject(HttpClient);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
 
@@ -118,7 +121,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   fg = inject(FormBuilder).group({
     resourceId   : new FormControl<string | null>(null, {
       validators: Validators.required,
-      asyncValidators: [existingWebResourceValidator(this.service)],
+      asyncValidators: [existingWebResourceValidator(inject(WebResourceService))],
       updateOn: 'blur'
     }),
     resourceName  : new FormControl<string | null>('', {validators: [Validators.required]}),
@@ -167,14 +170,20 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    this.service
-        .get(id)
-        .subscribe(
-          (model: ResponseObject<WebResource>) => {
-            model.data ? this.modifyForm(model.data) : this.newForm();
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
+    const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<WebResource>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseObject<WebResource>) => {
+        model.data ? this.modifyForm(model.data) : this.newForm();
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
   }
 
   save(): void {
@@ -188,36 +197,53 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.service
-        .save(this.fg.getRawValue())
-        .subscribe(
-          (model: ResponseObject<WebResource>) => {
-            this.appAlarmService.changeMessage(model.message);
-            this.formSaved.emit(this.fg.getRawValue());
-          }
-        );
+    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+    this.http.post<ResponseObject<WebResource>>(url, this.fg.getRawValue(), options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseObject<WebResource>) => {
+        this.appAlarmService.changeMessage(model.message);
+        this.formSaved.emit(this.fg.getRawValue());
+      }
+    );
   }
 
   remove() {
-    this.service
-        .delete(this.fg.controls.resourceId.value!)
-        .subscribe(
-          (model: ResponseObject<WebResource>) => {
-            this.appAlarmService.changeMessage(model.message);
-            this.formDeleted.emit(this.fg.getRawValue());
-          }
-        );
+    const id = this.fg.controls.resourceId.value!;
+    const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+    this.http.delete<ResponseObject<WebResource>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseObject<WebResource>) => {
+        this.appAlarmService.changeMessage(model.message);
+        this.formDeleted.emit(this.fg.getRawValue());
+      }
+    );
   }
 
   getCommonCodeList() {
-    this.service
-        .getWebResourceTypeList()
-        .subscribe(
-        (model: ResponseList<ResouceTypeEnum>) => {
-          this.resourceTypeList = model.data;
-          this.appAlarmService.changeMessage(model.message);
-        }
-      );
+    const url = GlobalProperty.serverUrl + `/api/system/webresource/resourcetype`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<ResouceTypeEnum>>(url, options).pipe(
+    ).subscribe(
+      (model: ResponseList<ResouceTypeEnum>) => {
+        this.resourceTypeList = model.data;
+        this.appAlarmService.changeMessage(model.message);
+      }
+    );
+
   }
 
 }
