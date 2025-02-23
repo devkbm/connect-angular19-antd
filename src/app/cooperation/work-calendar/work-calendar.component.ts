@@ -1,13 +1,10 @@
 import { Component, viewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { DayPilot } from '@daypilot/daypilot-lite-angular';
-
 import { WorkCalendarEventFormDrawerComponent } from './event/work-calendar-event-form-drawer.component';
 import { WorkCalendarFormDrawerComponent } from './calendar/work-calendar-form-drawer.component';
 import { NewDateSelectedArgs, WorkCalendarViewComponent } from './calendar-view/work-calendar-view.component';
 import { NewFormValue, WorkCalendarEventFormComponent } from './event/work-calendar-event-form.component';
-import { MyWorkCalendarGridComponent } from './calendar/my-work-calendar-grid.component';
 import { WorkCalendarFormComponent } from './calendar/work-calendar-form.component';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -23,7 +20,6 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
     CommonModule,
     NzButtonModule,
     NzIconModule,
-    MyWorkCalendarGridComponent,
     WorkCalendarViewComponent,
     CalendarDaypilotNavigatorComponent,
     WorkCalendarEventFormDrawerComponent,
@@ -52,15 +48,11 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
         (selectChanged)="navigatorSelectChanged($event)">
       </app-calendar-daypilot-navigator>
       }
-      @defer {
-      <app-my-work-calendar-grid class="title"
-          (rowClicked)="workGroupSelect($event)"
-          (rowDoubleClicked)="modifyWorkGroup($event)">
-      </app-my-work-calendar-grid>
-      <app-my-work-calendar-list>
-
+      <app-my-work-calendar-list
+        (rowClicked)="workGroupSelect($event)"
+        (rowDoubleClicked)="modifyWorkGroup($event)">
       </app-my-work-calendar-list>
-      }
+
 
       @defer {
       <app-work-calendar-view class="calendar"
@@ -90,6 +82,7 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
       height: calc(100% - 32px);
       //height: 100%;
       display: grid;
+      gap: 5px;
       grid-template-rows: 220px 1fr;
       grid-template-columns: 200px 1fr;
       grid-template-areas:
@@ -111,12 +104,12 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
 })
 export class WorkCalendarComponent implements AfterViewInit {
 
-  myWorkGroupGrid = viewChild.required(MyWorkCalendarGridComponent);
   myWorkGroupList = viewChild.required(MyWorkCalendarListComponent);
-  workCalendar = viewChild.required(WorkCalendarViewComponent);
-  workScheduleForm = viewChild.required(WorkCalendarEventFormComponent);
   workGroupForm = viewChild.required(WorkCalendarFormComponent);
+
   navigator = viewChild.required(CalendarDaypilotNavigatorComponent);
+  workCalendar = viewChild.required(WorkCalendarViewComponent);
+  workEventForm = viewChild.required(WorkCalendarEventFormComponent);
 
   mode: "Day" | "Week" | "Month" | "None" = 'Month';
 
@@ -137,9 +130,7 @@ export class WorkCalendarComponent implements AfterViewInit {
 
   getMyWorkGroupList(): void {
     this.closeWorkGroupDrawer();
-    this.myWorkGroupGrid().getMyWorkGroupList();
     this.myWorkGroupList().getMyWorkGroupList();
-
   }
 
   getScheduleList(): void {
@@ -175,7 +166,7 @@ export class WorkCalendarComponent implements AfterViewInit {
   }
 
   modifyWorkGroup(workGroup: any): void {
-    this.drawer.workGroup.formInitId = workGroup.id;
+    this.drawer.workGroup.formInitId = workGroup;
     this.openWorkGroupDrawer();
   }
 
@@ -239,7 +230,7 @@ export class WorkCalendarComponent implements AfterViewInit {
   }
 
   navigatorSelectChanged(params: any) {
-    this.workCalendar().calendarSetDate(new DayPilot.Date(params.start, true));
+    //this.workCalendar().calendarSetDate(new DayPilot.Date(params.start, true));
   }
 
 }

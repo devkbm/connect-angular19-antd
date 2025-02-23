@@ -1,14 +1,11 @@
 import { Component, Input, AfterViewInit, inject, viewChild, output } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 
-import { DayPilot } from '@daypilot/daypilot-lite-angular';
-
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { WorkCalendarEventService } from '../event/work-calendar-event.service';
 import { WorkCalendarEvent } from '../event/work-calendar-event.model';
 
-import { CalendarDaypilotHeaderComponent } from 'src/app/third-party/daypilot/calendar-daypilot-header.component';
 import { CalendarDaypilotComponent, ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.component';
 import { CalendarFullcalendarComponent } from "../../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 
@@ -23,35 +20,12 @@ export interface NewDateSelectedArgs {
   selector: 'app-work-calendar-view',
   imports: [
     CommonModule,
-    CalendarDaypilotComponent,
-    CalendarDaypilotHeaderComponent,
     CalendarFullcalendarComponent
 ],
   template: `
-    <!--
-    <app-calendar-daypilot-header #header
-      [titleStartDate]="calendar.mode() === 'Week' ? calendar.displayStart.toDate() : calendar.selectedDate().toDate()"
-      [titleEndDate]="calendar.displayEnd.toDate()"
-      (previousButtonClicked)="calendar.navigatePrevious($event)"
-      (todayButtonClicked)="calendar.navigateToday($event)"
-      (nextButtonClicked)="calendar.navigateNext($event)">
-    </app-calendar-daypilot-header>
-
-    <div class="calendar-div">
-      <app-calendar-daypilot #calendar
-        [mode]="header.selectedMode()"
-        [events]="eventData"
-        (eventClicked)="eventClicked($event)"
-        (rangeChanged)="rangeChanged($event)"
-        (datesSelected)="onDateClick($event)"
-        (modeChanged)="calendarModeChanged($event)">
-      </app-calendar-daypilot>
-    </div>
--->
     <app-calendar-fullcalendar
       (eventClicked)="eventClicked($event)"
       (dayClicked)="onDateClick($event)">
-
     </app-calendar-fullcalendar>
   `,
   styles: [`
@@ -66,7 +40,6 @@ export interface NewDateSelectedArgs {
 })
 export class WorkCalendarViewComponent implements AfterViewInit {
 
-  calendar = viewChild.required(CalendarDaypilotComponent);
   calendar2 = viewChild.required(CalendarFullcalendarComponent);
 
   @Input() fkWorkCalendar: number = 0;
@@ -95,7 +68,7 @@ export class WorkCalendarViewComponent implements AfterViewInit {
     this.from = formatDate(this.calendar2().calendar().getApi().view.activeStart,'YYYYMMdd','ko-kr') ?? '';
     this.to = formatDate(this.calendar2().calendar().getApi().view.activeEnd,'YYYYMMdd','ko-kr') ?? '';
 
-    console.log(this.calendar2().calendar().getApi().view.type);
+    // console.log(this.calendar2().calendar().getApi().view.type);
 
     //this.from = '20250201';
     //this.to = '20250228';
@@ -118,6 +91,7 @@ export class WorkCalendarViewComponent implements AfterViewInit {
 
     if (workGroupId === "" || workGroupId === null || workGroupId === undefined) {
       this.eventData = [];
+      this.calendar2().setEvents([]);
       return;
     }
     const param = {
@@ -126,7 +100,7 @@ export class WorkCalendarViewComponent implements AfterViewInit {
       toDate: this.to
     };
 
-    console.log(param);
+    // console.log(param);
 
     this.service
         .getWorkScheduleList(param)
@@ -204,7 +178,4 @@ export class WorkCalendarViewComponent implements AfterViewInit {
     //this.modeChanged.emit(this.mode);
   }
 
-  calendarSetDate(date: DayPilot.Date) {
-    this.calendar().displayRangeChangedEvent(date);
-  }
 }
