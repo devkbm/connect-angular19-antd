@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -12,13 +13,20 @@ import { WorkCalendar } from './work-calendar.model';
 
 @Component({
   selector: 'app-my-work-calendar-list',
-  imports: [ FormsModule, NzCheckboxModule ],
+  imports: [ CommonModule, FormsModule, NzCheckboxModule ],
   template: `
+    <!--{{workGroupList | json}}-->
 
+    <!--
+    @for (item of workGroupList; track item) {
+      <label nz-checkbox [nzValue]="item.id" [(ngModel)]="item.checked">{{item.name}}</label>
+    }
+-->
     <nz-checkbox-group
       [nzOptions]="options"
       [(ngModel)]="value"
     ></nz-checkbox-group>
+
   <!--
     <mat-selection-list #list (selectionChange)="selectionChanged($event, list)" color="primary">
       @for (item of workGroupList; track item.workCalendarId) {
@@ -40,12 +48,9 @@ export class MyWorkCalendarListComponent implements OnInit {
 
   value: Array<string | number> = ['Apple', 'Orange'];
   options: NzCheckboxOption[] = [
-    { label: 'Apple', value: 'Apple' },
-    { label: 'Pear', value: 'Pear' },
-    { label: 'Orange', value: 'Orange' }
   ];
 
-  workGroupList: WorkCalendar[] = [];
+  workGroupList: any[] = [];
 
   rowClicked = output<any>();
   rowDoubleClicked = output<any>();
@@ -61,8 +66,13 @@ export class MyWorkCalendarListComponent implements OnInit {
     this.workGroupService
         .getMyWorkGroupList()
         .subscribe(
-          (model: ResponseList<WorkCalendar>) => {
+          (model: ResponseList<any>) => {
             this.workGroupList = model.data;
+            console.log(this.workGroupList);
+            for (const opt of this.workGroupList) {
+              this.options.push({label: opt.name!, value: opt.id!})
+            }
+
             this.appAlarmService.changeMessage(model.message);
           }
         );

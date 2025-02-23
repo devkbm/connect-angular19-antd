@@ -112,6 +112,7 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
 export class WorkCalendarComponent implements AfterViewInit {
 
   myWorkGroupGrid = viewChild.required(MyWorkCalendarGridComponent);
+  myWorkGroupList = viewChild.required(MyWorkCalendarListComponent);
   workCalendar = viewChild.required(WorkCalendarViewComponent);
   workScheduleForm = viewChild.required(WorkCalendarEventFormComponent);
   workGroupForm = viewChild.required(WorkCalendarFormComponent);
@@ -137,6 +138,8 @@ export class WorkCalendarComponent implements AfterViewInit {
   getMyWorkGroupList(): void {
     this.closeWorkGroupDrawer();
     this.myWorkGroupGrid().getMyWorkGroupList();
+    this.myWorkGroupList().getMyWorkGroupList();
+
   }
 
   getScheduleList(): void {
