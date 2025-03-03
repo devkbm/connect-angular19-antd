@@ -14,6 +14,10 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { UserProfileComponent } from 'src/app/app-layout/user-profile/user-profile.component';
 import { SideMenuComponent } from 'src/app/app-layout/side-menu/side-menu.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from '../core/global-property';
+import { getAuthorizedHttpHeaders } from '../core/http/http-utils';
+import { ResponseList } from '../core/model/response-list';
 
 @Component({
   selector: 'app-app-layout',
@@ -50,8 +54,9 @@ export class AppLayoutComponent implements OnInit  {
 
   private appAlarmService = inject(AppAlarmService);
   private sessionService = inject(UserSessionService);
-  private service = inject(AppLayoutService);
+  // private service = inject(AppLayoutService);
   private router = inject(Router);
+  private http = inject(HttpClient);
 
   ngOnInit(): void {
     this.appAlarmService.currentMessage.subscribe(message => this.footerMessage = message);
@@ -109,6 +114,22 @@ export class AppLayoutComponent implements OnInit  {
       }
     }
     return '';
+  }
+
+  test(): void {
+    const url = GlobalProperty.serverUrl + `/api/system/user/auth1`;
+    const options = {
+        headers: getAuthorizedHttpHeaders(),
+        withCredentials: true
+      };
+
+    this.http.get<ResponseList<any>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseList<any>) => {
+        console.log(model);
+      }
+    );
   }
 
 }
