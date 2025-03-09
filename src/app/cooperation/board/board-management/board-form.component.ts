@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, Renderer2, effect, inject, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
@@ -194,6 +194,8 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
     effect(() => {
       if (this.formInitId()) {
         this.get(this.formInitId());
+      } else {
+        this.newForm();
       }
     })
   }

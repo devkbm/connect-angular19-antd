@@ -1,5 +1,6 @@
+import { Component, viewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, viewChild } from '@angular/core';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
@@ -104,7 +105,9 @@ export class BoardManagementComponent implements AfterViewInit {
    */
   queryValue: any;
 
-  constructor() { }
+  constructor() {
+
+  }
 
   ngAfterViewInit(): void {
     this.getBoardTree();

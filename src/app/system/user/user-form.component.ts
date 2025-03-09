@@ -224,6 +224,14 @@ export class UserFormComponent implements OnInit {
         this.get(this.formInitId());
       }
     })
+
+    this.fg.controls.staffNo.valueChanges.subscribe(x => {
+      if (x === null) return;
+      const companyCode = sessionStorage.getItem('companyCode');
+      //this.fg.controls.userId.setValue(companyCode + x);
+      this.fg.controls.userId.setValue(x);
+      this.fg.controls.userId.markAsTouched();
+    });
   }
 
   ngOnInit(): void {
@@ -246,6 +254,7 @@ export class UserFormComponent implements OnInit {
     this.fg.controls.staffNo.enable();
     this.fg.controls.enabled.setValue(true);
 
+    /*
     this.fg.controls.staffNo.valueChanges.subscribe(x => {
       if (x === null) return;
       const companyCode = sessionStorage.getItem('companyCode');
@@ -253,7 +262,7 @@ export class UserFormComponent implements OnInit {
       this.fg.controls.userId.setValue(x);
       this.fg.controls.userId.markAsTouched();
     });
-
+    */
     this.focusInput();
   }
 
