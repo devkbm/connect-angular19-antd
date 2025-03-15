@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, Renderer2, effect, inject, input, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, Renderer2, effect, inject, input, output, signal, viewChild } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -72,17 +72,10 @@ import { SessionManager } from 'src/app/core/session-manager';
         </nz-form-control>
       </nz-form-item-custom>
 
-      <!--
-      <app-nz-file-upload
-        [fileList]="fileList">
-      </app-nz-file-upload>
-      -->
-
       <app-post-file-upload
-        [postId]="this.fg.controls.postId.value!"
         [attachedFileList]="attachedFileList"
         [(uploadedFileList)]="uploadedfileList"
-        (uploadCompleted)="save()">
+        (uploadCompleted)="closeForm()">
       </app-post-file-upload>
 
     </form>
@@ -92,7 +85,7 @@ import { SessionManager } from 'src/app/core/session-manager';
         [searchVisible]="false"
         [isSavePopupConfirm]="false"
         (closeClick)="closeForm()"
-        (saveClick)="beforeSave()"
+        (saveClick)="save()"
         (deleteClick)="remove(fg.get('articleId')?.value)">
       </app-nz-crud-button-group>
     </div>
@@ -138,26 +131,7 @@ export class PostFormComponent implements AfterViewInit {
 
   attachedFileList: any = [];
 
-  uploadedfileList: any = [
-    /*{
-      uid: '1',
-      name: 'xxx.png',
-      status: 'done',
-      response: 'Server Error 500', // custom error message to show
-      url: 'http://www.baidu.com/xxx.png'
-    },
-
-    {
-      uid: '2',
-      name: 'yyy.png',
-      status: 'done',
-      url: 'http://www.baidu.com/yyy.png'
-    }*/
-  ];
-
-  imageUploadParam = { pgmId: 'board', appUrl:'asd' };
-  fileUploadHeader: any;
-  fileUploadUrl: any;
+  uploadedfileList: any = [];
 
   textData: any;
   article!: Post;
@@ -166,10 +140,10 @@ export class PostFormComponent implements AfterViewInit {
 
   formElement = viewChild.required<ElementRef>('form');
 
-  upload = viewChild.required<NzUploadComponent>('upload');
   ckEditor = viewChild.required<CKEditorComponent>('ckEditor');
 
   uploader = viewChild.required(PostFileUploadComponent);
+  uploaderParams = '';
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -188,11 +162,6 @@ export class PostFormComponent implements AfterViewInit {
   formInitId = input<string>('');
 
   constructor() {
-    this.fileUploadUrl = GlobalProperty.serverUrl + '/common/file/';
-    this.fileUploadHeader = {
-      Authorization: sessionStorage.getItem('token')
-      /*'Content-Type': 'multipart/form-data'*/
-    };
 
     effect(() => {
       console.log(this.formInitId());
@@ -237,6 +206,7 @@ export class PostFormComponent implements AfterViewInit {
 
     // 팝업 호출한 경우 팝업 종료
     if (window.opener) {
+      window.opener.postMessage(this.boardId);
       window.close();
     }
 
@@ -249,6 +219,7 @@ export class PostFormComponent implements AfterViewInit {
             if (model.data) {
               this.article = model.data;
 
+              this.uploader().postId.set(model.data.postId);
               this.modifyForm(model.data);
               this.attachedFileList = model.data.fileList;
               //this.ckEditor.writeValue(model.data.contents);
@@ -259,32 +230,28 @@ export class PostFormComponent implements AfterViewInit {
         );
   }
 
-  beforeSave() {
-    if (this.uploader().isUpload()) {
-      this.uploader().upload();
-    } else {
-      this.save();
-    }
-
-  }
-
   save(): void {
-
-    this.convertFileList();
 
     this.boardService
         .saveArticleJson(this.fg.getRawValue())
         .subscribe(
-          (model: ResponseObject<Post>) => {
+          (model: ResponseObject<string>) => {
             //console.log(model);
+
+            this.uploader().postId.set(model.data);
+            if (this.uploader().isUpload()) {
+              this.uploader().upload();
+            }
+
             this.formSaved.emit(this.fg.getRawValue());
-            console.log(window.opener);
 
             // 팝업 호출한 경우 재조회 후 팝업 종료
+            /*
             if (window.opener) {
               window.opener.postMessage(this.boardId);
               window.close();
             }
+            */
           }
         );
   }
@@ -305,10 +272,6 @@ export class PostFormComponent implements AfterViewInit {
       );
   }
 
-  fileDown(): void {
-    // this.boardService.downloadFile(this.article.attachFile[0].fileId, this.article.attachFile[0].fileName);
-  }
-
   fileUploadChange(param: NzUploadChangeParam): void {
     console.log(param);
     if (param.type === 'success') {
@@ -323,22 +286,5 @@ export class PostFormComponent implements AfterViewInit {
     //this.fg.get('contents')?.setValue(data);
   }
 
-  convertFileList() {
-    const attachFileIdList: any = [];
-
-    if (this.attachedFileList instanceof Array) {
-      this.attachedFileList.forEach( (element: any) => {
-        attachFileIdList.push(String(element.uid));
-      });
-    }
-
-    if (this.uploadedfileList instanceof Array) {
-      this.uploadedfileList.forEach( (element: any) => {
-        attachFileIdList.push(String(element.uid));
-      });
-    }
-
-    this.fg.get('attachFile')?.setValue(attachFileIdList);
-  }
 
 }

@@ -129,7 +129,7 @@ export class PostService extends DataService {
       );
   }
 
-  saveArticleJson(article: any): Observable<ResponseObject<Post>> {
+  saveArticleJson(article: any): Observable<ResponseObject<string>> {
     const url = `${this.API_URL}/board/post`;
     const options = {
       headers: this.getAuthorizedHttpHeaders(),
@@ -137,7 +137,7 @@ export class PostService extends DataService {
     };
 
     return this.http
-      .post<ResponseObject<Post>>(url, article, options)
+      .post<ResponseObject<string>>(url, article, options)
       .pipe(
           //catchError((err) => Observable.throw(err))
       );

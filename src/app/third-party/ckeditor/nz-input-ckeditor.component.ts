@@ -67,11 +67,13 @@ export class NzInputCkeditorComponent implements ControlValueAccessor {
       'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify', '|',
       'bulletedList', 'numberedList', 'todoList', '|',
       '-', // break point
+      /*
       'uploadImage', 'insertTable', '|',
       'outdent', 'indent', '|',
       'blockQuote', 'codeBlock', '|',
       'link', '|',
       'undo', 'redo'
+      */
     ],
     image: {
       toolbar: [

@@ -1,4 +1,4 @@
-import { Component, inject, input, model, output } from '@angular/core';
+import { Component, computed, effect, inject, input, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FileUploadModule, FileUploader } from 'ng2-file-upload';
@@ -166,12 +166,14 @@ export interface UploadedFile {
 })
 export class PostFileUploadComponent {
 
-  uploadUrl: string = GlobalProperty.serverUrl + '/api/system/file';
-  uploader: FileUploader;
+  postId = signal<string>('');
+
+  uploader: FileUploader =  new FileUploader({
+    url: GlobalProperty.serverUrl + `/api/grw/board/post/file`,
+    authToken: sessionStorage.getItem('token')!
+  });
 
   isUploadBtnVisible = input<boolean>(true);
-
-  postId = input<string>('');
 
   attachedFileList = model<UploadedFile[]>([]);
 
@@ -181,11 +183,6 @@ export class PostFileUploadComponent {
   private http = inject(HttpClient);
 
   constructor() {
-
-    this.uploader = new FileUploader({
-      url: this.uploadUrl,
-      authToken: sessionStorage.getItem('token')!,
-    });
 
     this.uploader.response.subscribe( (res: any) => {
       // 개별 파일로 업로드 처리되어 첫번째 response 데이터만 리스트에 추가
@@ -199,6 +196,12 @@ export class PostFileUploadComponent {
   }
 
   upload() {
+    console.log(this.postId());
+    this.uploader.setOptions({
+      url: GlobalProperty.serverUrl + `/api/grw/board/post/file`,
+      authToken: sessionStorage.getItem('token')!,
+      additionalParameter: {postId: this.postId()}
+    });
     this.uploader.uploadAll();
   }
 
