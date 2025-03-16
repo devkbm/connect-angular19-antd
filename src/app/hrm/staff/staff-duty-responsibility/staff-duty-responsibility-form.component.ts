@@ -10,7 +10,6 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { HrmCode } from '../../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../../hrm-code/hrm-code.service';
 import { StaffDutyResponsibility } from './staff-duty-responsibility.model';
-import { StaffDutyResponsibilityService } from './staff-duty-responsibility.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -18,6 +17,9 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-duty-responsibility-form',
@@ -126,9 +128,9 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
    */
   dutyResponsibilityCodeList: HrmCode[] = [];
 
-  service = inject(StaffDutyResponsibilityService);
   hrmCodeService = inject(HrmCodeService);
   appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -189,14 +191,23 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
   }
 
   get(staffId: string, seq: string): void {
-    this.service
-        .get(staffId, seq)
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/dutyresponsibility/${seq}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<StaffDutyResponsibility>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffDutyResponsibility>>('getCurrentAppointment', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffDutyResponsibility>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save(): void {
@@ -210,8 +221,16 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
       return;
     }
 
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo}/dutyresponsibility`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<StaffDutyResponsibility>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffDutyResponsibility>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffDutyResponsibility>) => {
             this.appAlarmService.changeMessage(model.message);

@@ -6,7 +6,6 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { BizCodeService } from './biz-code.service';
 import { BizCode } from './biz-code.model';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -14,6 +13,9 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-biz-code-form',
@@ -105,9 +107,9 @@ import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-
 })
 export class BizCodeFormComponent implements AfterViewInit {
 
-  private service = inject(BizCodeService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -162,14 +164,21 @@ export class BizCodeFormComponent implements AfterViewInit {
   }
 
   get(typeId: string, code: string): void {
-    this.service
-        .get(typeId, code)
+    const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/${typeId}/bizcode/${code}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<BizCode>>(url, options).pipe(
+         // catchError(this.handleError<ResponseObject<BizCode>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<BizCode>) => {
             model.data ? this.modifyForm(model.data) : this.newForm(typeId)
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save(): void {
@@ -183,8 +192,15 @@ export class BizCodeFormComponent implements AfterViewInit {
       return;
     }
 
-    this.service
-        .save(this.fg.getRawValue())
+    const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/bizcode`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.post<ResponseObject<BizCode>>(url, this.fg.getRawValue(), options).pipe(
+          //catchError(this.handleError<ResponseObject<BizCode>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<BizCode>) => {
             this.appAlarmService.changeMessage(model.message);
@@ -194,14 +210,21 @@ export class BizCodeFormComponent implements AfterViewInit {
   }
 
   remove(): void {
-    this.service
-        .delete(this.fg.controls.typeId.value!, this.fg.controls.code.value!)
+    const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}/bizcode/${this.fg.controls.code.value!}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<BizCode>>(url, options).pipe(
+         // catchError(this.handleError<ResponseObject<BizCode>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<BizCode>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
 }

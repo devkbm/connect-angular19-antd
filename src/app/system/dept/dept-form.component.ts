@@ -5,9 +5,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { DeptService } from './dept.service';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
-import { existingDeptValidator } from './dept-duplication-validator.directive';
 import { Dept } from './dept.model';
 import { DeptHierarchy } from './dept-hierarchy.model';
 
@@ -17,6 +15,10 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { DeptFormValidatorService } from './validator/dept-form-validator.service';
 
 @Component({
   selector: 'app-dept-form',
@@ -231,9 +233,10 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
 
   deptHierarchy: DeptHierarchy[] = [];
 
-  private service = inject(DeptService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
+  private validator = inject(DeptFormValidatorService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -241,12 +244,11 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
 
   fg = inject(FormBuilder).group({
     parentDeptCode          : new FormControl<string | null>(null),
-    /*deptId                  : new FormControl<string | null>(null, {
+    deptCode                : new FormControl<string | null>(null, {
                                 validators: Validators.required,
-                                asyncValidators: [existingDeptValidator(this.service)],
+                                asyncValidators: [this.validator.existingEntityValidator()],
                                 updateOn: 'blur'
-                              }),*/
-    deptCode                : new FormControl<string | null>(null),
+                              }),
     deptNameKorean          : new FormControl<string | null>(null, { validators: [Validators.required] }),
     deptAbbreviationKorean  : new FormControl<string | null>(null),
     deptNameEnglish         : new FormControl<string | null>(null, { validators: [Validators.required] }),
@@ -307,19 +309,26 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    this.service
-        .getDept(id)
+    const url = GlobalProperty.serverUrl + `/api/system/dept/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseObject<Dept>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Dept>>('getDept', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<Dept>) => {
-              if ( model.data ) {
-                this.modifyForm(model.data);
-              } else {
-                this.getDeptHierarchy();
-                this.newForm();
-              }
-              this.appAlarmService.changeMessage(model.message);
+          (model: ResponseObject<Dept>) => {
+            if ( model.data ) {
+              this.modifyForm(model.data);
+            } else {
+              this.getDeptHierarchy();
+              this.newForm();
             }
-        );
+            this.appAlarmService.changeMessage(model.message);
+          }
+      )
   }
 
   save(): void {
@@ -333,35 +342,57 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.service
-        .saveDept(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/system/dept`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.post<ResponseObject<Dept>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Dept>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .deleteDept(this.fg.controls.deptCode.value!)
+    const url = GlobalProperty.serverUrl + `/api/system/dept/${this.fg.controls.deptCode.value!}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.delete<ResponseObject<Dept>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<Dept>) => {
+          (model: ResponseObject<Dept>) => {
             this.appAlarmService.changeMessage(model.message);
-            this.formDeleted.emit(this.fg.getRawValue());
-            }
-        );
+            this.formSaved.emit(this.fg.getRawValue());
+          }
+        )
   }
 
   getDeptHierarchy(): void {
-    this.service
-        .getDeptHierarchyList()
+    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
+        )
         .subscribe(
           (model: ResponseList<DeptHierarchy>) => {
             model.data ? this.deptHierarchy = model.data : this.deptHierarchy = [];
           }
-        );
+        )
+
   }
 
 }

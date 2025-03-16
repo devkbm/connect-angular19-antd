@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, inject, viewChild, Renderer2, input, effect, output } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, Renderer2, input, effect, output } from '@angular/core';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { MenuService } from './menu.service';
 import { MenuGroup } from './menu-group.model';
-import { existingMenuGroupValidator } from './menu-group-duplication-validator.directive';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { MenuGroupFormValidatorService } from './validator/menu-group-form-validator.service';
 
 @Component({
   selector: 'app-menu-group-form',
@@ -84,22 +86,21 @@ import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-it
 })
 export class MenuGroupFormComponent implements OnInit, AfterViewInit {
 
-  private menuService = inject(MenuService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
+  private validator = inject(MenuGroupFormValidatorService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
   formClosed = output<any>();
 
   fg = inject(FormBuilder).group({
-    /*
-    menuGroupId     : new FormControl<string | null>(null, {
-      validators: Validators.required,
-      asyncValidators: [existingMenuGroupValidator(this.menuService)],
+    menuGroupCode   : new FormControl<string | null>(null, {
+      validators: Validators.required ,
+      asyncValidators: [this.validator.existingEntityValidator()],
       updateOn: 'blur'
-    }),*/
-    menuGroupCode   : new FormControl<string | null>(null, { validators: Validators.required }),
+    }),
     menuGroupName   : new FormControl<string | null>(null, { validators: Validators.required }),
     menuGroupUrl    : new FormControl<string | null>(null, { validators: Validators.required }),
     description     : new FormControl<string | null>(null)
@@ -143,15 +144,23 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
     this.formClosed.emit(this.fg.getRawValue());
   }
 
-  get(menuGroupId: string) {
-    this.menuService
-        .getMenuGroup(menuGroupId)
+  get(menuGroupCode: string) {
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseObject<MenuGroup>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<MenuGroup>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save() {
@@ -165,25 +174,40 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.menuService
-        .registerMenuGroup(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${this.fg.controls.menuGroupCode}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseObject<MenuGroup>>(url, this.fg.getRawValue(), options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<MenuGroup>) => {
             this.formSaved.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   remove() {
-    this.menuService
-        .deleteMenuGroup(this.fg.controls.menuGroupCode.value!)
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${this.fg.controls.menuGroupCode.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<MenuGroup>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<MenuGroup>) => {
             this.formDeleted.emit(this.fg.getRawValue());
-            //this.appAlarmService.changeMessage(model.total + '건의 메뉴그룹이 삭제되었습니다.');
           }
-        );
+        )
   }
 
 }

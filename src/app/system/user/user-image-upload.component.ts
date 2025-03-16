@@ -1,8 +1,7 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, inject, input, model, effect } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, inject, input, model, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GlobalProperty } from 'src/app/core/global-property';
-import { UserService } from './user.service';
 
 import { saveAs } from 'file-saver';
 
@@ -11,6 +10,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-image-upload',
@@ -120,7 +120,7 @@ export class UserImageUploadComponent implements OnInit, OnChanges {
     }*/
   fileList: NzUploadFile[] = [];
 
-  private userService = inject(UserService);
+  private http = inject(HttpClient);
 
   constructor() {
     effect(() => {
@@ -167,14 +167,26 @@ export class UserImageUploadComponent implements OnInit, OnChanges {
   }
 
   downloadImage(): void {
-    this.userService
-        .downloadUserImage(this.userId())
-        .subscribe(
-          (model: Blob) => {
-            const blob = new Blob([model], { type: 'application/octet-stream' });
-            saveAs(blob, this.userId() + ".jpg");
-          }
-        );
+    const url = GlobalProperty.serverUrl + `/api/system/user/image`;
+    const obj:any = {companyCode: sessionStorage.getItem('companyCode'),  userId: this.userId()};
+    const token = sessionStorage.getItem('token') as string;
+
+    const options = {
+      headers: new HttpHeaders().set('X-Auth-Token', token),
+      responseType: 'blob' as 'json',
+      withCredentials: true,
+      params: obj
+    };
+
+    this.http.get<Blob>(url, options).pipe(
+              //catchError(this.handleError<Blob>('downloadUserImage', undefined))
+              )
+             .subscribe(
+              (model: Blob) => {
+                const blob = new Blob([model], { type: 'application/octet-stream' });
+                saveAs(blob, this.userId() + ".jpg");
+              }
+            );;
   }
 
   getImageSrc() {
@@ -192,8 +204,6 @@ export class UserImageUploadComponent implements OnInit, OnChanges {
     const names: string[] = path.split("\\");
     return names[names.length-1];
   }
-
-
 
   onclick() {
     //location.href=this.imageSrc + this.imageBase64;

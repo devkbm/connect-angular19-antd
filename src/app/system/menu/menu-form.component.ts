@@ -6,11 +6,9 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
-import { MenuService } from './menu.service';
 import { Menu } from './menu.model';
 import { MenuHierarchy } from './menu-hierarchy.model';
 import { MenuGroup } from './menu-group.model';
-import { existingMenuValidator } from './menu-duplication-validator.directive';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -18,7 +16,10 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { NzInputSelectComponent } from "../../third-party/ng-zorro/nz-input-select/nz-input-select.component";
 import { NzInputTreeSelectComponent } from "../../third-party/ng-zorro/nz-input-tree-select/nz-input-tree-select.component";
-import { WebResourceService } from '../webresource/web-resource.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { MenuFormValidatorService } from './validator/menu-form-validator.service';
 
 @Component({
   selector: 'app-menu-form',
@@ -178,7 +179,6 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   ];
 
   resourceList: any;
-  private resourceService = inject(WebResourceService);
 
   /**
    * 상위 메뉴 트리
@@ -187,9 +187,10 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   menuGroupList: any;
   menuTypeList: any;
 
-  private menuService = inject(MenuService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
+  private validator = inject(MenuFormValidatorService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -199,7 +200,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
       menuGroupCode       : new FormControl<string | null>(null, { validators: Validators.required }),
       menuCode            : new FormControl<string | null>(null, {
         validators: Validators.required,
-        asyncValidators: [existingMenuValidator(this.menuService)],
+        asyncValidators: [this.validator.existingEntityValidator()],
         updateOn: 'blur'
       }),
       menuName          : new FormControl<string | null>(null, { validators: Validators.required }),
@@ -263,9 +264,16 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   }
 
   get(menuGroupCode: string, menuCode: string) {
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
 
-    this.menuService
-        .getMenu(menuGroupCode, menuCode)
+    this.http
+        .get<ResponseObject<Menu>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Menu>) => {
             if ( model.data ) {
@@ -275,7 +283,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
             }
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save() {
@@ -289,67 +297,121 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.menuService
-        .registerMenu(this.fg.getRawValue())
+    const menuGroupCode = this.fg.controls.menuGroupCode.value;
+    const menuCode = this.fg.controls.menuCode.value;
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseObject<Menu>>(url, this.fg.getRawValue(), options).pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<Menu>) => {
             this.formSaved.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
+
   }
 
   remove(): void {
-    this.menuService
-        .deleteMenu(this.fg.getRawValue())
+    const menuGroupCode = this.fg.controls.menuGroupCode.value;
+    const menuCode = this.fg.controls.menuCode.value;
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<Menu>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Menu>) => {
             this.formDeleted.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
+
   }
 
   getMenuHierarchy(menuGroupId: string): void {
     if (!menuGroupId) return;
 
-    this.menuService
-        .getMenuHierarchy(menuGroupId)
+    const url = GlobalProperty.serverUrl + `/api/system/menuhierarchy/${menuGroupId}}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<MenuHierarchy>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseList<MenuHierarchy>) => {
             this.menuHiererachy = model.data;
           }
-        );
+        )
   }
 
   getMenuGroupList(): void {
-    this.menuService
-        .getMenuGroupList()
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<MenuGroup>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseList<MenuGroup>) => {
             this.menuGroupList = model.data;
           }
-        );
+        )
+
   }
 
   getMenuTypeList(): void {
-    this.menuService
-        .getMenuTypeList()
+    const url = GlobalProperty.serverUrl + `/api/system/menu/menutype`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+    .get<ResponseObject<any>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
-          (model: ResponseList<any>) => {
+          (model: ResponseList<MenuGroup>) => {
             this.menuTypeList = model.data;
           }
-        );
+        )
+
   }
 
   getResourceList(): void {
-    this.resourceService
-        .getList()
-        .subscribe(
-          (model: ResponseList<any>) => {
-            this.resourceList = model.data;
-          }
-        );
+    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<any>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseObject<any>) => {
+        this.resourceList = model.data;
+      }
+    );
   }
 
   selectMenuGroup(menuGroupId: any): void {

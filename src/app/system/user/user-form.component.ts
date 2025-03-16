@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, viewChild, Renderer2, input, effect, output } from '@angular/core';
+import { Component, OnInit, inject, Renderer2, input, effect, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -9,12 +9,10 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { GlobalProperty } from 'src/app/core/global-property';
 
-import { UserService } from './user.service';
 import { User } from './user.model';
 import { Role } from '../role/role.model';
-import { existingUserValidator } from './user-duplication-validator.directive';
 import { DeptHierarchy } from '../dept/dept-hierarchy.model';
-import { DeptService } from '../dept/dept.service';
+import { UserFormValidatorService } from './validator/user-form-validator.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -22,6 +20,8 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzInputTreeSelectDeptComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select-dept/nz-input-tree-select-dept.component';
+import { HttpClient } from '@angular/common/http';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-user-form',
@@ -189,10 +189,10 @@ export class UserFormComponent implements OnInit {
 
   imageBase64: any;
 
-  private service = inject(UserService);
-  private deptService = inject(DeptService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
+  private validator = inject(UserFormValidatorService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -201,7 +201,7 @@ export class UserFormComponent implements OnInit {
   fg = inject(FormBuilder).group({
     userId: new FormControl<string | null>(null, {
       validators: Validators.required,
-      asyncValidators: [existingUserValidator(this.service)],
+      asyncValidators: [this.validator.existingUserValidator()],
       updateOn: 'blur'
     }),
     companyCode: new FormControl<string | null>({ value: null, disabled: true }, { validators: Validators.required }),
@@ -249,7 +249,7 @@ export class UserFormComponent implements OnInit {
 
     this.fg.reset();
 
-    this.fg.controls.userId.setAsyncValidators(existingUserValidator(this.service));
+    this.fg.controls.userId.setAsyncValidators(this.validator.existingUserValidator());
     this.fg.controls.companyCode.setValue(sessionStorage.getItem('companyCode'));
     this.fg.controls.staffNo.enable();
     this.fg.controls.enabled.setValue(true);
@@ -278,14 +278,21 @@ export class UserFormComponent implements OnInit {
   }
 
   get(userId: string): void {
-    this.service
-        .getUser(userId)
+    const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseObject<User>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<User>>('getUser', undefined))
+        )
         .subscribe(
           (model: ResponseObject<User>) => {
             model.data ? this.modifyForm(model.data) : this.newForm();
 
             if (model.data?.imageBase64 != null) {
-              //this.imageBase64 = 'data:image/jpg;base64,' + model.data.imageBase64;
               this.imageBase64 = model.data.imageBase64;
             } else {
               this.imageBase64 = '';
@@ -293,7 +300,7 @@ export class UserFormComponent implements OnInit {
 
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save(): void {
@@ -307,6 +314,7 @@ export class UserFormComponent implements OnInit {
       return;
     }
 
+    /*
     this.service
         .registerUser(this.fg.getRawValue())
         .subscribe(
@@ -315,9 +323,28 @@ export class UserFormComponent implements OnInit {
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
+    */
+
+    const url = GlobalProperty.serverUrl + `/api/system/user`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseObject<User>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<User>>('registerUser', undefined))
+        )
+        .subscribe(
+          (model: ResponseObject<User>) => {
+            this.appAlarmService.changeMessage(model.message);
+            this.formSaved.emit(this.fg.getRawValue());
+          }
+        )
   }
 
   remove(): void {
+    /*
     this.service
         .deleteUser(this.fg.controls.userId.value!)
         .subscribe(
@@ -326,26 +353,58 @@ export class UserFormComponent implements OnInit {
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );
+    */
+    const url = GlobalProperty.serverUrl + `/api/system/user/${this.fg.controls.userId.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<User>>(url, options).pipe(
+     //     catchError(this.handleError<ResponseObject<User>>('deleteUser', undefined))
+        )
+        .subscribe(
+          (model: ResponseObject<User>) => {
+            this.appAlarmService.changeMessage(model.message);
+            this.formDeleted.emit(this.fg.getRawValue());
+          }
+        )
   }
 
   getAuthorityList(): void {
-    this.service
-        .getAuthorityList()
+    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<Role>>(url, options).pipe(
+          // catchError(this.handleError<ResponseList<Role>>('getAuthorityList', undefined))
+        )
         .subscribe(
           (model: ResponseList<Role>) => {
             this.authList = model.data;
           }
-        );
+        )
   }
 
   getDeptHierarchy(): void {
-    this.deptService
-        .getDeptHierarchyList()
+    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseList<DeptHierarchy>>('getDeptHierarchyList', undefined))
+        )
         .subscribe(
           (model: ResponseList<DeptHierarchy>) => {
             this.deptHierarchy = model.data;
           }
-        );
+        )
   }
 
 }

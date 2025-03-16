@@ -80,13 +80,13 @@ export interface TabInfo {
 
 <nz-tabset [(nzSelectedIndex)]="tabIndex" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)">
   <nz-tab [nzTitle]="tabTitle">
-    <div id="grid-wrapper" class="grid">
+    <!--<div id="grid-wrapper" class="grid">-->
       <app-post-list
         [boardId]="drawer.board.formInitId"
         (editClicked)="editPost($event)"
         (viewClicked)="viewPost($event)">
       </app-post-list>
-    </div>
+    <!--</div>-->
   </nz-tab>
   @for (tab of tabs; track tab.postId) {
   <nz-tab [nzClosable]="$index >= 0" [nzTitle]="tab.tabName">

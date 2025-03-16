@@ -2,13 +2,16 @@ import { Component, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, inp
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators, ValueChangeEvent } from '@angular/forms';
 import { formatDate } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
+import { pairwise } from 'rxjs';
+
 import { WorkCalendarEvent } from './work-calendar-event.model';
-import { WorkCalendarEventService } from './work-calendar-event.service';
-import { WorkCalendarService } from '../calendar/work-calendar.service';
 import { WorkCalendar } from '../calendar/work-calendar.model';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -20,7 +23,7 @@ import { NzInputDateTimeComponent, TimeFormat } from 'src/app/third-party/ng-zor
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { pairwise } from 'rxjs';
+
 
 export interface NewFormValue {
   workCalendarId: number;
@@ -161,9 +164,8 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
 
   workGroupList: WorkCalendar[] = [];
 
-  private service = inject(WorkCalendarEventService);
-  private workGroupService = inject(WorkCalendarService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -287,6 +289,25 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   }
 
   get(id: number): void {
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<WorkCalendarEvent>>(url, options).pipe(
+            //catchError(this.handleError<ResponseObject<WorkCalendarEvent>>('getWorkGroup', undefined))
+            )
+            .subscribe(
+              (model: ResponseObject<WorkCalendarEvent>) => {
+                if (model.data) {
+                  console.log(model.data);
+                  this.modifyForm(model.data);
+                }
+              }
+          )
+
+    /*
     this.service.getWorkGroupSchedule(id)
         .subscribe(
             (model: ResponseObject<WorkCalendarEvent>) => {
@@ -296,6 +317,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
               }
             }
         );
+      */
   }
 
   save(): void {
@@ -309,6 +331,23 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
       return;
     }
 
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<WorkCalendarEvent>>(url, this.fg.getRawValue(), options).pipe(
+            //catchError(this.handleError<ResponseObject<WorkCalendarEvent>>('saveWorkGroupSchedule', undefined))
+        )
+        .subscribe(
+          (model: ResponseObject<WorkCalendarEvent>) => {
+            this.formSaved.emit(this.fg.getRawValue());
+          }
+      )
+
+    /*
     this.service
         .saveWorkGroupSchedule(this.fg.getRawValue())
         .subscribe(
@@ -316,27 +355,54 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
               this.formSaved.emit(this.fg.getRawValue());
             }
         );
+        */
   }
 
   remove(): void {
     const id = this.fg.controls.id.value!;
+
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .delete<ResponseObject<WorkCalendarEvent>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<WorkCalendarEvent>>('deleteWorkGroupSchedule', undefined))
+        )
+        .subscribe(
+          (model: ResponseObject<WorkCalendarEvent>) => {
+            this.formDeleted.emit(this.fg.getRawValue());
+          }
+        )
+
+    /*
     this.service.deleteWorkGroupSchedule(id)
         .subscribe(
             (model: ResponseObject<WorkCalendarEvent>) => {
               this.formDeleted.emit(this.fg.getRawValue());
             }
         );
+      */
   }
 
   getMyWorkGroupList(): void {
-    this.workGroupService
-        .getMyWorkGroupList()
-        .subscribe(
-          (model: ResponseList<WorkCalendar>) => {
-            this.workGroupList = model.data;
-            //this.appAlarmService.changeMessage(model.message);
-          }
-        );
+    const url =  GlobalProperty.serverUrl + `/api/grw/myworkcalendar`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<WorkCalendar>>(url, options).pipe(
+            //catchError(this.handleError<ResponseList<WorkCalendar>>('getMyWorkGroupList', undefined))
+            )
+            .subscribe(
+              (model: ResponseList<WorkCalendar>) => {
+                this.workGroupList = model.data;
+                //this.appAlarmService.changeMessage(model.message);
+              }
+            )
   }
 
   allDayCheck(check: boolean) {

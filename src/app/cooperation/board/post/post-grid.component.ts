@@ -15,7 +15,6 @@ import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/bu
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { PostService } from './post.service';
 import { Post } from './post.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -48,7 +47,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class PostGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
-  private boardService = inject(PostService);
   private http = inject(HttpClient);
 
   rowClicked = output<Post | undefined>();
@@ -112,7 +110,7 @@ export class PostGridComponent extends AgGridCommon implements OnInit {
     //this.setWidthAndHeight('100%', '100%');
   }
 
-  getArticleList(boardId: any): void {
+  getPostList(boardId: any): void {
     /*
     this.boardService
         .getList(fkBoard)

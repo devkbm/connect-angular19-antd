@@ -6,8 +6,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { MenuGroup } from '../menu/menu-group.model';
 import { Role } from '../role/role.model';
-import { UserService } from '../user/user.service';
-import { MenuService } from '../menu/menu.service';
+
 import { MenuGroupGridComponent } from '../menu/menu-group-grid.component';
 import { RoleGridComponent } from '../role/role-grid.component';
 import { RoleFormComponent } from '../role/role-form.component';
@@ -21,6 +20,9 @@ import { MenuRoleTreeComponent } from './menu-role-tree.component';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -207,8 +209,7 @@ export class MenuRoleComponent {
   menuGroup: {list: any, selectedItem: string} = {list: [], selectedItem: ''};
   role: {list: any, selectedItem: string} = {list: [], selectedItem: ''};
 
-  private menuService = inject(MenuService);
-  private userService = inject(UserService);
+  private http = inject(HttpClient);
 
   roleGrid = viewChild.required(RoleGridComponent);
   menuGroupGrid = viewChild.required(MenuGroupGridComponent);
@@ -230,27 +231,42 @@ export class MenuRoleComponent {
   }
 
   getMenuGroupList(): void {
-    this.menuService
-        .getMenuGroupList()
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+    this.http
+        .get<ResponseList<MenuGroup>>(url, options).pipe(
+                //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseList<MenuGroup>) => {
             if (model.data) {
               this.menuGroup.list = model.data;
             }
           }
-        );
+        )
   }
 
   getRoleList(): void {
-    this.userService
-        .getAuthorityList()
+    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<Role>>(url, options).pipe(
+          // catchError(this.handleError<ResponseList<Role>>('getAuthorityList', undefined))
+        )
         .subscribe(
           (model: ResponseList<Role>) => {
             if (model.data) {
               this.role.list = model.data;
             }
           }
-        );
+        )
   }
 
   openDrawer(type: 'role' | 'menuGroup' | 'menu') {

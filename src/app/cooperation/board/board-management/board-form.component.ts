@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { BoardManagementService } from './board-management.service';
-
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { BoardManagement } from './board-management.model';
 import { BoardHierarchy } from '../board-hierarcy/board-hierarchy.model';
@@ -19,6 +17,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputTreeSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select/nz-input-tree-select.component';
 import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -173,8 +174,8 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
 
   boardTypeList: any;
 
-  private service = inject(BoardManagementService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -232,7 +233,16 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    this.service.getBoard(id)
+    const url = GlobalProperty.serverUrl + `/api/grw/board/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+    this.http
+        .get<ResponseObject<BoardManagement>>(url, options)
+        .pipe(
+            //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<BoardManagement>) => {
             if (model.data) {
@@ -241,7 +251,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
               this.newForm();
             }
           }
-        );
+        )
   }
 
   save(): void {
@@ -256,29 +266,55 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.service
-        .saveBoard(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/grw/board`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+    this.http
+        .post<ResponseObject<BoardManagement>>(url, this.fg.getRawValue(), options)
+        .pipe(
+    //      catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<BoardManagement>) => {
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .deleteBoard(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/grw/board/${this.fg.controls.boardId.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<BoardManagement>>(url, options)
+        .pipe(
+    //      catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<BoardManagement>) => {
             console.log(model);
             this.formDeleted.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   getboardHierarchy(): void {
-    this.service
-        .getBoardHierarchy()
+    const url = GlobalProperty.serverUrl + `/api/grw/board/boardType`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<BoardHierarchy>>(url, options)
+        .pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseList<BoardHierarchy>) => {
             this.parentBoardItems = model.data;
@@ -288,17 +324,26 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
             // isLeaf 마지막 노드 여부
             // checked 체크 여부
           }
-        );
+        )
   }
 
   getBoardTypeList(): void {
-    this.service
-        .getBoardTypeList()
+    const url = GlobalProperty.serverUrl + `/api/grw/board/boardType`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<any>>(url, options)
+        .pipe(
+        //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<any>) => {
             this.boardTypeList = model.data;
           }
-        );
+        )
   }
 
 }

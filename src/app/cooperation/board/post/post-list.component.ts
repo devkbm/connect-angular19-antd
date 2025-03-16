@@ -1,7 +1,7 @@
 import { Component, effect, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PostService } from './post.service';
+
 import { NzListModule } from 'ng-zorro-antd/list';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -9,7 +9,6 @@ import { PostListRowComponent } from './post-list-row.component';
 import { PostList } from './post-list.model';
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
 import { HttpClient } from '@angular/common/http';
-import { ResponseList } from 'src/app/core/model/response-list';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
@@ -80,7 +79,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class PostListComponent {
 
   private http = inject(HttpClient);
-  private service = inject(PostService);
 
   posts: PostList[] = [];
 
@@ -101,23 +99,6 @@ export class PostListComponent {
   }
 
   getList(boardId: any, page: number = 0, size: number = 10): void {
-    /*
-    this.service
-        .getSlice(boardId, undefined, undefined, page)
-        .subscribe(
-          (model: ResponseSpringslice<PostList>) => {
-            if (model.numberOfElements > 0) {
-              if (model.first) this.posts = [];
-
-              this.posts.push(...model.content);
-              this.pageable ={page: model.number, isLast: model.last};
-            } else {
-              this.posts = [];
-            }
-            //this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
     let url = GlobalProperty.serverUrl + `/api/grw/board/post_slice?boardId=${boardId}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),

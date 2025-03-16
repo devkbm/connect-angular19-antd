@@ -6,9 +6,8 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { WebResourceService } from './web-resource.service';
+
 import { WebResource } from './web-resource.model';
-import { existingWebResourceValidator } from './web-resource-duplication-validator.directive';
 import { ResouceTypeEnum } from './resource-type-enum';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -18,6 +17,7 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { WebResourceFormValidatorService } from './validator/web-resource-form-validator.service';
 
 
 @Component({
@@ -111,6 +111,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   resourceTypeList: ResouceTypeEnum[] = [];
 
   private http = inject(HttpClient);
+  private validator = inject(WebResourceFormValidatorService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
 
@@ -121,7 +122,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   fg = inject(FormBuilder).group({
     resourceId   : new FormControl<string | null>(null, {
       validators: Validators.required,
-      asyncValidators: [existingWebResourceValidator(inject(WebResourceService))],
+      asyncValidators: [this.validator.existingEntityValidator()],
       updateOn: 'blur'
     }),
     resourceName  : new FormControl<string | null>('', {validators: [Validators.required]}),

@@ -6,13 +6,15 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { StaffService } from '../staff.service';
 import { NewStaff } from './new-staff-form.model';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputRregnoComponent } from 'src/app/third-party/ng-zorro/nz-input-rregno/nz-input-rregno.component';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-new-staff-form',
@@ -80,8 +82,8 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
 
   //staffNo = viewChild.required<NzInputTextComponent>('staffNo');
 
-  private service = inject(StaffService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -127,14 +129,22 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   save() {
-    this.service
-        .newStaff(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/newStaff`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<NewStaff>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<NewStaff>>('newStaff', undefined))
+        )
         .subscribe(
           (model: ResponseObject<NewStaff>) => {
             this.formSaved.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
 }

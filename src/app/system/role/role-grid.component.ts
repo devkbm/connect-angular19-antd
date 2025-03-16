@@ -16,7 +16,6 @@ ModuleRegistry.registerModules([
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { RoleService } from './role.service';
 import { Role } from './role.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -54,7 +53,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class RoleGridComponent extends AgGridCommon implements OnInit {
 
-  private service = inject(RoleService);
   private appAlarmService = inject(AppAlarmService);
   private http = inject(HttpClient);
 
@@ -123,17 +121,6 @@ export class RoleGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(params?: any): void {
-    /*
-    this.service
-        .getRoleList(params)
-        .subscribe(
-          (model: ResponseList<Role>) => {
-            this.roleList = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/system/role`;
     const options = {
       headers: getAuthorizedHttpHeaders(),

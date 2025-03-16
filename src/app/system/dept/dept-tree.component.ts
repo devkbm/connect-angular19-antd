@@ -4,9 +4,10 @@ import { Component, inject, viewChild, output, input } from '@angular/core';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DeptHierarchy } from './dept-hierarchy.model';
 
-import { DeptService } from './dept.service';
-
 import { NzFormatEmitEvent } from 'ng-zorro-antd/tree';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -38,16 +39,23 @@ export class DeptTreeComponent {
 
   itemSelected = output<any>();
 
-  private deptService = inject(DeptService);
+  private http = inject(HttpClient);
 
   public getDeptHierarchy(): void {
-    this.deptService
-        .getDeptHierarchyList()
+    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
+        )
         .subscribe(
-            (model: ResponseList<DeptHierarchy>) => {
-              model.data ? this.nodeItems = model.data : this.nodeItems = [];
-            }
-        );
+          (model: ResponseList<DeptHierarchy>) => {
+            model.data ? this.nodeItems = model.data : this.nodeItems = [];
+          }
+        )
   }
 
   nzClick(event: NzFormatEmitEvent): void {

@@ -2,13 +2,14 @@ import { Component, OnInit, Input, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
-
-import { StaffService } from './staff.service';
-import { Staff } from './staff.model';
 import { GlobalProperty } from 'src/app/core/global-property';
+
+import { Staff } from './staff.model';
 
 import { saveAs } from 'file-saver';
 
@@ -18,11 +19,12 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzUploadModule, NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzUploadModule, NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputRadioGroupComponent } from 'src/app/third-party/ng-zorro/nz-input-radio-group/nz-input-radio-group.component';
 import { NzInputRregnoComponent } from 'src/app/third-party/ng-zorro/nz-input-rregno/nz-input-rregno.component';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+
 
 @Component({
   selector: 'app-staff-regist-form',
@@ -182,8 +184,8 @@ export class StaffRegistFormComponent implements OnInit {
     {label: '여', value: 'F'}
   ];
 
-  private service = inject(StaffService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -229,8 +231,17 @@ export class StaffRegistFormComponent implements OnInit {
   }
 
   get(staffId: string): void {
-    this.service
-        .get(staffId)
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<Staff>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Staff>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Staff>) => {
             if ( model.data ) {
@@ -247,18 +258,26 @@ export class StaffRegistFormComponent implements OnInit {
             }
             this.appAlarmService.changeMessage(model.message);
           }
-      );
+      )
   }
 
   save(): void {
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<Staff>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<Staff>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Staff>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(id: any): void {
@@ -291,17 +310,28 @@ export class StaffRegistFormComponent implements OnInit {
   }
 
   downloadImage(params: any): void {
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/downloadimage`;
+    const obj:any = {staffNo: this.fg.controls.staffNo.value!};
+    const token = sessionStorage.getItem('token') as string;
 
-    this.service
-        .downloadStaffImage(this.fg.controls.staffNo.value!)
+    const options = {
+      headers: new HttpHeaders().set('X-Auth-Token', token),
+      responseType: 'blob' as 'json',
+      withCredentials: true,
+      params: obj
+    };
+
+    this.http
+        .get<Blob>(url, options).pipe(
+        //  catchError(this.handleError<Blob>('downloadEmployeeImage', undefined))
+        )
         .subscribe(
           (model: Blob) => {
             //this.appAlarmService.changeMessage(model.message);
             const blob = new Blob([model], { type: 'application/octet-stream' });
             saveAs(blob, this.fg.get('staffNo')?.value+".jpg");
-
           }
-        );
+        )
   }
 
 }

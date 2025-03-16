@@ -5,13 +5,15 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
-import { HolidayService } from './holiday.service';
 import { Holiday } from './holiday.model';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -81,9 +83,9 @@ import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-
 })
 export class HolidayFormComponent implements AfterViewInit {
 
-  private service = inject(HolidayService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -134,14 +136,22 @@ export class HolidayFormComponent implements AfterViewInit {
   get(date: Date): void {
     const id = formatDate(date,'YYYYMMdd','ko-kr');
 
-    this.service
-        .getHoliday(id)
+    const url = GlobalProperty.serverUrl + `/holiday/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseObject<Holiday>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<Holiday>) => {
-              model.data ? this.modifyForm(model.data) : this.newForm(date);
-              this.appAlarmService.changeMessage(model.message);
-            }
-        );
+          (model: ResponseObject<Holiday>) => {
+            model.data ? this.modifyForm(model.data) : this.newForm(date);
+            this.appAlarmService.changeMessage(model.message);
+          }
+      )
   }
 
   save(): void {
@@ -155,19 +165,37 @@ export class HolidayFormComponent implements AfterViewInit {
       return;
     }
 
-    this.service
-        .saveHoliday(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/holiday`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseObject<Holiday>>(url, this.fg.getRawValue(), options).pipe(
+          //catchError(this.handleError<ResponseObject<Holiday>>('saveHoliday', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Holiday>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .deleteHoliday(formatDate(this.fg.controls.date.value!,'YYYYMMdd','ko-kr'))
+    const id = formatDate(this.fg.controls.date.value!,'YYYYMMdd','ko-kr');
+
+    const url = GlobalProperty.serverUrl + `/holiday/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<Holiday>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Holiday>>('deleteHoliday', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Holiday>) => {
           this.appAlarmService.changeMessage(model.message);

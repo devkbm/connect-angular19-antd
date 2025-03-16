@@ -1,4 +1,4 @@
-import { Component, Self, Optional, OnInit, input, model, effect, viewChild, inject } from '@angular/core';
+import { Component, Self, Optional, OnInit, input, model, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -6,7 +6,9 @@ import { NzSelectModeType, NzSelectModule } from 'ng-zorro-antd/select';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { NzInputSelectDeptModel } from './nz-input-select-dept.model';
-import { NzInputSelectDeptService } from './nz-input-select-dept.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'nz-input-select-dept',
@@ -49,7 +51,7 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor, OnInit 
 
   deptList: NzInputSelectDeptModel[] = [];
 
-  private service = inject(NzInputSelectDeptService);
+  private http = inject(HttpClient);
 
   constructor(@Self()  @Optional() private ngControl: NgControl) {
     if (this.ngControl) {
@@ -82,12 +84,21 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor, OnInit 
   getDeptList(): void {
     const params = {isEnabled: true};
 
-    this.service
-         .getDeptList(params)
-         .subscribe(
+    const url = GlobalProperty.serverUrl + `/api/system/dept`;
+    const options = {
+        headers: getAuthorizedHttpHeaders(),
+        withCredentials: true,
+        params: params
+      };
+
+    this.http.get<ResponseList<NzInputSelectDeptModel>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseList<NzInputSelectDeptModel>>('getDeptList', undefined))
+        )
+        .subscribe(
           (model: ResponseList<NzInputSelectDeptModel>) => {
             this.deptList = model.data;
           }
-      );
+        )
   }
+
 }

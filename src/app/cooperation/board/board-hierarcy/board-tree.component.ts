@@ -5,7 +5,9 @@ import { NzFormatEmitEvent, NzTreeComponent, NzTreeModule } from 'ng-zorro-antd/
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { BoardHierarchy } from './board-hierarchy.model';
-import { BoardHierarcyService } from './board-hierarcy.service';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -25,13 +27,14 @@ import { BoardHierarcyService } from './board-hierarcy.service';
       (nzSearchValueChange)="searchValueChange($event)"
       (nzClick)="nzClick($event)"
       (nzDblClick)="nzDbClick($event)">
-  </nz-tree>
+    </nz-tree>
   `,
   styles: `
   `
 })
 export class BoardTreeComponent {
 
+  private http = inject(HttpClient);
   treeCom = viewChild.required(NzTreeComponent);
 
   protected items: BoardHierarchy[] = [];
@@ -42,27 +45,33 @@ export class BoardTreeComponent {
   itemSelected = output<any>();
   itemDbClicked = output<any>();
 
-  #service = inject(BoardHierarcyService);
-
   getboardHierarchy(): void {
-    this.#service
-        .getBoardHierarchy()
+    let url = GlobalProperty.serverUrl + `/api/grw/boardHierarchy`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+    this.http
+        .get<ResponseList<BoardHierarchy>>(url, options)
+        .pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseList<BoardHierarchy>) => {
-              if ( model.data ) {
-                this.items = model.data;
-                this.selectedKeys = [this.items[0].key];
-                this.itemSelected.emit(this.items[0]);
-              } else {
-                this.items = [];
-              }
+            if ( model.data ) {
+              this.items = model.data;
+              this.selectedKeys = [this.items[0].key];
+              this.itemSelected.emit(this.items[0]);
+            } else {
+              this.items = [];
+            }
 
               // title 노드 텍스트
               // key   데이터 키
               // isLeaf 마지막 노드 여부
               // checked 체크 여부
           }
-        );
+        )
   }
 
   nzClick(event: NzFormatEmitEvent): void {

@@ -17,7 +17,6 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Company } from './company.model';
-import { CompanyGridService } from './company-grid.service';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
@@ -46,7 +45,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class CompanyGridComponent extends AgGridCommon implements OnInit {
 
-  private service = inject(CompanyGridService);
   private appAlarmService = inject(AppAlarmService);
   private http = inject(HttpClient);
 
@@ -91,16 +89,6 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(): void {
-    /*
-    this.service
-        .getList()
-        .subscribe(
-          (model: ResponseList<Company>) => {
-            this._data = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
     const url = GlobalProperty.serverUrl + `/api/system/company`;
     const options = {
         headers: getAuthorizedHttpHeaders(),

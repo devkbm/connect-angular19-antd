@@ -8,13 +8,15 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { WorkCalendar } from './work-calendar.model';
 import { WorkCalendarMember } from './work-calendar-member.model';
-import { WorkCalendarService } from './work-calendar.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzInputNgxColorsComponent } from 'src/app/third-party/ngx-colors/nz-input-ngx-colors.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -97,8 +99,8 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
   color: any;
   preset_colors = ['#fff', '#000', '#2889e9', '#e920e9', '#fff500', 'rgb(236,64,64)'];
 
-  private workGroupService = inject(WorkCalendarService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -150,7 +152,15 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: number): void {
-    this.workGroupService.getWorkGroup(id)
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<WorkCalendar>>(url, options).pipe(
+        //    catchError(this.handleError<ResponseObject<WorkCalendar>>('getWorkGroup', undefined))
+        )
         .subscribe(
           (model: ResponseObject<WorkCalendar>) => {
             if (model.data) {
@@ -160,41 +170,64 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
               this.newForm();
             }
           }
-        );
+        )
   }
 
   save(): void {
-    this.workGroupService
-        .saveWorkGroup(this.fg.getRawValue())
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.post<ResponseObject<WorkCalendar>>(url, this.fg.getRawValue(), options).pipe(
+        //    catchError(this.handleError<ResponseObject<WorkCalendar>>('getWorkGroup', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<WorkCalendar>) => {
-              this.formSaved.emit(this.fg.getRawValue());
-            }
-        );
+          (model: ResponseObject<WorkCalendar>) => {
+            this.formSaved.emit(this.fg.getRawValue());
+          }
+        )
   }
 
   remove(): void {
     const id: number = this.fg.controls.workCalendarId.value!;
 
-    this.workGroupService.deleteWorkGroup(id)
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.delete<ResponseObject<WorkCalendar>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<WorkCalendar>>('deleteWorkGroup', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<WorkCalendar>) => {
-              this.formDeleted.emit(this.fg.getRawValue());
-            }
-        );
+          (model: ResponseObject<WorkCalendar>) => {
+            this.formDeleted.emit(this.fg.getRawValue());
+          }
+      )
   }
 
   getAllMember(): void {
-    this.workGroupService.getMemberList()
+    const url =  GlobalProperty.serverUrl + `/api/system/user`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<WorkCalendarMember>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseList<WorkCalendarMember>>('getMemberList', undefined))
+        )
         .subscribe(
-            (model: ResponseList<WorkCalendarMember>) => {
-              if (model.data) {
-                  this.memberList = model.data;
-              } else {
-                  this.memberList = [];
-              }
-          }
-        );
+          (model: ResponseList<WorkCalendarMember>) => {
+            if (model.data) {
+                this.memberList = model.data;
+            } else {
+                this.memberList = [];
+            }
+        }
+      )
   }
 
   selectColor(color: any): void {

@@ -14,8 +14,10 @@ import { createEventId, INITIAL_EVENTS } from './event-util';
 import { HolidayService } from 'src/app/system/holiday/holiday.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DateInfo } from 'src/app/system/holiday/holiday.model';
-import { WorkCalendarEventService } from 'src/app/cooperation/work-calendar/event/work-calendar-event.service';
 import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-calendar-event.model';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-calendar-fullcalendar',
@@ -38,6 +40,8 @@ import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarFullcalendarComponent {
+
+  private http = inject(HttpClient);
 
   dayClicked = output<DateSelectArg>();
   eventClicked = output<EventClickArg>();
@@ -122,7 +126,6 @@ export class CalendarFullcalendarComponent {
           );
   }
 
-  private service = inject(WorkCalendarEventService);
   eventData: EventInput[] = [];
 
   getEvents() {
@@ -132,24 +135,37 @@ export class CalendarFullcalendarComponent {
       toDate: '20250131'
     };
 
-    this.service
-        .getWorkScheduleList(param)
-        .subscribe(
-            (model: ResponseList<WorkCalendarEvent>) => {
-              let data: any[] = [];
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: {
+        fkWorkCalendar : 1,
+        fromDate: '20250101',
+        toDate: '20250131'
+      }
+    };
 
-              model.data.forEach(e => data.push({
-                id: e.id,
-                title: e.text,
-                start: e.start as string,
-                end: e.end as string,
-                barColor: e.color
-              }));
-              this.eventData = data;
-              this.calendarOptions().events = this.eventData;
-              this.changeDetector.detectChanges();
-            }
-        );
+    this.http
+        .get<ResponseList<WorkCalendarEvent>>(url, options).pipe(
+          //catchError(this.handleError<ResponseList<WorkCalendarEvent>>('getWorkScheduleList', undefined))
+        )
+        .subscribe(
+          (model: ResponseList<WorkCalendarEvent>) => {
+            let data: any[] = [];
+
+            model.data.forEach(e => data.push({
+              id: e.id,
+              title: e.text,
+              start: e.start as string,
+              end: e.end as string,
+              barColor: e.color
+            }));
+            this.eventData = data;
+            this.calendarOptions().events = this.eventData;
+            this.changeDetector.detectChanges();
+          }
+      )
   }
 
   setEvents(events: any[]) {

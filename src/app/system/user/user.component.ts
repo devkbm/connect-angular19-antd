@@ -1,13 +1,11 @@
-import { Component, OnInit, inject, viewChild } from '@angular/core';
+import { Component, OnInit, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ResponseObject } from 'src/app/core/model/response-object';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 
 import { UserGridComponent } from './user-grid.component';
 import { UserFormDrawerComponent } from './user-form-drawer.component';
-import { UserService } from './user.service';
 import { User } from './user.model';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -183,7 +181,7 @@ export class UserComponent implements OnInit {
     user: { visible: false, formInitId: null }
   }
 
-  private service = inject(UserService);
+  //private service = inject(UserService);
 
   ngOnInit() {
   }
@@ -212,6 +210,7 @@ export class UserComponent implements OnInit {
 
   deleteUser() {
     const userId: string = this.drawer.user.formInitId;
+    /*
     this.service
         .deleteUser(userId)
         .subscribe(
@@ -219,6 +218,7 @@ export class UserComponent implements OnInit {
             this.getUserList();
           }
         );
+    */
   }
 
   userGridSelected(params: User) {

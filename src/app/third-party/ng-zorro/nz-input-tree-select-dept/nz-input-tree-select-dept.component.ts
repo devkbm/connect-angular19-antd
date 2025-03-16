@@ -4,8 +4,10 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { NzInputTreeSelectDept } from './nz-input-tree-select-dept.model';
-import { NzInputTreeSelectService } from './nz-input-tree-select-dept.service';
 import { NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'nz-input-tree-select-dept',
@@ -37,7 +39,7 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnI
   onChange!: (value: string) => void;
   onTouched!: () => void;
 
-  private deptService = inject(NzInputTreeSelectService);
+  private http = inject(HttpClient);
 
   constructor(@Self()  @Optional() private ngControl: NgControl) {
     if (this.ngControl) {
@@ -65,8 +67,15 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnI
   compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.value === o2.value : o1 === o2);
 
   getDeptHierarchy(): void {
-    this.deptService
-        .getDeptHierarchyList()
+    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseList<NzInputTreeSelectDept>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
+        )
         .subscribe(
           (model: ResponseList<NzInputTreeSelectDept>) => {
             if (model.data) {
@@ -75,6 +84,7 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnI
               this.nodes.set([]);
             }
           }
-        );
+        )
   }
+
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -9,8 +10,8 @@ import { NzCheckboxModule, NzCheckboxOption } from 'ng-zorro-antd/checkbox';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
-import { WorkCalendarService } from './work-calendar.service';
-
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { GlobalProperty } from 'src/app/core/global-property';
 
 @Component({
   selector: 'app-my-work-calendar-list',
@@ -53,15 +54,22 @@ export class MyWorkCalendarListComponent implements OnInit {
   rowDoubleClicked = output<any>();
 
   private appAlarmService = inject(AppAlarmService);
-  private workGroupService = inject(WorkCalendarService);
+  private http = inject(HttpClient);
 
   ngOnInit() {
     this.getMyWorkGroupList();
   }
 
   getMyWorkGroupList(): void {
-    this.workGroupService
-        .getMyWorkGroupList()
+    const url =  GlobalProperty.serverUrl + `/api/grw/myworkcalendar`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<any>>(url, options).pipe(
+            //catchError(this.handleError<ResponseList<WorkCalendar>>('getWorkGroupList', undefined))
+        )
         .subscribe(
           (model: ResponseList<any>) => {
             this.workGroupList = model.data;
@@ -72,7 +80,7 @@ export class MyWorkCalendarListComponent implements OnInit {
 
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   selectionChanged(event: any): void {

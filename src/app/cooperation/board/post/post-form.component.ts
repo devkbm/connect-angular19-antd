@@ -19,10 +19,11 @@ import { GlobalProperty } from 'src/app/core/global-property';
 
 //import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular';
-import { PostService } from './post.service';
 import { Post } from './post.model';
 import { PostFileUploadComponent } from './post-file-upload.component';
 import { SessionManager } from 'src/app/core/session-manager';
+import { HttpClient } from '@angular/common/http';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -86,7 +87,7 @@ import { SessionManager } from 'src/app/core/session-manager';
         [isSavePopupConfirm]="false"
         (closeClick)="closeForm()"
         (saveClick)="save()"
-        (deleteClick)="remove(fg.get('articleId')?.value)">
+        (deleteClick)="remove(fg.controls.postId.value)">
       </app-nz-crud-button-group>
     </div>
 
@@ -121,16 +122,10 @@ import { SessionManager } from 'src/app/core/session-manager';
 export class PostFormComponent implements AfterViewInit {
   //public Editor = ClassicEditor;
 
-  private boardService= inject(PostService);
   private renderer = inject(Renderer2);
-
-  editorConfig = {
-    //plugins: [ Font ],
-    toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor','heading', '|', 'bold', 'italic' ]
-  };
+  private http = inject(HttpClient);
 
   attachedFileList: any = [];
-
   uploadedfileList: any = [];
 
   textData: any;
@@ -139,11 +134,11 @@ export class PostFormComponent implements AfterViewInit {
   @Input() boardId!: string;
 
   formElement = viewChild.required<ElementRef>('form');
-
   ckEditor = viewChild.required<CKEditorComponent>('ckEditor');
-
   uploader = viewChild.required(PostFileUploadComponent);
   uploaderParams = '';
+
+  formInitId = input<string>('');
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -158,8 +153,6 @@ export class PostFormComponent implements AfterViewInit {
     contents        : new FormControl<string | null>(null),
     attachFile      : new FormControl<any>(null)
   });
-
-  formInitId = input<string>('');
 
   constructor() {
 
@@ -204,17 +197,30 @@ export class PostFormComponent implements AfterViewInit {
   closeForm(): void {
     this.formClosed.emit(this.fg.getRawValue());
 
+    this.closePopup();
+  }
+
+  closePopup() {
     // 팝업 호출한 경우 팝업 종료
     if (window.opener) {
       window.opener.postMessage(this.boardId);
       window.close();
     }
-
   }
 
   get(id: any): void {
-    this.boardService.get(id)
-        .subscribe(
+    const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+      .get<ResponseObject<Post>>(url, options)
+      .pipe(
+         // catchError((err) => Observable.throw(err))
+      )
+      .subscribe(
           (model: ResponseObject<Post>) => {
             if (model.data) {
               this.article = model.data;
@@ -227,49 +233,56 @@ export class PostFormComponent implements AfterViewInit {
               this.newForm(null);
             }
           }
-        );
+        )
   }
 
   save(): void {
+    const url = GlobalProperty.serverUrl + `/api/grw/board/post`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
 
-    this.boardService
-        .saveArticleJson(this.fg.getRawValue())
+    this.http
+        .post<ResponseObject<string>>(url, this.fg.getRawValue(), options)
+        .pipe(
+            //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<string>) => {
             //console.log(model);
 
+            this.formSaved.emit(this.fg.getRawValue());
+
             this.uploader().postId.set(model.data);
             if (this.uploader().isUpload()) {
               this.uploader().upload();
+            } else {
+              this.closePopup();
             }
-
-            this.formSaved.emit(this.fg.getRawValue());
-
-            // 팝업 호출한 경우 재조회 후 팝업 종료
-            /*
-            if (window.opener) {
-              window.opener.postMessage(this.boardId);
-              window.close();
-            }
-            */
           }
-        );
+        )
+
   }
 
   remove(id: any): void {
-    console.log(id);
-    this.boardService.delete(id)
-      .subscribe(
-        (model: ResponseObject<Post>) => {
-          this.formDeleted.emit(this.fg.getRawValue());
+    const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+    this.http
+        .delete<ResponseObject<Post>>(url, options)
+        .pipe(
+          //catchError((err) => Observable.throw(err))
+        )
+        .subscribe(
+          (model: ResponseObject<Post>) => {
+            this.formDeleted.emit(this.fg.getRawValue());
 
-          // 팝업 호출한 경우 재조회 후 팝업 종료
-          if (window.opener) {
-            window.opener.postMessage(this.boardId);
-            window.close();
+            this.closePopup();
           }
-        }
-      );
+        )
   }
 
   fileUploadChange(param: NzUploadChangeParam): void {

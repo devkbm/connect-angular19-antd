@@ -6,11 +6,13 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
-import { CompanyFormService } from './company-form.service';
 import { Company } from './company.model';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-company-form',
@@ -105,9 +107,9 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 })
 export class CompanyFormComponent  {
 
-  private service = inject(CompanyFormService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -151,14 +153,22 @@ export class CompanyFormComponent  {
   }
 
   get(id: string) {
-    this.service
-        .get(id)
+    const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<Company>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Company>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Company>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
+
   }
 
   save() {
@@ -172,25 +182,39 @@ export class CompanyFormComponent  {
       return;
     }
 
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/system/company`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.post<ResponseObject<Company>>(url, this.fg.getRawValue(), options).pipe(
+         // catchError(this.handleError<ResponseObject<Company>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Company>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove() {
-    this.service
-        .delete(this.fg.controls.companyCode.value!)
+    const url = GlobalProperty.serverUrl + `/api/system/company/${this.fg.controls.companyCode.value!}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.delete<ResponseObject<Company>>(url, options).pipe(
+       //   catchError(this.handleError<ResponseObject<Company>>('delete', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<Company>) => {
-            this.appAlarmService.changeMessage(model.message);
-            this.formDeleted.emit(this.fg.getRawValue());
-            }
-        );
+          (model: ResponseObject<Company>) => {
+          this.appAlarmService.changeMessage(model.message);
+          this.formDeleted.emit(this.fg.getRawValue());
+          }
+      )
   }
 
 }

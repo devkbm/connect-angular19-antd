@@ -4,11 +4,13 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { TrustHtmlPipe } from "src/app/core/pipe/trust-html.pipe";
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { PostService } from './post.service';
 import { Post } from './post.model';
 import { SessionManager } from 'src/app/core/session-manager';
 import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-download/nz-file-download.component';
 import { PostFileUploadComponent } from './post-file-upload.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-post-view',
@@ -43,7 +45,7 @@ nz-page-header {
 })
 export class PostViewComponent {
 
-  private service= inject(PostService);
+  private http = inject(HttpClient);
 
   postId = input<string>();
 
@@ -60,28 +62,50 @@ export class PostViewComponent {
   }
 
   get(id: any): void {
-    this.service
-        .get(id)
-        .subscribe(
-          (model: ResponseObject<Post>) => {
-            if (model.data) {
-              this.post = model.data;
-              this.fileList = model.data.fileList;
+    const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
 
-              this.updateHitCount(this.postId(), SessionManager.getUserId());
-            }
+    this.http
+      .get<ResponseObject<Post>>(url, options)
+      .pipe(
+          // catchError((err) => Observable.throw(err))
+      )
+      .subscribe(
+        (model: ResponseObject<Post>) => {
+          if (model.data) {
+            this.post = model.data;
+            this.fileList = model.data.fileList;
+
+            this.updateHitCount(this.postId(), SessionManager.getUserId());
           }
-        );
+        }
+      )
   }
 
   updateHitCount(id: any, userId: any) {
-    this.service
-        .updateHitCount(id, userId)
+    const url = GlobalProperty.serverUrl + `/api/grw/board/post/hitcnt`;
+    const param = {id: id, userId: userId};
+
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: param
+    };
+
+    this.http
+        .get<ResponseObject<void>>(url, options)
+        .pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseObject<void>) => {
 
           }
-        );
+        )
+
   }
 
 }

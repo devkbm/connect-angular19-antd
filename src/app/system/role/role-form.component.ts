@@ -7,15 +7,16 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Role } from './role.model';
-import { existingRoleValidator } from './role-duplication-validator.directive';
-import { RoleService } from './role.service';
-import { MenuService } from '../menu/menu.service';
 import { MenuGroup } from '../menu/menu-group.model';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { RoleFormValidatorService } from './validator/role-form-validator.service';
 
 
 @Component({
@@ -181,11 +182,11 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
 
   //roleCode = viewChild.required<NzInputTextComponent>('roleCode');
 
-  private service = inject(RoleService);
+  private http = inject(HttpClient);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private validator = inject(RoleFormValidatorService);
 
-  private menuService = inject(MenuService);
   menuGroupList: any;
 
   formSaved = output<any>();
@@ -195,7 +196,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   fg = inject(FormBuilder).group({
     roleCode : new FormControl<string | null>('', {
                                                     validators: Validators.required,
-                                                    asyncValidators: [existingRoleValidator(this.service)],
+                                                    asyncValidators: [this.validator.existingEntityValidator()],
                                                     updateOn: 'blur'
                                                   }),
     roleName      : new FormControl<string | null>(null),
@@ -228,7 +229,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
 
   newForm(): void {
     this.fg.reset();
-    this.fg.controls.roleCode.setAsyncValidators(existingRoleValidator(this.service));
+    this.fg.controls.roleCode.setAsyncValidators(this.validator.existingEntityValidator());
 
     this.fg.controls.roleCode.enable();
 
@@ -247,14 +248,23 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    this.service
-        .getRole(id)
+    const url = GlobalProperty.serverUrl + `/api/system/role/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseObject<Role>>(url, options)
+        .pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Role>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save(): void {
@@ -268,35 +278,60 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.service
-        .registerRole(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseObject<Role>>(url, this.fg.getRawValue(), options).pipe(
+          //catchError(this.handleError<ResponseObject<Role>>('registerAuthority', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Role>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .deleteRole(this.fg.controls.roleCode.value!)
+    const url = GlobalProperty.serverUrl + `/api/system/role/${this.fg.controls.roleCode.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<Role>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Role>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   getMenuGroupList(): void {
-    this.menuService
-        .getMenuGroupList()
+    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<MenuGroup>>(url, options).pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseList<MenuGroup>) => {
             this.menuGroupList = model.data;
           }
         );
+
   }
 
 }

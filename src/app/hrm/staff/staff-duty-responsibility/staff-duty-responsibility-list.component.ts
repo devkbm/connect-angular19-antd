@@ -5,7 +5,6 @@ import { AfterViewInit, Component, inject, Input, OnChanges, OnInit, SimpleChang
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffDutyResponsibility } from './staff-duty-responsibility.model';
-import { StaffDutyResponsibilityService } from './staff-duty-responsibility.service';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
@@ -34,9 +33,7 @@ export class StaffDutyResponsibilityListComponent implements OnInit, AfterViewIn
 
   @Input() staffId?: string;
 
-  constructor(
-    private service: StaffDutyResponsibilityService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
   }
@@ -51,15 +48,6 @@ export class StaffDutyResponsibilityListComponent implements OnInit, AfterViewIn
   }
 
   getList(staffId: string) {
-    /*
-    this.service
-        .getList(staffId)
-        .subscribe(
-          (model: ResponseList<StaffDutyResponsibility>) => {
-            this._list = model.data;
-          }
-        );
-    */
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/dutyresponsibility`;
     const options = {
       headers: getAuthorizedHttpHeaders(),

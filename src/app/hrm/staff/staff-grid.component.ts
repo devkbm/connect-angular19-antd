@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -11,15 +12,14 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
+import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
+
 import { ResponseList } from 'src/app/core/model/response-list';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
-
-import { StaffService } from './staff.service';
-import { Staff } from './staff.model';
-import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+
+import { Staff } from './staff.model';
 
 @Component({
   selector: 'app-staff-grid',
@@ -45,7 +45,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class StaffGridComponent extends AgGridCommon implements OnInit {
 
-  private service = inject(StaffService);
   private appAlarmService = inject(AppAlarmService);
   private http = inject(HttpClient);
 
@@ -87,17 +86,6 @@ export class StaffGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(params?: any): void {
-    /*
-    this.service
-        .getStaffList(params)
-        .subscribe(
-          (model: ResponseList<Staff>) => {
-            this.list = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
     const obj:any = params;
     const options = {

@@ -7,7 +7,6 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
 import { RoleGridComponent } from './role-grid.component';
 import { RoleFormDrawerComponent } from './role-form-drawer.component';
-import { RoleService } from './role.service';
 import { Role } from './role.model';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -19,6 +18,9 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { ButtonTemplate, NzButtonsComponent } from 'src/app/third-party/ng-zorro/nz-buttons/nz-buttons.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-role',
@@ -121,7 +123,7 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
 })
 export class RoleComponent implements AfterViewInit {
 
-  private service = inject(RoleService);
+  private http = inject(HttpClient);
 
   grid = viewChild.required(RoleGridComponent);
 
@@ -209,14 +211,21 @@ export class RoleComponent implements AfterViewInit {
 
   delete() {
     const id = this.grid().getSelectedRows()[0].roleCode;
+    const url = GlobalProperty.serverUrl + `/api/system/role/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
 
-    this.service
-        .deleteRole(id)
+    this.http
+        .delete<ResponseObject<Role>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Role>>('getRole', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Role>) => {
             this.getRoleList();
           }
-        );
+        )
   }
 
 }

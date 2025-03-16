@@ -16,8 +16,7 @@ ModuleRegistry.registerModules([
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { HolidayService } from './holiday.service';
-import { DateInfo, Holiday } from './holiday.model';
+import { DateInfo } from './holiday.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
@@ -48,7 +47,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class HolidayGridComponent extends AgGridCommon implements OnInit {
 
   private appAlarmService = inject(AppAlarmService);
-  private holidayService = inject(HolidayService);
   private http = inject(HttpClient);
 
   rowClicked = output<DateInfo>();
@@ -100,17 +98,6 @@ export class HolidayGridComponent extends AgGridCommon implements OnInit {
   }
 
   getGridList(fromDate: string, toDate: string): void {
-    /*
-    this.holidayService
-        .getHolidayList(fromDate, toDate)
-        .subscribe(
-          (model: ResponseList<DateInfo>) => {
-            this.gridList.set(model.data);
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/system/holiday`;
     const params = {fromDate: fromDate, toDate: toDate};
 

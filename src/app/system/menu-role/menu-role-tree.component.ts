@@ -9,9 +9,11 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { MenuRoleHierarchy } from '../menu/menu-role-hierarchy.model';
 import { MenuRoleMapping } from '../menu/menu-role-mapping.model';
 
-import { MenuRoleService } from './menu-role.service';
 import { NzTreeNodeKey } from 'ng-zorro-antd/core/tree';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 function convert(tree: MenuRoleHierarchy[]) {
@@ -86,7 +88,7 @@ export class MenuRoleTreeComponent {
 
   itemSelected = output<any>();
 
-  private menuService = inject(MenuRoleService);
+  private http = inject(HttpClient);
 
   constructor() {
     effect(() => {
@@ -99,23 +101,32 @@ export class MenuRoleTreeComponent {
   }
 
   public getHierarchy(): void {
-    this.menuService
-        .getMenuRoleHierarchy(this.menuGroupCode(), this.roleCode())
+    const url = GlobalProperty.serverUrl + `/api/system/menurolehierarchy/${this.menuGroupCode()}/${this.roleCode()}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .get<ResponseList<MenuRoleHierarchy>>(url, options).pipe(
+                //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
-            (model: ResponseList<MenuRoleHierarchy>) => {
-              if ( model.data ) {
-                this.nodeItems = model.data;
+          (model: ResponseList<MenuRoleHierarchy>) => {
+            if ( model.data ) {
+              this.nodeItems = model.data;
 
-                //this.defaultCheckedKeys = this.nodeItems.flatMap(e => [e, ...e.children || []]).map(e => e.checked ? e.key : -1).filter(val => val !== -1);
-                this.defaultCheckedKeys = convert(this.nodeItems);
-                console.log(this.defaultCheckedKeys);
-                console.log(convert(this.nodeItems));
+              //this.defaultCheckedKeys = this.nodeItems.flatMap(e => [e, ...e.children || []]).map(e => e.checked ? e.key : -1).filter(val => val !== -1);
+              this.defaultCheckedKeys = convert(this.nodeItems);
+              console.log(this.defaultCheckedKeys);
+              console.log(convert(this.nodeItems));
 
-              } else {
-                this.nodeItems = [];
-              }
+            } else {
+              this.nodeItems = [];
             }
-        );
+          }
+      )
+
   }
 
   nzClick(event: NzFormatEmitEvent): void {
@@ -134,14 +145,21 @@ export class MenuRoleTreeComponent {
   save() {
     this.setSaveNodes();
 
-    this.menuService
-        .saveMenuRoleMapping(this.saveNodes)
+    const url = GlobalProperty.serverUrl + `/api/system/menurole`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseList<MenuRoleMapping>>(url, this.saveNodes, options).pipe(
+          //catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: ResponseList<MenuRoleMapping>) => {
             this.getHierarchy();
           }
-        );
-
+        )
   }
 
   setSaveNodes() {

@@ -8,7 +8,6 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 
 import { HolidayFormDrawerComponent } from './holiday-form-drawer.component';
 import { HolidayGridComponent } from './holiday-grid.component';
-import { HolidayService } from './holiday.service';
 import { Holiday } from './holiday.model';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -23,6 +22,9 @@ import { CalendarDaypilotNavigatorComponent } from 'src/app/third-party/daypilot
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 import { DateSelectArg } from '@fullcalendar/core/index.js';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-holiday',
@@ -142,8 +144,8 @@ import { DateSelectArg } from '@fullcalendar/core/index.js';
 })
 export class HolidayComponent implements AfterViewInit {
 
-  private service = inject(HolidayService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   grid = viewChild.required(HolidayGridComponent);
   calendar = viewChild.required(CalendarFullcalendarComponent);
@@ -227,8 +229,16 @@ export class HolidayComponent implements AfterViewInit {
     const id = formatDate(date, 'yyyyMMdd','ko-kr') as string;
     if (id === null) return;
 
-    this.service
-        .deleteHoliday(id)
+    const url = GlobalProperty.serverUrl + `/holiday/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<Holiday>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<Holiday>>('deleteHoliday', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Holiday>) => {
             this.appAlarmService.changeMessage(model.message);

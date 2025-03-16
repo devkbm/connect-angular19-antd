@@ -13,9 +13,13 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { CompanyFormDrawerComponent } from "./company-form-drawer.component";
 
-import { CompanyGridService } from './company-grid.service';
 import { CompanyGridComponent } from './company-grid.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { ResponseObject } from 'src/app/core/model/response-object';
+import { Company } from './company.model';
 
 @Component({
   selector: 'app-company',
@@ -114,7 +118,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 })
 export class CompanyComponent implements OnInit {
 
-  private service = inject(CompanyGridService);
+  private http = inject(HttpClient);
 
   grid = viewChild.required(CompanyGridComponent);
 
@@ -190,15 +194,21 @@ export class CompanyComponent implements OnInit {
   delete(): void {
 
     const id = this.grid().getSelectedRows()[0].companyCode;
-/*
-    this.service
-        .delete(id)
+
+    const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.delete<ResponseObject<Company>>(url, options).pipe(
+        //   catchError(this.handleError<ResponseObject<Company>>('delete', undefined))
+        )
         .subscribe(
           (model: ResponseObject<Company>) => {
             this.getList();
           }
-        );
-*/
+      )
   }
 
   resourceGridRowClicked(item: any): void {

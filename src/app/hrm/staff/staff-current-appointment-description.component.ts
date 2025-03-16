@@ -1,9 +1,10 @@
 import { Component, effect, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-
-import { StaffService } from './staff.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 
@@ -52,7 +53,7 @@ export class StaffCurrentAppointmentDescriptionComponent {
 
   info?: StaffCurrentAppointment;
 
-  private service = inject(StaffService);
+  private http = inject(HttpClient);
 
   constructor() {
     effect(() => {
@@ -63,14 +64,22 @@ export class StaffCurrentAppointmentDescriptionComponent {
   }
 
   get(staffNo: string): void {
-    if (staffNo) {
-      this.service
-        .getCurrentAppointment(staffNo)
+
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffNo}/currentappointment`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<StaffCurrentAppointment>>(url, options).pipe(
+      //catchError(this.handleError<ResponseObject<StaffCurrentAppointment>>('getCurrentAppointment', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffCurrentAppointment>) => {
             this.info = model.data;
           }
-      );
-    }
+        )
+
   }
 }

@@ -3,11 +3,13 @@ import { CommonModule, formatDate } from '@angular/common';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { WorkCalendarEventService } from '../event/work-calendar-event.service';
 import { WorkCalendarEvent } from '../event/work-calendar-event.model';
 
 import { CalendarDaypilotComponent, ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.component';
 import { CalendarFullcalendarComponent } from "../../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 export interface NewDateSelectedArgs {
   workCalendarId: number;
@@ -55,7 +57,7 @@ export class WorkCalendarViewComponent implements AfterViewInit {
   eventData: any[] = [];
   mode?: ModeChangedArgs;
 
-  private service = inject(WorkCalendarEventService);
+  private http = inject(HttpClient);
 
   ngAfterViewInit(): void {
     //this.from = this.datePipe.transform(this.calendar.start.toDateLocal(),'yyyyMMdd') ?? '';
@@ -94,47 +96,54 @@ export class WorkCalendarViewComponent implements AfterViewInit {
       this.calendar2().setEvents([]);
       return;
     }
-    const param = {
-      fkWorkCalendar : this.fkWorkCalendar,
-      fromDate: this.from,
-      toDate: this.to
+
+    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: {
+        fkWorkCalendar : this.fkWorkCalendar,
+        fromDate: this.from,
+        toDate: this.to
+      }
     };
 
-    // console.log(param);
-
-    this.service
-        .getWorkScheduleList(param)
+    this.http
+        .get<ResponseList<WorkCalendarEvent>>(url, options).pipe(
+       //     catchError(this.handleError<ResponseList<WorkCalendarEvent>>('getWorkScheduleList', undefined))
+        )
         .subscribe(
-            (model: ResponseList<WorkCalendarEvent>) => {
-              /*
-              let data: any[] = [];
+          (model: ResponseList<WorkCalendarEvent>) => {
+            /*
+            let data: any[] = [];
 
-              model.data.forEach(e => data.push({
-                id: e.id,
-                text: e.text,
-                start: new DayPilot.Date(e.start as string),
-                end: new DayPilot.Date(e.end as string),
-                barColor: e.color
-              }));
-              this.eventData = data;
-              this.eventDataChanged.emit(this.eventData);
-              */
+            model.data.forEach(e => data.push({
+              id: e.id,
+              text: e.text,
+              start: new DayPilot.Date(e.start as string),
+              end: new DayPilot.Date(e.end as string),
+              barColor: e.color
+            }));
+            this.eventData = data;
+            this.eventDataChanged.emit(this.eventData);
+            */
 
-              let data2: any[] = [];
+            let data2: any[] = [];
 
-              model.data.forEach(e => data2.push({
-                id: e.id,
-                title: e.text,
-                start: e.start as string,
-                end: e.end as string,
-                backgroundColor: e.color,
-                allDay: e.allDay
-              }));
+            model.data.forEach(e => data2.push({
+              id: e.id,
+              title: e.text,
+              start: e.start as string,
+              end: e.end as string,
+              backgroundColor: e.color,
+              allDay: e.allDay
+            }));
 
-              this.calendar2().setEvents(data2);
-            }
-        );
+            this.calendar2().setEvents(data2);
+          }
+      )
 
+    // console.log(param);
 
   }
 

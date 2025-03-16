@@ -16,7 +16,6 @@ ModuleRegistry.registerModules([
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { StaffAppointmentRecordService } from './staff-appointment-record.service';
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -46,7 +45,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class StaffAppointmentRecordGridComponent extends AgGridCommon implements OnChanges {
 
   private appAlarmService = inject(AppAlarmService);
-  private service = inject(StaffAppointmentRecordService);
   private http = inject(HttpClient);
 
   _list: StaffAppointmentRecord[] = [];
@@ -102,17 +100,6 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon implements
   }
 
   getList(staffNo: string): void {
-    /*
-    this.service
-        .getList(staffNo)
-        .subscribe(
-          (model: ResponseList<StaffAppointmentRecord>) => {
-            this._list = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffNo}/record`;
     const options = {
       headers: getAuthorizedHttpHeaders(),

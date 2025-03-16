@@ -16,7 +16,6 @@ ModuleRegistry.registerModules([
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { MenuService } from './menu.service';
 import { Menu } from './menu.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -46,7 +45,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class MenuGridComponent extends AgGridCommon {
 
-  private menuService = inject(MenuService);
   private appAlarmService = inject(AppAlarmService);
   private http = inject(HttpClient);
 
@@ -89,17 +87,6 @@ export class MenuGridComponent extends AgGridCommon {
   };
 
   getMenuList(params?: any) {
-    /*
-    this.menuService
-        .getMenuList(params)
-        .subscribe(
-          (model: ResponseList<Menu>) => {
-            this.menuList = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/system/menu`;
     const options = {
       headers: getAuthorizedHttpHeaders(),

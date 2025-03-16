@@ -16,7 +16,6 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { BizCode } from './biz-code.model';
-import { BizCodeService } from './biz-code.service';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
@@ -46,7 +45,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class BizCodeGridComponent extends AgGridCommon {
 
-  private service = inject(BizCodeService);
   private appAlarmService = inject(AppAlarmService);
   private http = inject(HttpClient);
 
@@ -87,18 +85,7 @@ export class BizCodeGridComponent extends AgGridCommon {
   };
 
   getList(typeId: string): void {
-    /*
-    this.service
-        .getList(typeId)
-        .subscribe(
-          (model: ResponseList<BizCode>) => {
-            this._list = model.data;
-
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-    const url = GlobalProperty.serverUrl + `/${typeId}/bizcode`;
+    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${typeId}/bizcode`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true

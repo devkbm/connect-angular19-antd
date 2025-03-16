@@ -6,11 +6,9 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
-import { DeptService } from 'src/app/system/dept/dept.service';
 import { ResponseMap } from 'src/app/core/model/response-map';
 
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
-import { StaffAppointmentRecordService } from './staff-appointment-record.service';
 import { HrmCode } from '../../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../../hrm-code/hrm-code.service';
 
@@ -21,6 +19,9 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzInputTreeSelectDeptComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select-dept/nz-input-tree-select-dept.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -296,10 +297,9 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
    */
   dutyResponsibilityCodeList: HrmCode[] = [];
 
-  private service = inject(StaffAppointmentRecordService);
   private hrmCodeService = inject(HrmCodeService);
-  private deptService = inject(DeptService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -340,14 +340,6 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.getHrmTypeDetailCodeList('HR0000', "appointmentTypeList");
-    //this.getHrmTypeDetailCodeList('HR0001', "groupJobCodeList");
-    //this.getHrmTypeDetailCodeList('HR0002', "jobPositionCodeList");
-    //this.getHrmTypeDetailCodeList('HR0003', "occupationCodeList");
-    //this.getHrmTypeDetailCodeList('HR0004', "jobGradeCodeList");
-    //this.getHrmTypeDetailCodeList('HR0005', "payStepCodeList");
-    //this.getHrmTypeDetailCodeList('HR0006', "jobCodeList");
-    //this.getHrmTypeDetailCodeList('HR0007', "dutyResponsibilityCodeList");
 
     this.getCodeMap([
       {typeId: 'HR0000', propertyName: "appointmentTypeList"},
@@ -387,9 +379,16 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
   }
 
   get(staffId: string, id: string): void {
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
 
-    this.service
-        .get(staffId, id)
+    this.http
+        .get<ResponseObject<StaffAppointmentRecord>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffAppointmentRecord>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffAppointmentRecord>) => {
             if ( model.data ) {
@@ -400,50 +399,45 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
             }
             this.appAlarmService.changeMessage(model.message);
           }
-      );
+        )
   }
 
   save(): void {
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/appointmentrecord`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<StaffAppointmentRecord>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffAppointmentRecord>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffAppointmentRecord>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(staffId: string, id: string): void {
-    this.service
-        .delete(staffId, id)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .delete<ResponseObject<StaffAppointmentRecord>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffAppointmentRecord>>('delete', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffAppointmentRecord>) => {
             this.appAlarmService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
-        );
-  }
-
-  // [key: string]: any
-  getHrmTypeDetailCodeList(typeId: string, propertyName: string): void {
-    const params = {
-      typeId : typeId
-    };
-
-    this.hrmCodeService
-        .getList(params)
-        .subscribe(
-          (model: ResponseList<HrmCode>) => {
-            if ( model.data ) {
-              this[propertyName] = model.data;
-            } else {
-              //list = [];
-            }
-            this.appAlarmService.changeMessage(model.message);
-          }
-      );
-
+        )
   }
 
   getCodeMap(objs: {typeId: string,  propertyName: string}[]): void {
@@ -470,20 +464,5 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
       );
 
   }
-  /*
-  private getDeptList(): void {
-    this.deptService
-        .getDeptList()
-        .subscribe(
-          (model: ResponseList<Dept>) => {
-            this.deptList = model.data;
-          },
-          (err) => {
-            console.log(err);
-          },
-          () => {}
-      );
-  }
-  */
 
 }

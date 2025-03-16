@@ -4,9 +4,10 @@ import { Component, OnInit, inject, viewChild, output, input } from '@angular/co
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DeptHierarchy } from './dept-hierarchy.model';
 
-import { DeptService } from './dept.service';
-
 import { NzFormatEmitEvent, NzTreeComponent, NzTreeModule } from 'ng-zorro-antd/tree';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -30,41 +31,48 @@ import { NzFormatEmitEvent, NzTreeComponent, NzTreeModule } from 'ng-zorro-antd/
 })
 export class CheckableDeptTreeComponent {
 
-    treeComponent = viewChild.required(NzTreeComponent);
+  private http = inject(HttpClient);
 
-    nodeItems: DeptHierarchy[] = [];
-    defaultCheckedKeys: any = [''];
+  treeComponent = viewChild.required(NzTreeComponent);
 
-    searchValue = input.required<string>();
+  nodeItems: DeptHierarchy[] = [];
+  defaultCheckedKeys: any = [''];
 
-    itemSelected = output<any>();
-    itemChecked = output<any>();
+  searchValue = input.required<string>();
 
-    private deptService = inject(DeptService);
+  itemSelected = output<any>();
+  itemChecked = output<any>();
 
-    public getDeptHierarchy(): void {
-        this.deptService
-            .getDeptHierarchyList()
-            .subscribe(
-                (model: ResponseList<DeptHierarchy>) => {
-                    if ( model.data) {
-                    this.nodeItems = model.data;
-                    } else {
-                    this.nodeItems = [];
-                    }
-                }
-            );
+  public getDeptHierarchy(): void {
+    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
     }
 
-    nzClick(event: NzFormatEmitEvent): void {
-        const node = event.node?.origin;
-        this.itemSelected.emit(node);
+    this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
+        )
+        .subscribe(
+          (model: ResponseList<DeptHierarchy>) => {
+            if ( model.data) {
+              this.nodeItems = model.data;
+              } else {
+              this.nodeItems = [];
+              }
+          }
+        )
+  }
+
+  nzClick(event: NzFormatEmitEvent): void {
+      const node = event.node?.origin;
+      this.itemSelected.emit(node);
+  }
+
+  nzCheck(): void {
+
+      //this.defaultCheckedKeys = event.keys;
+      //this.itemChecked.emit(event.keys);
     }
-
-    nzCheck(): void {
-
-        //this.defaultCheckedKeys = event.keys;
-        //this.itemChecked.emit(event.keys);
-      }
 
 }

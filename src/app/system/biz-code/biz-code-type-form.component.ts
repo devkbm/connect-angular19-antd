@@ -9,7 +9,6 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { BizCodeType } from './biz-code-type.model';
-import { BizCodeTypeService } from './biz-code-type.service';
 import { SelectControlModel } from 'src/app/core/model/select-control.model.ts';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -18,6 +17,9 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-biz-code-type-form',
@@ -147,9 +149,9 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   bizTypeList: SelectControlModel[] = [];
 
-  private service = inject(BizCodeTypeService);
   private appAlarmService = inject(AppAlarmService);
   private renderer = inject(Renderer2);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -202,14 +204,21 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    this.service
-        .get(id)
+    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseObject<BizCodeType>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<BizCodeType>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<BizCodeType>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save(): void {
@@ -223,8 +232,15 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.post<ResponseObject<BizCodeType>>(url, this.fg.getRawValue(), options).pipe(
+    //      catchError(this.handleError<ResponseObject<BizCodeType>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<BizCodeType>) => {
             this.appAlarmService.changeMessage(model.message);
@@ -234,23 +250,37 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   remove(): void {
-    this.service
-        .delete(this.fg.controls.typeId.value!)
-        .subscribe(
-          (model: ResponseObject<BizCodeType>) => {
-            this.appAlarmService.changeMessage(model.message);
-            this.formDeleted.emit(this.fg.getRawValue());
-          }
-        );
+    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.delete<ResponseObject<BizCodeType>>(url, options).pipe(
+            //catchError(this.handleError<ResponseObject<BizCodeType>>('delete', undefined))
+          )
+          .subscribe(
+            (model: ResponseObject<BizCodeType>) => {
+              this.appAlarmService.changeMessage(model.message);
+              this.formDeleted.emit(this.fg.getRawValue());
+            }
+          )
   }
 
   getSystemList(): void {
-    this.service
-        .getSystemList()
+    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/system`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http.get<ResponseList<SelectControlModel>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseList<SelectControlModel>>('getSystemList', undefined))
+        )
         .subscribe(
           (model: ResponseList<SelectControlModel>) => {
             model.data ? this.bizTypeList = model.data : this.bizTypeList = [];
           }
-        );
+        )
   }
 }

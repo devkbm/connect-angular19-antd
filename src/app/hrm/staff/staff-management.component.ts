@@ -13,16 +13,9 @@ import { StaffAppointmentRecord } from './staff-appointment-record/staff-appoint
 import { StaffSchoolCareer } from './staff-school-career/staff-school-career.model';
 import { StaffSchoolCareerGridComponent } from './staff-school-career/staff-school-career-grid.component';
 import { StaffCurrentAppointmentDescriptionComponent } from './staff-current-appointment-description.component';
-import { NewStaffFormComponent } from './new-staff-form/new-staff-form.component';
-import { StaffAppointmentRecordFormComponent } from './staff-appointment-record/staff-appointment-record-form.component';
 import { StaffCardListComponent } from './staff-card/staff-card-list.component';
-import { StaffCardComponent } from './staff-card/staff-card.component';
 import { StaffContactFormComponent } from './staff-contact/staff-contact-form.component';
-import { StaffDutyResponsibilityFormComponent } from './staff-duty-responsibility/staff-duty-responsibility-form.component';
 import { StaffDutyResponsibilityListComponent } from './staff-duty-responsibility/staff-duty-responsibility-list.component';
-import { StaffFamilyFormComponent } from './staff-family/staff-family-form.component';
-import { StaffLicenseFormComponent } from './staff-license/staff-license-form.component';
-import { StaffSchoolCareerFormComponent } from './staff-school-career/staff-school-career-form.component';
 
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -38,7 +31,6 @@ import { StaffDutyResponsibilityFormDrawerComponent } from './staff-duty-respons
 import { StaffFamilyFormDrawerComponent } from './staff-family/staff-family-form-drawer.component';
 import { StaffLicenseFormDrawerComponent } from './staff-license/staff-license-form-drawer.component';
 import { StaffSchoolCareerFormDrawerComponent } from './staff-school-career/staff-school-career-form-drawer.component';
-import { StaffContactFormDrawerComponent } from './staff-contact/staff-contact-form-drawer.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 
 
