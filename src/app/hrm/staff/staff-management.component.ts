@@ -32,6 +32,7 @@ import { StaffFamilyFormDrawerComponent } from './staff-family/staff-family-form
 import { StaffLicenseFormDrawerComponent } from './staff-license/staff-license-form-drawer.component';
 import { StaffSchoolCareerFormDrawerComponent } from './staff-school-career/staff-school-career-form-drawer.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { NzButtonExcelUploadComponent } from "../../third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
 
 
 @Component({
@@ -64,7 +65,8 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
     StaffGridComponent,
     StaffCurrentAppointmentDescriptionComponent,
     StaffCardListComponent,
-    ShapeComponent
+    ShapeComponent,
+    NzButtonExcelUploadComponent
 ],
   template: `
 <ng-template #header>
@@ -76,6 +78,8 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
     <div nz-col [nzSpan]="24" style="text-align: right;">
       {{selectedStaff | json}}
+      <app-nz-button-excel-upload [urn]="'/api/hrm/staff/create/excel'">
+        </app-nz-button-excel-upload>
       <button nz-button (click)="selectGridStaff()">
         <span nz-icon nzType="search" nzTheme="outline"></span>조회
       </button>

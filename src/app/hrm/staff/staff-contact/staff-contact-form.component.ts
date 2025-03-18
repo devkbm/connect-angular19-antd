@@ -6,8 +6,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { StaffContactService } from './staff-contact.service';
-import { StaffContact } from './staff-contact.model';
+import { StaffContact } from './staff-contact-form.model';
 
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -15,6 +14,9 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzListRoadAddressComponent } from 'src/app/third-party/ng-zorro/nz-list-road-address/nz-list-road-address.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-contact-form',
@@ -48,6 +50,8 @@ import { NzListRoadAddressComponent } from 'src/app/third-party/ng-zorro/nz-list
           기존 코드가 존재합니다.
         }
       </ng-template>
+
+      <nz-divider nzText="주민등록지" nzOrientation="left" nzPlain nzVariant="solid"></nz-divider>
 
       <!-- 2 Row -->
       <div nz-row nzGutter="8">
@@ -102,7 +106,7 @@ import { NzListRoadAddressComponent } from 'src/app/third-party/ng-zorro/nz-list
 
     </form>
 
-    <nz-divider nzText="주소 검색"></nz-divider>
+    <nz-divider nzText="주소 검색" nzOrientation="left" nzPlain nzVariant="solid"></nz-divider>
 
     <app-nz-list-road-address
       [height]="'300px'"
@@ -126,8 +130,8 @@ import { NzListRoadAddressComponent } from 'src/app/third-party/ng-zorro/nz-list
 })
 export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChanges {
 
-  private service = inject(StaffContactService);
   private appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -161,11 +165,6 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    /*
-    if (changes['staff'].currentValue) {
-      this.get(changes['staff'].currentValue.staffNo);
-    }
-      */
   }
 
   ngOnInit() {
@@ -205,25 +204,41 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
   }
 
   get(staffId: string): void {
-    this.service
-        .get(staffId)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/contact`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<StaffContact>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffContact>>('getStaffAppointmentRecord', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffContact>) => {
             model.data ? this.modifyForm(model.data) : this.newForm();
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save() {
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/contact`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<StaffContact>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffContact>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffContact>) => {
             this.formSaved.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   // {roadAddress: string, zipNo: string}

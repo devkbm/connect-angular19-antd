@@ -1,4 +1,4 @@
-import { Component, effect, Input, input, OnInit, output } from '@angular/core';
+import { Component, computed, effect, Input, input, OnInit, output } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzUploadModule, NzUploadFile, NzUploadChangeParam } from 'ng-zorro-antd/upload';
@@ -8,7 +8,7 @@ import { GlobalProperty } from 'src/app/core/global-property';
   selector: 'app-nz-button-excel-upload',
   template: `
     <nz-upload
-      [nzAction]="uploadUrl"
+      [nzAction]="uploadUrl()"
       nzMultiple
       [nzListType]="'text'"
       [nzWithCredentials]="true"
@@ -32,12 +32,12 @@ import { GlobalProperty } from 'src/app/core/global-property';
 export class NzButtonExcelUploadComponent  implements OnInit {
 
   fileList = input<NzUploadFile[]>([]);
-  //urn = input<string>();
-  @Input() urn: string = '';
+  urn = input<string>();
+  //@Input() urn: string = '';
 
   uploadParam = { pgmId: 'board', appUrl:'asd' };
   //uploadUrl: string = GlobalProperty.serverUrl + '/api/system/file';
-  uploadUrl: string = GlobalProperty.serverUrl + '/api/system/user-excel';
+  uploadUrl = computed(() => GlobalProperty.serverUrl + this.urn()); //'/api/system/user-excel';
 
   fileUploadHeader: any;
 

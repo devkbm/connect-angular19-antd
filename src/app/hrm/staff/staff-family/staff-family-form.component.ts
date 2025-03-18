@@ -7,7 +7,6 @@ import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { StaffFamilyService } from './staff-family.service';
 import { StaffFamily } from './staff-family.model';
 import { HrmCodeService } from '../../hrm-code/hrm-code.service';
 import { HrmCode } from '../../hrm-code/hrm-code.model';
@@ -16,6 +15,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-family-form',
@@ -130,9 +132,9 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
    */
   familyRelationList: HrmCode[] = [];
 
-  service = inject(StaffFamilyService);
   hrmCodeService = inject(HrmCodeService);
   appAlarmService = inject(AppAlarmService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -203,36 +205,60 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
   }
 
   get(staffId: string, seq: string): void {
-    this.service
-        .get(staffId, seq)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/family`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<StaffFamily>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffFamily>>('getCurrentAppointment', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffFamily>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save() {
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<StaffFamily>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffFamily>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffFamily>) => {
             this.formSaved.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .delete(this.fg.controls.staffNo.value!, this.fg.controls.seq.value!)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family/${this.fg.controls.seq.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<StaffFamily>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<StaffFamily>>('delete', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffFamily>) => {
             this.formDeleted.emit(this.fg.getRawValue());
             this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   getFamilyRelationList() {
