@@ -6,12 +6,11 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { HrmCode } from '../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../hrm-code/hrm-code.service';
 import { AttendanceDate, AttendanceApplication } from './attendance-application.model';
-import { AttendanceApplicationService } from './attendance-application.service';
 import { DutyDateListComponent } from './duty-date-list.component';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -22,6 +21,9 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-input-select-staff/nz-input-select-staff.component';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-attendance-application-form',
@@ -158,9 +160,9 @@ export class AttendanceApplicationFormComponent implements OnInit {
    */
   dutyCodeList: HrmCode[] = [];
 
-  private service = inject(AttendanceApplicationService);
   private hrmCodeService = inject(HrmCodeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -209,7 +211,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
 
   modifyForm(formData: AttendanceApplication) {
     this.fg.patchValue(formData);
-    this.fg.get('staffId')?.disable();
+    this.fg.controls.staffNo.disable();
   }
 
   closeForm() {
@@ -217,37 +219,59 @@ export class AttendanceApplicationFormComponent implements OnInit {
   }
 
   get(id: string) {
-    this.service
-        .get(id)
+    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<AttendanceApplication>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<AttendanceApplication>>('getDutyApplication', undefined))
+        )
         .subscribe(
           (model: ResponseObject<AttendanceApplication>) => {
             this.modifyForm(model.data);
-            this.appAlarmService.changeMessage(model.message);
           }
-      );
+        )
   }
 
   save() {
-    console.log('save');
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .post<ResponseObject<AttendanceApplication>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<AttendanceApplication>>('saveDutyApplication', undefined))
+        )
         .subscribe(
           (model: ResponseObject<AttendanceApplication>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove() {
-    this.service
-        .remove(this.fg.value.dutyId!)
+    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/${this.fg.controls.dutyId.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .delete<ResponseObject<AttendanceApplication>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<AttendanceApplication>>('deleteDutyApplication', undefined))
+        )
         .subscribe(
           (model: ResponseObject<AttendanceApplication>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   getDutyCodeList() {
@@ -260,16 +284,21 @@ export class AttendanceApplicationFormComponent implements OnInit {
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.dutyCodeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
           }
       );
   }
 
   getDutyDateList(fromDate: string, toDate: string) {
-    console.log(fromDate, toDate);
+    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/period/${fromDate}/${toDate}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
 
-    this.service
-        .getDutyDateList(fromDate, toDate)
+    this.http
+        .get<ResponseList<AttendanceDate>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseList<AttendanceDate>>('getDutyDateList', undefined))
+        )
         .subscribe(
           (model: ResponseList<AttendanceDate>) => {
             console.log(model.data);

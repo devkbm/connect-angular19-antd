@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { StaffLicenseService } from './staff-license.service';
 import { StaffLicense } from './staff-license.model';
 import { HrmCode } from '../../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../../hrm-code/hrm-code.service';
@@ -17,6 +16,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-license-form',
@@ -122,9 +124,9 @@ export class StaffLicenseFormComponent implements OnInit, AfterViewInit, OnChang
    */
   licenseTypeList: HrmCode[] = [];
 
-  service = inject(StaffLicenseService);
   hrmCodeService = inject(HrmCodeService);
-  appAlarmService = inject(AppAlarmService);
+  notifyService = inject(NotifyService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -191,36 +193,59 @@ export class StaffLicenseFormComponent implements OnInit, AfterViewInit, OnChang
   }
 
   get(staffId: string, seq: string): void {
-    this.service
-        .get(staffId, seq)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/license/${seq}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<StaffLicense>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffLicense>>('getCurrentAppointment', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffLicense>) => {
             model.data ? this.modifyForm(model.data) : this.newForm();
-            this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save() {
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/license`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<StaffLicense>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffLicense>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffLicense>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .delete(this.fg.controls.staffNo.value!, this.fg.controls.seq.value!)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/license/${this.fg.controls.seq.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .delete<ResponseObject<StaffLicense>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffLicense>>('delete', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffLicense>) => {
             this.formDeleted.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   getLicenseTypeList() {
@@ -233,7 +258,6 @@ export class StaffLicenseFormComponent implements OnInit, AfterViewInit, OnChang
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.licenseTypeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
           }
       );
   }

@@ -400,7 +400,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
             .subscribe(
               (model: ResponseList<WorkCalendar>) => {
                 this.workGroupList = model.data;
-                //this.appAlarmService.changeMessage(model.message);
+                //this.notifyService.changeMessage(model.message);
               }
             )
   }

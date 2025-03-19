@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { BizCodeType } from './biz-code-type.model';
@@ -45,7 +45,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class BizCodeTypeGridComponent extends AgGridCommon implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   _list: BizCodeType[] = [];
@@ -99,7 +99,7 @@ export class BizCodeTypeGridComponent extends AgGridCommon implements OnInit {
     ).subscribe(
       (model: ResponseList<BizCodeType>) => {
         this._list = model.data;
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
 

@@ -119,7 +119,7 @@ export class PostListComponent {
           } else {
             this.posts = [];
           }
-          //this.appAlarmService.changeMessage(model.message);
+          //this.notifyService.changeMessage(model.message);
         }
       );
   }

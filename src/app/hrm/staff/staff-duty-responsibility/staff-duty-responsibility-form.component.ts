@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { HrmCode } from '../../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../../hrm-code/hrm-code.service';
@@ -129,7 +129,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
   dutyResponsibilityCodeList: HrmCode[] = [];
 
   hrmCodeService = inject(HrmCodeService);
-  appAlarmService = inject(AppAlarmService);
+  notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   formSaved = output<any>();
@@ -205,7 +205,6 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
         .subscribe(
           (model: ResponseObject<StaffDutyResponsibility>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.appAlarmService.changeMessage(model.message);
           }
         )
   }
@@ -233,7 +232,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
         )
         .subscribe(
           (model: ResponseObject<StaffDutyResponsibility>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -245,7 +244,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
         .delete(typeCode, detailCode)
         .subscribe(
           (model: ResponseObject<StaffDutyResponsibility>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );
@@ -263,7 +262,6 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.dutyResponsibilityCodeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
           }
       );
 

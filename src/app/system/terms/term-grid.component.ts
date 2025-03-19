@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { TermService } from './term.service';
 import { Term } from './term.model';
@@ -46,7 +46,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class TermGridComponent extends AgGridCommon implements OnInit {
 
   private termService = inject(TermService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Term>();
@@ -102,7 +102,7 @@ export class TermGridComponent extends AgGridCommon implements OnInit {
             } else {
               this.termList = [];
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
     */
@@ -122,7 +122,7 @@ export class TermGridComponent extends AgGridCommon implements OnInit {
         } else {
           this.termList = [];
         }
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }

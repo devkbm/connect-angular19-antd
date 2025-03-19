@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { CommonCodeService } from './common-code.service';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { CommonCode } from './common-code.model';
@@ -236,7 +236,7 @@ export class CommonCodeFormComponent implements OnInit {
   systemTypeCodeList: SystemTypeEnum[] = [];
 
   private commonCodeService = inject(CommonCodeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
 
   formSaved = output<any>();
@@ -304,7 +304,7 @@ export class CommonCodeFormComponent implements OnInit {
             if ( model.data ) {
               this.modifyForm(model.data);
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }
@@ -324,7 +324,7 @@ export class CommonCodeFormComponent implements OnInit {
         .save(this.fg.getRawValue())
         .subscribe(
           (model: ResponseObject<CommonCode>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
@@ -335,7 +335,7 @@ export class CommonCodeFormComponent implements OnInit {
         .remove(this.fg.controls.systemTypeCode.value!, this.fg.controls.codeId.value!)
         .subscribe(
           (model: ResponseObject<CommonCode>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );

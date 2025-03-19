@@ -318,7 +318,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseList<BoardHierarchy>) => {
             this.parentBoardItems = model.data;
-            //this.appAlarmService.changeMessage(model.message);
+            //this.notifyService.changeMessage(model.message);
             // title 노드 텍스트
             // key   데이터 키
             // isLeaf 마지막 노드 여부

@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 
 import { UserImageUploadComponent } from './user-image-upload.component';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -189,7 +189,7 @@ export class UserFormComponent implements OnInit {
 
   imageBase64: any;
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
   private validator = inject(UserFormValidatorService);
@@ -298,7 +298,7 @@ export class UserFormComponent implements OnInit {
               this.imageBase64 = '';
             }
 
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -319,7 +319,7 @@ export class UserFormComponent implements OnInit {
         .registerUser(this.fg.getRawValue())
         .subscribe(
           (model: ResponseObject<User>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
@@ -337,7 +337,7 @@ export class UserFormComponent implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<User>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -349,7 +349,7 @@ export class UserFormComponent implements OnInit {
         .deleteUser(this.fg.controls.userId.value!)
         .subscribe(
           (model: ResponseObject<User>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );
@@ -366,7 +366,7 @@ export class UserFormComponent implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<User>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         )

@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { WebResource } from './web-resource.model';
@@ -31,11 +31,11 @@ import { map } from 'rxjs';
   ],
   template: `
     <!-- [rowData]="_list" -->
-     {{listResource.value()!.data | json }}
-    <button (click)="listResource.reload()">reload</button>
+     {{gridResource.value()!.data | json }}
+    <button (click)="gridResource.reload()">reload</button>
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="listResource.value()!.data"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -60,7 +60,7 @@ import { map } from 'rxjs';
 })
 export class WebResourceGridComponent extends AgGridCommon {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<WebResource>();
@@ -104,11 +104,11 @@ export class WebResourceGridComponent extends AgGridCommon {
     //this.listResource.reload();
 
     effect(() => {
-      console.log(this.listResource.value());
+      console.log(this.gridResource.value());
     })
   }
 
-  listResource = rxResource({
+  gridResource = rxResource({
     request: () => ({
       resourceId: '11',
       resourceName: ''
@@ -134,7 +134,7 @@ export class WebResourceGridComponent extends AgGridCommon {
     ).subscribe(
       (model: ResponseList<WebResource>) => {
         this._list = model.data;
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }

@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { HrmCodeTypeService } from './hrm-code-type.service';
 import { HrmType } from './hrm-type.model';
@@ -93,7 +93,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   private fb = inject(FormBuilder);
   private service = inject(HrmCodeTypeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -166,7 +166,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
             } else {
               this.newForm();
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
       );
   }
@@ -186,7 +186,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
         .save(this.fg.getRawValue())
         .subscribe(
           (model: ResponseObject<HrmType>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
@@ -199,7 +199,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
         .remove(id)
         .subscribe(
             (model: ResponseObject<HrmType>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
             }
         );

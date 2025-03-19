@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { HrmCodeService } from './hrm-code.service';
 import { HrmCode } from './hrm-code.model';
@@ -169,7 +169,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
 
   private service = inject(HrmCodeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -246,7 +246,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
             } else {
               this.newForm('');
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
       );
   }
@@ -256,7 +256,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
         .save(this.fg.getRawValue())
         .subscribe(
           (model: ResponseObject<HrmCode>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
@@ -267,7 +267,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
         .remove(this.fg.controls.typeId.value!, this.fg.controls.code.value!)
         .subscribe(
           (model: ResponseObject<HrmCode>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );

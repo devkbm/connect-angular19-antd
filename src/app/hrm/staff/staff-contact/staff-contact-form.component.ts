@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { StaffContact } from './staff-contact-form.model';
@@ -130,7 +130,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChanges {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   formSaved = output<any>();
@@ -217,7 +217,6 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
         .subscribe(
           (model: ResponseObject<StaffContact>) => {
             model.data ? this.modifyForm(model.data) : this.newForm();
-            this.appAlarmService.changeMessage(model.message);
           }
         )
   }
@@ -236,7 +235,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
         .subscribe(
           (model: ResponseObject<StaffContact>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }

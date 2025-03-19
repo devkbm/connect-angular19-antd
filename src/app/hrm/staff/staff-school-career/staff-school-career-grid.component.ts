@@ -13,10 +13,9 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { StaffSchoolCareerService } from './staff-school-career.service';
 import { StaffSchoolCareer } from './staff-school-career.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -47,8 +46,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnInit, OnChanges {
 
-  private appAlarmService = inject(AppAlarmService);
-  private service = inject(StaffSchoolCareerService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   protected _list: StaffSchoolCareer[] = [];
@@ -102,17 +100,6 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnIn
   }
 
   getList(staffId: string): void {
-    /*
-    this.service
-        .getList(staffId)
-        .subscribe(
-          (model: ResponseList<StaffSchoolCareer>) => {
-            this._list = model.data;
-            this.appAlarmService.changeMessage(model.message);
-          }
-        );
-    */
-
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/schoolcareer`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
@@ -124,7 +111,7 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnIn
     ).subscribe(
       (model: ResponseList<StaffSchoolCareer>) => {
         this._list = model.data;
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }

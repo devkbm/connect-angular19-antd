@@ -14,12 +14,11 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { AttendanceApplicationService } from './attendance-application.service';
 import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 
 
@@ -48,9 +47,8 @@ import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 })
 export class AttendanceApplicationGridComponent extends AgGridCommon implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
-  private dutyApplicationService = inject(AttendanceApplicationService);
 
   _data: AttendanceApplicationGrid[] = [];
 
@@ -96,30 +94,11 @@ export class AttendanceApplicationGridComponent extends AgGridCommon implements 
   }
 
   public getGridList(staffNo: string): void {
-    /*
-    this.dutyApplicationService
-        .getList(params)
-        .subscribe(
-          (model: ResponseList<DutyApplicationGrid>) => {
-            if (model.data) {
-              this._data = model.data;
-            } else {
-              this._data = [];
-            }
-            this.appAlarmService.changeMessage(model?.message);
-          }
-        );
-    */
-
-    const params = {
-      staffId : staffNo
-    };
-
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: params
+      params: {staffId : staffNo}
     };
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
@@ -131,7 +110,7 @@ export class AttendanceApplicationGridComponent extends AgGridCommon implements 
         } else {
           this._data = [];
         }
-        this.appAlarmService.changeMessage(model?.message);
+        this.notifyService.changeMessage(model?.message);
       }
     )
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
@@ -133,7 +133,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
   familyRelationList: HrmCode[] = [];
 
   hrmCodeService = inject(HrmCodeService);
-  appAlarmService = inject(AppAlarmService);
+  notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   formSaved = output<any>();
@@ -218,7 +218,6 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
         .subscribe(
           (model: ResponseObject<StaffFamily>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.appAlarmService.changeMessage(model.message);
           }
         )
   }
@@ -237,7 +236,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
         .subscribe(
           (model: ResponseObject<StaffFamily>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -256,7 +255,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
         .subscribe(
           (model: ResponseObject<StaffFamily>) => {
             this.formDeleted.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -271,7 +270,6 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.familyRelationList = model.data;
-            this.appAlarmService.changeMessage(model.message);
           }
       );
   }

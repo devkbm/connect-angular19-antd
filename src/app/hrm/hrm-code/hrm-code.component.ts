@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HrmCodeTypeGridComponent } from './hrm-code-type-grid.component';
 import { HrmCodeGridComponent } from './hrm-code-grid.component';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { HrmCodeService } from './hrm-code.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { HrmCode } from './hrm-code.model';
@@ -162,7 +162,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 })
 export class HrmCodeComponent implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private hrmCodeService = inject(HrmCodeService);
   private hrmCodeTypeService = inject(HrmCodeTypeService);
 
@@ -235,7 +235,7 @@ export class HrmCodeComponent implements OnInit {
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.gridHrmCodeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }
@@ -250,7 +250,7 @@ export class HrmCodeComponent implements OnInit {
         .subscribe(
           (model: ResponseList<HrmType>) => {
             this.gridHrmCodeTypeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }

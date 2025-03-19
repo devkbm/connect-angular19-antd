@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
@@ -44,7 +44,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class StaffAppointmentRecordGridComponent extends AgGridCommon implements OnChanges {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   _list: StaffAppointmentRecord[] = [];
@@ -111,7 +111,6 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon implements
     ).subscribe(
       (model: ResponseList<StaffAppointmentRecord>) => {
         this._list = model.data;
-        this.appAlarmService.changeMessage(model.message);
       }
     );
   }

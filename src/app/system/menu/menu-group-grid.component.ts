@@ -12,7 +12,7 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { MenuGroup } from './menu-group.model';
@@ -44,7 +44,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class MenuGroupGridComponent extends AgGridCommon implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<MenuGroup>();
@@ -119,7 +119,7 @@ export class MenuGroupGridComponent extends AgGridCommon implements OnInit {
         .subscribe(
           (model: ResponseList<MenuGroup>) => {
             this.menuGroupList = model.data;
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }

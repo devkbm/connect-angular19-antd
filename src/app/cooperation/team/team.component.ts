@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, viewChild } from '@angular/core';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { TeamGridComponent } from './team-grid.component';
@@ -113,7 +113,7 @@ import { TeamFormComponent } from './team-form.component';
 })
 export class TeamComponent implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private service = inject(TeamService);
 
   grid = viewChild.required(TeamGridComponent);
@@ -152,7 +152,7 @@ export class TeamComponent implements OnInit {
         .subscribe(
           (model: ResponseList<TeamModel>) => {
             this.gridList = model.data;
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }

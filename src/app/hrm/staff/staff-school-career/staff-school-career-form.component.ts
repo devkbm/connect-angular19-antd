@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { StaffSchoolCareer } from './staff-school-career.model';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { HrmCode } from '../../hrm-code/hrm-code.model';
 import { HrmCodeService } from '../../hrm-code/hrm-code.service';
-import { StaffSchoolCareerService } from './staff-school-career.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -18,6 +17,9 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { HttpClient } from '@angular/common/http';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -171,9 +173,9 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
    */
   schoolCodeList: HrmCode[] = [];
 
-  private service = inject(StaffSchoolCareerService);
   private hrmCodeService = inject(HrmCodeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
+  private http = inject(HttpClient);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -245,36 +247,59 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
   }
 
   get(staffId: string, seq: string): void {
-    this.service
-        .get(staffId, seq)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/schoolcareer/${seq}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .get<ResponseObject<StaffSchoolCareer>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffSchoolCareer>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffSchoolCareer>) => {
             model.data ? this.modifyForm(model.data) : this.newForm();
-            this.appAlarmService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   save() {
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/schoolcareer`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<ResponseObject<StaffSchoolCareer>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<StaffSchoolCareer>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffSchoolCareer>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   remove(): void {
-    this.service
-        .delete(this.fg.controls.staffNo.value!, this.fg.controls.seq.value!)
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/schoolcareer/${this.fg.controls.seq.value}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .delete<ResponseObject<StaffSchoolCareer>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<StaffSchoolCareer>>('delete', undefined))
+        )
         .subscribe(
           (model: ResponseObject<StaffSchoolCareer>) => {
             this.formDeleted.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
-        );
+        )
   }
 
   getSchoolCareerTypeList() {
@@ -287,7 +312,6 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.schoolCareerTypeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
           }
       );
   }
@@ -302,7 +326,6 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.schoolCodeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
           }
       );
   }

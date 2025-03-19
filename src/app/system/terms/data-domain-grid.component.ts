@@ -14,7 +14,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { DataDomainService } from './data-domain.service';
 import { DataDomain } from './data-domain.model';
@@ -47,7 +47,7 @@ import { GlobalProperty } from 'src/app/core/global-property';
 export class DataDomainGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(DataDomainService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<DataDomain>();
@@ -100,7 +100,7 @@ export class DataDomainGridComponent extends AgGridCommon implements OnInit {
             } else {
               this.list = [];
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
     */
@@ -119,7 +119,7 @@ export class DataDomainGridComponent extends AgGridCommon implements OnInit {
         } else {
           this.list = [];
         }
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }

@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, inject, Renderer2, input, effect, out
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
@@ -112,7 +112,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
 
   private http = inject(HttpClient);
   private validator = inject(WebResourceFormValidatorService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
 
   formSaved = output<any>();
@@ -182,7 +182,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
     ).subscribe(
       (model: ResponseObject<WebResource>) => {
         model.data ? this.modifyForm(model.data) : this.newForm();
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }
@@ -207,7 +207,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
       //catchError((err) => Observable.throw(err))
     ).subscribe(
       (model: ResponseObject<WebResource>) => {
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
         this.formSaved.emit(this.fg.getRawValue());
       }
     );
@@ -224,7 +224,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
       //catchError((err) => Observable.throw(err))
     ).subscribe(
       (model: ResponseObject<WebResource>) => {
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
         this.formDeleted.emit(this.fg.getRawValue());
       }
     );
@@ -241,7 +241,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
     ).subscribe(
       (model: ResponseList<ResouceTypeEnum>) => {
         this.resourceTypeList = model.data;
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
 

@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnChanges, SimpleChanges, inject, out
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { TeamService } from './team.service';
 import { TeamJoinableUserModel, TeamModel } from './team.model';
@@ -102,7 +102,7 @@ export class TeamFormComponent implements OnInit, AfterViewInit, OnChanges {
   members: TeamJoinableUserModel[] = [];
 
   private service = inject(TeamService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -160,7 +160,7 @@ export class TeamFormComponent implements OnInit, AfterViewInit, OnChanges {
             } else {
               this.newForm();
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }
@@ -180,7 +180,7 @@ export class TeamFormComponent implements OnInit, AfterViewInit, OnChanges {
         .save(this.fg.getRawValue())
         .subscribe(
           (model: ResponseObject<TeamModel>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
@@ -191,7 +191,7 @@ export class TeamFormComponent implements OnInit, AfterViewInit, OnChanges {
         .remove(this.fg.getRawValue().teamId!)
         .subscribe(
           (model: ResponseObject<TeamModel>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );

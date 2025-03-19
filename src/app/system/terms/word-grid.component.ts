@@ -14,7 +14,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { WordService } from './word.service';
 import { Word } from './word.model';
@@ -48,7 +48,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class WordGridComponent extends AgGridCommon implements OnInit {
 
   private service = inject(WordService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Word>();
@@ -100,7 +100,7 @@ export class WordGridComponent extends AgGridCommon implements OnInit {
             } else {
               this.list = [];
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
     */
@@ -119,7 +119,7 @@ export class WordGridComponent extends AgGridCommon implements OnInit {
         } else {
           this.list = [];
         }
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }

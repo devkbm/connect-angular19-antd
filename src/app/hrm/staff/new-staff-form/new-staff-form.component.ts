@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { NewStaff } from './new-staff-form.model';
@@ -82,7 +82,7 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
 
   //staffNo = viewChild.required<NzInputTextComponent>('staffNo');
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   formSaved = output<any>();
@@ -113,17 +113,6 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
     //this.staffNo().focus();
   }
 
-  /*
-  modifyForm(formData: DataDomain) {
-    this.formType = FormType.MODIFY;
-
-    this.fg.get('database')?.disable();
-    this.fg.get('domainName')?.disable();
-
-    this.fg.patchValue(formData);
-  }
-  */
-
   closeForm() {
     this.formClosed.emit(this.fg.getRawValue());
   }
@@ -142,7 +131,7 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
         .subscribe(
           (model: ResponseObject<NewStaff>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 import { UserSessionService } from 'src/app/core/service/user-session.service';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { AppLayoutService } from './app-layout.service';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -52,14 +52,14 @@ export class AppLayoutComponent implements OnInit  {
 
   sideMenu : {menuGroupCode: string, url: string, isCollapsed: boolean} = {menuGroupCode: '', url: '', isCollapsed: false};
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private sessionService = inject(UserSessionService);
   // private service = inject(AppLayoutService);
   private router = inject(Router);
   private http = inject(HttpClient);
 
   ngOnInit(): void {
-    this.appAlarmService.currentMessage.subscribe(message => this.footerMessage = message);
+    this.notifyService.currentMessage.subscribe(message => this.footerMessage = message);
 
     this.setInitMenuGroup();
     this.setAvatar();

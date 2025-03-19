@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, OnInit, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -13,13 +13,14 @@ ModuleRegistry.registerModules([
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Company } from './company.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-company-grid',
@@ -30,7 +31,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_data"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -45,7 +46,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class CompanyGridComponent extends AgGridCommon implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Company>();
@@ -85,8 +86,20 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
   };
 
   ngOnInit(): void {
-    this.getList();
+    //this.getList();
+    this.gridResource.reload();
   }
+
+  query = signal<string>('');
+  gridResource = rxResource({
+    request: () => (this.query()),
+    loader: ({request}) => this.http.get<ResponseList<Company>>(
+      GlobalProperty.serverUrl + `/api/system/company`, {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: {}
+    })
+  })
 
   getList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/company`;
@@ -102,7 +115,6 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
     .subscribe(
       (model: ResponseList<Company>) => {
         this._data = model.data;
-        this.appAlarmService.changeMessage(model.message);
       }
     );
 

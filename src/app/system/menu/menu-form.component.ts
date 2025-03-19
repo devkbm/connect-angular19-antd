@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { Menu } from './menu.model';
 import { MenuHierarchy } from './menu-hierarchy.model';
@@ -187,7 +187,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   menuGroupList: any;
   menuTypeList: any;
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
   private validator = inject(MenuFormValidatorService);
@@ -281,7 +281,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
             } else {
               this.newForm(menuGroupCode);
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -312,7 +312,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<Menu>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
 
@@ -334,7 +334,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<Menu>) => {
             this.formDeleted.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
 

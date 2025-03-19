@@ -3,7 +3,7 @@ import { CommonModule, formatDate } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { Holiday } from './holiday.model';
 
@@ -83,7 +83,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class HolidayFormComponent implements AfterViewInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
 
@@ -149,7 +149,7 @@ export class HolidayFormComponent implements AfterViewInit {
         .subscribe(
           (model: ResponseObject<Holiday>) => {
             model.data ? this.modifyForm(model.data) : this.newForm(date);
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
       )
   }
@@ -177,7 +177,7 @@ export class HolidayFormComponent implements AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<Holiday>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -198,7 +198,7 @@ export class HolidayFormComponent implements AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<Holiday>) => {
-          this.appAlarmService.changeMessage(model.message);
+          this.notifyService.changeMessage(model.message);
           this.formDeleted.emit(this.fg.getRawValue());
           }
         );

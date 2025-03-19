@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, AfterViewInit, inject, Renderer2, input, effect, output } from '@angular/core';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { MenuGroup } from './menu-group.model';
@@ -86,7 +86,7 @@ import { MenuGroupFormValidatorService } from './validator/menu-group-form-valid
 })
 export class MenuGroupFormComponent implements OnInit, AfterViewInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
   private validator = inject(MenuGroupFormValidatorService);
@@ -158,7 +158,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<MenuGroup>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -187,7 +187,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<MenuGroup>) => {
             this.formSaved.emit(this.fg.getRawValue());
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }

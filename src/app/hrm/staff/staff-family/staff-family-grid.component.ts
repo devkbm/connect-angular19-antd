@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffFamily } from './staff-family.model';
@@ -45,7 +45,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   protected _list: StaffFamily[] = [];
@@ -104,7 +104,6 @@ export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges 
     ).subscribe(
       (model: ResponseList<StaffFamily>) => {
         this._list = model.data;
-        this.appAlarmService.changeMessage(model.message);
       }
     );
   }

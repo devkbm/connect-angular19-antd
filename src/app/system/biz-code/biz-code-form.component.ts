@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { BizCode } from './biz-code.model';
@@ -107,7 +107,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class BizCodeFormComponent implements AfterViewInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
 
@@ -176,7 +176,7 @@ export class BizCodeFormComponent implements AfterViewInit {
         .subscribe(
           (model: ResponseObject<BizCode>) => {
             model.data ? this.modifyForm(model.data) : this.newForm(typeId)
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -203,7 +203,7 @@ export class BizCodeFormComponent implements AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<BizCode>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -221,7 +221,7 @@ export class BizCodeFormComponent implements AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<BizCode>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         )

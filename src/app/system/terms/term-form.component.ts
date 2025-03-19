@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { TermService } from './term.service';
@@ -177,7 +177,7 @@ export class TermFormComponent implements OnInit, AfterViewInit {
   private service = inject(TermService);
   private wordService = inject(WordService);
   private dataDomainService = inject(DataDomainService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
 
   formSaved = output<any>();
@@ -250,7 +250,7 @@ export class TermFormComponent implements OnInit, AfterViewInit {
             } else {
               this.newForm();
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
   }
@@ -270,7 +270,7 @@ export class TermFormComponent implements OnInit, AfterViewInit {
         .save(this.fg.getRawValue())
         .subscribe(
           (model: ResponseObject<Term>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         );
@@ -281,7 +281,7 @@ export class TermFormComponent implements OnInit, AfterViewInit {
         .delete(this.fg.controls.termId.value!)
         .subscribe(
           (model: ResponseObject<Term>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         );

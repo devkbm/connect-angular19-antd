@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Component, OnInit, AfterViewInit, inject, Renderer2, input, effect, output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
@@ -149,7 +149,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   bizTypeList: SelectControlModel[] = [];
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
 
@@ -216,7 +216,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<BizCodeType>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
   }
@@ -243,7 +243,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<BizCodeType>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -261,7 +261,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
           )
           .subscribe(
             (model: ResponseObject<BizCodeType>) => {
-              this.appAlarmService.changeMessage(model.message);
+              this.notifyService.changeMessage(model.message);
               this.formDeleted.emit(this.fg.getRawValue());
             }
           )

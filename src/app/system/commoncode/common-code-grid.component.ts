@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { CommonCodeService } from './common-code.service';
@@ -47,7 +47,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
 
   private commonCodeService = inject(CommonCodeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   commonCodeList: CommonCode[] = [];
@@ -113,7 +113,7 @@ export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
         .subscribe(
           (model: ResponseList<CommonCode>) => {
             this.commonCodeList = model.data;
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         );
     */
@@ -130,7 +130,7 @@ export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
     ).subscribe(
       (model: ResponseList<CommonCode>) => {
         this.commonCodeList = model.data;
-        this.appAlarmService.changeMessage(model.message);
+        this.notifyService.changeMessage(model.message);
       }
     );
   }

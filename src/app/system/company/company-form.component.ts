@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { Company } from './company.model';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
@@ -107,7 +107,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class CompanyFormComponent  {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
 
@@ -165,7 +165,7 @@ export class CompanyFormComponent  {
         .subscribe(
           (model: ResponseObject<Company>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
         )
 
@@ -193,7 +193,7 @@ export class CompanyFormComponent  {
         )
         .subscribe(
           (model: ResponseObject<Company>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -211,7 +211,7 @@ export class CompanyFormComponent  {
         )
         .subscribe(
           (model: ResponseObject<Company>) => {
-          this.appAlarmService.changeMessage(model.message);
+          this.notifyService.changeMessage(model.message);
           this.formDeleted.emit(this.fg.getRawValue());
           }
       )

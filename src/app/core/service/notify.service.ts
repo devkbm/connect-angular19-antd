@@ -5,7 +5,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Injectable({
   providedIn: 'root'
 })
-export class AppAlarmService {
+export class NotifyService {
 
     private messageSource = new BehaviorSubject<string>('default message');
     currentMessage = this.messageSource.asObservable();

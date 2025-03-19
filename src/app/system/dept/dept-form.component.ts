@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { Dept } from './dept.model';
 import { DeptHierarchy } from './dept-hierarchy.model';
 
@@ -233,7 +233,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
 
   deptHierarchy: DeptHierarchy[] = [];
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
   private validator = inject(DeptFormValidatorService);
@@ -326,7 +326,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
               this.getDeptHierarchy();
               this.newForm();
             }
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
           }
       )
   }
@@ -353,7 +353,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<Dept>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -371,7 +371,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<Dept>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )

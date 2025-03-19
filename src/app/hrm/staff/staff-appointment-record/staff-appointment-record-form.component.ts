@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseMap } from 'src/app/core/model/response-map';
 
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
@@ -298,7 +298,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
   dutyResponsibilityCodeList: HrmCode[] = [];
 
   private hrmCodeService = inject(HrmCodeService);
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   formSaved = output<any>();
@@ -391,13 +391,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<StaffAppointmentRecord>) => {
-            if ( model.data ) {
-              console.log(model.data);
-              this.modifyForm(model.data);
-            } else {
-              this.newForm();
-            }
-            this.appAlarmService.changeMessage(model.message);
+            model.data ? this.modifyForm(model.data) : this.newForm()
           }
         )
   }
@@ -415,7 +409,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<StaffAppointmentRecord>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -434,7 +428,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<StaffAppointmentRecord>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
           }
         )
@@ -459,7 +453,6 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
             } else {
               //list = [];
             }
-            this.appAlarmService.changeMessage(model.message);
           }
       );
 

@@ -15,7 +15,7 @@ ModuleRegistry.registerModules([
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
@@ -45,7 +45,7 @@ import { Staff } from './staff.model';
 })
 export class StaffGridComponent extends AgGridCommon implements OnInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   list: Staff[] = [];
@@ -100,7 +100,6 @@ export class StaffGridComponent extends AgGridCommon implements OnInit {
     .subscribe(
       (model: ResponseList<Staff>) => {
         this.list = model.data;
-        this.appAlarmService.changeMessage(model.message);
       }
     );
   }

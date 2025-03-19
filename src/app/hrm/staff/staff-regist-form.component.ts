@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 import { GlobalProperty } from 'src/app/core/global-property';
 
 import { Staff } from './staff.model';
@@ -184,7 +184,7 @@ export class StaffRegistFormComponent implements OnInit {
     {label: '여', value: 'F'}
   ];
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   formSaved = output<any>();
@@ -256,7 +256,6 @@ export class StaffRegistFormComponent implements OnInit {
             } else {
               this.newForm();
             }
-            this.appAlarmService.changeMessage(model.message);
           }
       )
   }
@@ -274,7 +273,7 @@ export class StaffRegistFormComponent implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<Staff>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
         )
@@ -285,7 +284,7 @@ export class StaffRegistFormComponent implements OnInit {
         .deleteAppointmentCodeDetail(this.fg.get('code').value)
         .subscribe(
             (model: ResponseObject<AppointmentCodeDetail>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
             },
             (err) => {
@@ -327,7 +326,7 @@ export class StaffRegistFormComponent implements OnInit {
         )
         .subscribe(
           (model: Blob) => {
-            //this.appAlarmService.changeMessage(model.message);
+            //this.notifyService.changeMessage(model.message);
             const blob = new Blob([model], { type: 'application/octet-stream' });
             saveAs(blob, this.fg.get('staffNo')?.value+".jpg");
           }

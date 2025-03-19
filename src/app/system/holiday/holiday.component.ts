@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ShapeComponent } from "src/app/core/app/shape.component";
-import { AppAlarmService } from 'src/app/core/service/app-alarm.service';
+import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { HolidayFormDrawerComponent } from './holiday-form-drawer.component';
 import { HolidayGridComponent } from './holiday-grid.component';
@@ -144,7 +144,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class HolidayComponent implements AfterViewInit {
 
-  private appAlarmService = inject(AppAlarmService);
+  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   grid = viewChild.required(HolidayGridComponent);
@@ -241,7 +241,7 @@ export class HolidayComponent implements AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<Holiday>) => {
-            this.appAlarmService.changeMessage(model.message);
+            this.notifyService.changeMessage(model.message);
             this.getHolidayList();
           }
         );
