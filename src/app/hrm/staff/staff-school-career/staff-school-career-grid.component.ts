@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, inject, output } from '@angular/core';
+import { Component, output, input, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -13,14 +15,11 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
-
-import { StaffSchoolCareer } from './staff-school-career.model';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
+import { StaffSchoolCareer } from './staff-school-career.model';
 
 @Component({
   selector: 'app-staff-school-career-grid',
@@ -31,7 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -44,14 +43,11 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   `,
   styles: []
 })
-export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnInit, OnChanges {
+export class StaffSchoolCareerGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
-  protected _list: StaffSchoolCareer[] = [];
-
-  @Input() staffId?: string;
+  staffNo = input<string>();
 
   rowClicked = output<any>();
   rowDoubleClicked = output<any>();
@@ -90,31 +86,14 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon implements OnIn
     return params.data.staffNo! + params.data.seq!;
   };
 
-  ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['staffId'].currentValue) {
-      this.getList(changes['staffId'].currentValue);
-    }
-  }
-
-  getList(staffId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/schoolcareer`;
-    const options = {
+  gridResource = rxResource({
+    request: () => this.staffNo(),
+    loader: ({request}) => this.http.get<ResponseList<StaffSchoolCareer>>(
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/schoolcareer`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
-    };
-
-    this.http.get<ResponseList<StaffSchoolCareer>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<StaffSchoolCareer>>('getList', undefined))
-    ).subscribe(
-      (model: ResponseList<StaffSchoolCareer>) => {
-        this._list = model.data;
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-  }
+    })
+  })
 
   selectionChanged(event: any) {
     const selectedRows = this.gridApi.getSelectedRows();

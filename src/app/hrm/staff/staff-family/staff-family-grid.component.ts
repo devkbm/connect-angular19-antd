@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, inject, output } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, inject, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -20,6 +20,7 @@ import { StaffFamily } from './staff-family.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-staff-family-grid',
@@ -30,7 +31,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -43,14 +44,11 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   `,
   styles: []
 })
-export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges {
+export class StaffFamilyGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
-  protected _list: StaffFamily[] = [];
-
-  @Input() staffId?: string;
+  staffNo = input<string>();
 
   rowClicked = output<StaffFamily>();
   rowDoubleClicked = output<StaffFamily>();
@@ -86,27 +84,14 @@ export class StaffFamilyGridComponent extends AgGridCommon implements OnChanges 
     return params.data.staffNo! + params.data.seq!;
   };
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['staffId'].currentValue) {
-      this.getList(changes['staffId'].currentValue);
-    }
-  }
-
-  getList(staffId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/family`;
-    const options = {
+  gridResource = rxResource({
+    request: () => this.staffNo(),
+    loader: ({request}) => this.http.get<ResponseList<StaffFamily>>(
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/family`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
-    };
-
-    this.http.get<ResponseList<StaffFamily>>(url, options).pipe(
-    //  catchError(this.handleError<ResponseList<StaffFamily>>('getList', undefined))
-    ).subscribe(
-      (model: ResponseList<StaffFamily>) => {
-        this._list = model.data;
-      }
-    );
-  }
+    })
+  })
 
   selectionChanged(event: any) {
     const selectedRows = this.gridApi.getSelectedRows();

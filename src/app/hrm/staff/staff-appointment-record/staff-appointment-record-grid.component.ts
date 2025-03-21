@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, inject, output } from '@angular/core';
+import { Component, inject, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -13,13 +13,13 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-staff-appointment-record-grid',
@@ -30,7 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -42,14 +42,11 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     </ag-grid-angular>
   `
 })
-export class StaffAppointmentRecordGridComponent extends AgGridCommon implements OnChanges {
+export class StaffAppointmentRecordGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
-  _list: StaffAppointmentRecord[] = [];
-
-  @Input() staffNo?: string;
+  staffNo = input<string>();
 
   rowClicked = output<StaffAppointmentRecord>();
   rowDoubleClicked = output<StaffAppointmentRecord>();
@@ -93,27 +90,14 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon implements
     return params.data.seq!;
   };
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['staffNo']) {
-      this.getList(changes['staffNo'].currentValue);
-    }
-  }
-
-  getList(staffNo: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffNo}/record`;
-    const options = {
+  gridResource = rxResource({
+    request: () => this.staffNo(),
+    loader: ({request}) => this.http.get<ResponseList<StaffAppointmentRecord>>(
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/record`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
-    };
-
-    this.http.get<ResponseList<StaffAppointmentRecord>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<StaffAppointmentRecord>>('getList', undefined))
-    ).subscribe(
-      (model: ResponseList<StaffAppointmentRecord>) => {
-        this._list = model.data;
-      }
-    );
-  }
+    })
+  })
 
   selectionChanged(event: any) {
     const selectedRows = this.gridApi.getSelectedRows();

@@ -1,5 +1,7 @@
-import { Component, Input, OnChanges, SimpleChanges, inject, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -13,13 +15,11 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffLicense } from './staff-license.model';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-license-grid',
@@ -30,7 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="_list"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -43,14 +43,11 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   `,
   styles: []
 })
-export class StaffLicenseGridComponent extends AgGridCommon implements OnChanges {
+export class StaffLicenseGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
-  protected _list: StaffLicense[] = [];
-
-  @Input() staffId?: string;
+  staffNo = input<string>();
 
   rowClicked = output<StaffLicense>();
   rowDoubleClicked = output<StaffLicense>();
@@ -85,27 +82,14 @@ export class StaffLicenseGridComponent extends AgGridCommon implements OnChanges
     return params.data.staffNo! + params.data.seq!;
   };
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['staffId'].currentValue) {
-      this.getList(changes['staffId'].currentValue);
-    }
-  }
-
-  getList(staffId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/license`;
-    const options = {
+  gridResource = rxResource({
+    request: () => this.staffNo(),
+    loader: ({request}) => this.http.get<ResponseList<StaffLicense>>(
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/license`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
-    };
-
-    this.http.get<ResponseList<StaffLicense>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<StaffLicense>>('getList', undefined))
-    ).subscribe(
-      (model: ResponseList<StaffLicense>) => {
-        this._list = model.data;
-      }
-    );
-  }
+    })
+  })
 
   selectionChanged(event: any) {
     const selectedRows = this.gridApi.getSelectedRows();

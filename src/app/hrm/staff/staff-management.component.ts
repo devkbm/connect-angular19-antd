@@ -24,16 +24,17 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+
+import { ShapeComponent } from "src/app/core/app/shape.component";
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
+import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
+
 import { NewStaffFormDrawerComponent } from './new-staff-form/new-staff-form-drawer.component';
 import { StaffAppointmentRecordFormDrawerComponent } from './staff-appointment-record/staff-appointment-record-form-drawer.component';
 import { StaffDutyResponsibilityFormDrawerComponent } from './staff-duty-responsibility/staff-duty-responsibility-form-drawer.component';
 import { StaffFamilyFormDrawerComponent } from './staff-family/staff-family-form-drawer.component';
 import { StaffLicenseFormDrawerComponent } from './staff-license/staff-license-form-drawer.component';
 import { StaffSchoolCareerFormDrawerComponent } from './staff-school-career/staff-school-career-form-drawer.component';
-import { ShapeComponent } from "src/app/core/app/shape.component";
-import { NzButtonExcelUploadComponent } from "../../third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
-
 
 @Component({
   selector: 'app-staff-management',
@@ -112,13 +113,12 @@ import { NzButtonExcelUploadComponent } from "../../third-party/ng-zorro/nz-butt
         <nz-collapse-panel [nzHeader]="'보직'">
           <div style="height:100px; padding: 0px; margin: 0px;">
             <app-staff-duty-responsibility-list
-              [staffId]="selectedStaff?.staffNo">
+              [staffNo]="selectedStaff?.staffNo">
             </app-staff-duty-responsibility-list>
           </div>
         </nz-collapse-panel>
       </nz-collapse>
     </div>
-
 
     <div>
       <nz-tabset [nzAnimated]="false">
@@ -155,7 +155,7 @@ import { NzButtonExcelUploadComponent } from "../../third-party/ng-zorro/nz-butt
           @defer {
           <div class="tab-grid">
             <app-staff-family-grid
-              [staffId]="selectedStaff?.staffNo"
+              [staffNo]="selectedStaff?.staffNo"
               (editButtonClicked)="editFamily($event)"
               (rowDoubleClicked)="editFamily($event)">
             </app-staff-family-grid>
@@ -170,7 +170,7 @@ import { NzButtonExcelUploadComponent } from "../../third-party/ng-zorro/nz-butt
           @defer (on idle) {
           <div class="tab-grid">
             <app-staff-school-career-grid
-              [staffId]="selectedStaff?.staffNo"
+              [staffNo]="selectedStaff?.staffNo"
               (editButtonClicked)="editSchoolCareer($event)"
               (rowDoubleClicked)="editSchoolCareer($event)">
             </app-staff-school-career-grid>
@@ -185,7 +185,7 @@ import { NzButtonExcelUploadComponent } from "../../third-party/ng-zorro/nz-butt
           @defer (on idle) {
           <div class="tab-grid">
             <app-staff-license-grid
-              [staffId]="selectedStaff?.staffNo"
+              [staffNo]="selectedStaff?.staffNo"
               (editButtonClicked)="editLicense($event)"
               (rowDoubleClicked)="editLicense($event)">
             </app-staff-license-grid>
@@ -349,7 +349,8 @@ export class StaffManagementComponent implements OnInit {
 
   selectGridAppointment() {
     this.drawer.appointment.visible = false;
-    this.gridAppointment().getList(this.selectedStaff?.staffNo!);
+    //this.gridAppointment().getList(this.selectedStaff?.staffNo!);
+    this.gridAppointment().gridResource.reload();
     this.staffDesc().get(this.selectedStaff?.staffNo!);
   }
 
@@ -360,7 +361,7 @@ export class StaffManagementComponent implements OnInit {
 
   selectGridFaimly() {
     this.drawer.family.visible = false;
-    this.gridFamily().getList(this.selectedStaff?.staffNo!);
+    this.gridFamily().gridResource.reload();
   }
 
   newFamily() {
@@ -374,7 +375,7 @@ export class StaffManagementComponent implements OnInit {
 
   selectGridSchoolCareer() {
     this.drawer.schoolCareer.visible = false;
-    this.gridSchoolcareer().getList(this.selectedStaff?.staffNo!);
+    this.gridSchoolcareer().gridResource.reload();
   }
 
   newSchoolCareer() {
@@ -388,7 +389,7 @@ export class StaffManagementComponent implements OnInit {
 
   selectGridLicense() {
     this.drawer.license.visible = false;
-    this.gridLicense().getList(this.selectedStaff?.staffNo!);
+    this.gridLicense().gridResource.reload();
   }
 
   newLicense() {

@@ -235,7 +235,6 @@ export class HrmCodeComponent implements OnInit {
         .subscribe(
           (model: ResponseList<HrmCode>) => {
             this.gridHrmCodeList = model.data;
-            this.notifyService.changeMessage(model.message);
           }
         );
   }
@@ -250,7 +249,6 @@ export class HrmCodeComponent implements OnInit {
         .subscribe(
           (model: ResponseList<HrmType>) => {
             this.gridHrmCodeTypeList = model.data;
-            this.notifyService.changeMessage(model.message);
           }
         );
   }
