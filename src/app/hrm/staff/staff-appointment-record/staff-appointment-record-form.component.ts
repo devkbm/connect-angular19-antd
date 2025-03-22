@@ -10,7 +10,7 @@ import { ResponseMap } from 'src/app/core/model/response-map';
 
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
 import { HrmCode } from '../../hrm-code/hrm-code.model';
-import { HrmCodeService } from '../../hrm-code/hrm-code.service';
+import { HrmCodeService } from '../../shared/hrm-code.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';

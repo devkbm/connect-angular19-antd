@@ -30,7 +30,7 @@ import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="gridResource.value()?.data"
+      [rowData]="gridResource.value()?.data ?? []"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"

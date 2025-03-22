@@ -8,7 +8,7 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { StaffLicense } from './staff-license.model';
 import { HrmCode } from '../../hrm-code/hrm-code.model';
-import { HrmCodeService } from '../../hrm-code/hrm-code.service';
+import { HrmCodeService } from '../../shared/hrm-code.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { NzFormModule } from 'ng-zorro-antd/form';

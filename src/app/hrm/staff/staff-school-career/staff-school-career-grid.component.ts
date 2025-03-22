@@ -30,7 +30,7 @@ import { StaffSchoolCareer } from './staff-school-career.model';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="gridResource.value()?.data"
+      [rowData]="gridResource.value()?.data ?? []"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"

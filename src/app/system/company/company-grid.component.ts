@@ -1,5 +1,7 @@
 import { Component, OnInit, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -13,14 +15,11 @@ ModuleRegistry.registerModules([
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/button-renderer.component';
 
-import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
-
-import { Company } from './company.model';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
-import { rxResource } from '@angular/core/rxjs-interop';
+
+import { Company } from './company.model';
 
 @Component({
   selector: 'app-company-grid',
@@ -44,9 +43,8 @@ import { rxResource } from '@angular/core/rxjs-interop';
   `,
   styles: []
 })
-export class CompanyGridComponent extends AgGridCommon implements OnInit {
+export class CompanyGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Company>();
@@ -85,40 +83,16 @@ export class CompanyGridComponent extends AgGridCommon implements OnInit {
     return params.data.companyCode!;
   };
 
-  ngOnInit(): void {
-    //this.getList();
-    this.gridResource.reload();
-  }
-
-  query = signal<string>('');
+  gridQuery = signal<any>('');
   gridResource = rxResource({
-    request: () => (this.query()),
+    request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Company>>(
       GlobalProperty.serverUrl + `/api/system/company`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: {}
+      params: request
     })
   })
-
-  getList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/company`;
-    const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        //params: params
-      };
-
-    this.http.get<ResponseList<Company>>(url, options).pipe(
-      //catchError((err) => Observable.throw(err))
-    )
-    .subscribe(
-      (model: ResponseList<Company>) => {
-        this._data = model.data;
-      }
-    );
-
-  }
 
   rowClickedFunc(event: RowClickedEvent<Company>) {
     this.rowClicked.emit(event.data!);

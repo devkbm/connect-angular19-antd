@@ -9,7 +9,7 @@ import { StaffSchoolCareer } from './staff-school-career.model';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { HrmCode } from '../../hrm-code/hrm-code.model';
-import { HrmCodeService } from '../../hrm-code/hrm-code.service';
+import { HrmCodeService } from '../../shared/hrm-code.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';

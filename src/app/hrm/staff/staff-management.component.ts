@@ -328,7 +328,7 @@ export class StaffManagementComponent implements OnInit {
   selectGridStaff() {
     this.drawer.newStaff.visible = false;
 
-    this.gridStaff().getList();
+    this.gridStaff().gridResource.reload();
   }
 
   newStaff() {

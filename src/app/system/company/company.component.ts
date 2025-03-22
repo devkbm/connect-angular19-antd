@@ -178,7 +178,7 @@ export class CompanyComponent implements OnInit {
 
     this.drawer.company.visible = false;
 
-    this.grid().getList();
+    this.grid().gridQuery.set(params);
   }
 
   newResource(): void {

@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
@@ -15,11 +16,11 @@ ModuleRegistry.registerModules([
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { NotifyService } from 'src/app/core/service/notify.service';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 import { Staff } from './staff.model';
+
 
 @Component({
   selector: 'app-staff-grid',
@@ -30,7 +31,7 @@ import { Staff } from './staff.model';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="list"
+      [rowData]="gridResource.value()?.data ?? []"
       [style.height]="'100%'"
       [defaultColDef]="defaultColDef"
       [columnDefs]="columnDefs"
@@ -43,12 +44,9 @@ import { Staff } from './staff.model';
   `,
   styles: []
 })
-export class StaffGridComponent extends AgGridCommon implements OnInit {
+export class StaffGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
-
-  list: Staff[] = [];
 
   rowClicked = output<Staff>();
   rowDoubleClicked = output<Staff>();
@@ -81,28 +79,16 @@ export class StaffGridComponent extends AgGridCommon implements OnInit {
     return params.data.companyCode! + params.data.staffNo!;
   };
 
-  ngOnInit() {
-    this.getList();
-  }
-
-  getList(params?: any): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
-    const obj:any = params;
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<Staff>>(
+      GlobalProperty.serverUrl + `/api/hrm/staff`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: obj
-    };
-
-    this.http.get<ResponseList<Staff>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<Staff>>('getStaffList', undefined))
-    )
-    .subscribe(
-      (model: ResponseList<Staff>) => {
-        this.list = model.data;
-      }
-    );
-  }
+      params: request
+    })
+  })
 
   rowClickedFunc(event: RowClickedEvent<Staff>) {
     this.rowClicked.emit(event.data!);

@@ -5,10 +5,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HrmCodeTypeGridComponent } from './hrm-code-type-grid.component';
 import { HrmCodeGridComponent } from './hrm-code-grid.component';
 import { NotifyService } from 'src/app/core/service/notify.service';
-import { HrmCodeService } from './hrm-code.service';
+import { HrmCodeService } from '../shared/hrm-code.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { HrmCode } from './hrm-code.model';
-import { HrmCodeTypeService } from './hrm-code-type.service';
+import { HrmCodeTypeService } from '../shared/hrm-code-type.service';
 import { HrmType } from './hrm-type.model';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';

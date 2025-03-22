@@ -131,13 +131,12 @@ export class PostFormComponent implements AfterViewInit {
   textData: any;
   article!: Post;
 
-  @Input() boardId!: string;
-
   formElement = viewChild.required<ElementRef>('form');
-  ckEditor = viewChild.required<CKEditorComponent>('ckEditor');
+  ckEditor = viewChild.required(CKEditorComponent);
   uploader = viewChild.required(PostFileUploadComponent);
   uploaderParams = '';
 
+  boardId = input<string>('');
   formInitId = input<string>('');
 
   formSaved = output<any>();
@@ -157,11 +156,11 @@ export class PostFormComponent implements AfterViewInit {
   constructor() {
 
     effect(() => {
-      console.log(this.formInitId());
+      console.log(this.boardId(), this.formInitId());
       if (this.formInitId()) {
         this.get(this.formInitId());
       } else {
-        this.newForm(this.boardId);
+        this.newForm(this.boardId());
       }
     })
   }
@@ -203,7 +202,7 @@ export class PostFormComponent implements AfterViewInit {
   closePopup() {
     // 팝업 호출한 경우 팝업 종료
     if (window.opener) {
-      window.opener.postMessage(this.boardId);
+      window.opener.postMessage(this.boardId());
       window.close();
     }
   }
@@ -216,11 +215,10 @@ export class PostFormComponent implements AfterViewInit {
     }
 
     this.http
-      .get<ResponseObject<Post>>(url, options)
-      .pipe(
+        .get<ResponseObject<Post>>(url, options).pipe(
          // catchError((err) => Observable.throw(err))
-      )
-      .subscribe(
+        )
+        .subscribe(
           (model: ResponseObject<Post>) => {
             if (model.data) {
               this.article = model.data;
@@ -244,9 +242,8 @@ export class PostFormComponent implements AfterViewInit {
     }
 
     this.http
-        .post<ResponseObject<string>>(url, this.fg.getRawValue(), options)
-        .pipe(
-            //catchError((err) => Observable.throw(err))
+        .post<ResponseObject<string>>(url, this.fg.getRawValue(), options).pipe(
+        //catchError((err) => Observable.throw(err))
         )
         .subscribe(
           (model: ResponseObject<string>) => {
@@ -272,8 +269,7 @@ export class PostFormComponent implements AfterViewInit {
       withCredentials: true
     }
     this.http
-        .delete<ResponseObject<Post>>(url, options)
-        .pipe(
+        .delete<ResponseObject<Post>>(url, options).pipe(
           //catchError((err) => Observable.throw(err))
         )
         .subscribe(

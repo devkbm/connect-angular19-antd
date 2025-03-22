@@ -31,7 +31,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="termList"
+      [rowData]="gridResource.value()?.data ?? []"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -45,14 +45,11 @@ import { rxResource } from '@angular/core/rxjs-interop';
 })
 export class TermGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Term>();
   rowDoubleClicked = output<Term>();
   editButtonClicked = output<Term>();
-
-  termList: Term[] = [];
 
   columnDefs: ColDef[] = [
     {

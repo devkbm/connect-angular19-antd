@@ -9,7 +9,7 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 import { NotifyService } from 'src/app/core/service/notify.service';
 
 import { HrmCode } from '../hrm-code/hrm-code.model';
-import { HrmCodeService } from '../hrm-code/hrm-code.service';
+import { HrmCodeService } from '../shared/hrm-code.service';
 import { AttendanceDate, AttendanceApplication } from './attendance-application.model';
 import { DutyDateListComponent } from './duty-date-list.component';
 

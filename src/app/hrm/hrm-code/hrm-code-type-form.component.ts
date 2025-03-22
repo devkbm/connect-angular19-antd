@@ -6,15 +6,17 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NotifyService } from 'src/app/core/service/notify.service';
 
-import { HrmCodeTypeService } from './hrm-code-type.service';
 import { HrmType } from './hrm-type.model';
-import { existingHrmTypeValidator } from './hrm-code-type-duplication-validator';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
+import { HrmCodeTypeFormValidatorService } from './validator/hrm-code-type-form-validator.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-hrm-code-type-form',
@@ -92,8 +94,9 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   private fb = inject(FormBuilder);
-  private service = inject(HrmCodeTypeService);
   private notifyService = inject(NotifyService);
+  private http = inject(HttpClient);
+  private validator = inject(HrmCodeTypeFormValidatorService);
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -102,7 +105,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
   fg = this.fb.group({
     typeId          : new FormControl<string | null>(null, {
                         validators: Validators.required,
-                        asyncValidators: [existingHrmTypeValidator(this.service)],
+                        asyncValidators: [this.validator.existingEntityValidator()],
                         updateOn: 'blur'
                       }),
     typeName        : new FormControl<string | null>(null, { validators: Validators.required }),
@@ -156,8 +159,15 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   get(code: string): void {
-    this.service
-        .get(code)
+    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${code}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseObject<HrmType>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<HrmType>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseObject<HrmType>) => {
             if ( model.data ) {
@@ -168,7 +178,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
             }
             this.notifyService.changeMessage(model.message);
           }
-      );
+      )
   }
 
   save(): void {
@@ -182,27 +192,40 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.service
-        .save(this.fg.getRawValue())
+    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.post<ResponseObject<HrmType>>(url, this.fg.getRawValue(), options).pipe(
+        //  catchError(this.handleError<ResponseObject<HrmType>>('save', undefined))
+        )
         .subscribe(
           (model: ResponseObject<HrmType>) => {
             this.notifyService.changeMessage(model.message);
             this.formSaved.emit(this.fg.getRawValue());
           }
-        );
+        )
   }
 
   remove(): void {
     const id = this.fg.controls.typeId.value!;
+    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${id}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
 
-    this.service
-        .remove(id)
+    this.http.delete<ResponseObject<HrmType>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseObject<HrmType>>('remove', undefined))
+        )
         .subscribe(
-            (model: ResponseObject<HrmType>) => {
-            this.notifyService.changeMessage(model.message);
-            this.formDeleted.emit(this.fg.getRawValue());
-            }
-        );
+          (model: ResponseObject<HrmType>) => {
+          this.notifyService.changeMessage(model.message);
+          this.formDeleted.emit(this.fg.getRawValue());
+          }
+      )
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, OnInit, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -21,6 +21,7 @@ import { CommonCode } from './common-code.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -32,7 +33,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="commonCodeList"
+      [rowData]="gridResource.value()?.data ?? []"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -44,13 +45,9 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   </ag-grid-angular>
   `
 })
-export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
+export class CommonCodeGridComponent extends AgGridCommon {
 
-  private commonCodeService = inject(CommonCodeService);
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
-
-  commonCodeList: CommonCode[] = [];
 
   rowClicked = output<CommonCode>();
   rowDoubleClicked = output<CommonCode>();
@@ -102,38 +99,16 @@ export class CommonCodeGridComponent extends AgGridCommon implements OnInit {
     return params.data.codeId!;
   };
 
-  ngOnInit(): void {
-    this.getCommonCodeList();
-  }
-
-  getCommonCodeList(params?: any): void {
-    /*
-    this.commonCodeService
-        .getCodeList(params)
-        .subscribe(
-          (model: ResponseList<CommonCode>) => {
-            this.commonCodeList = model.data;
-            this.notifyService.changeMessage(model.message);
-          }
-        );
-    */
-
-    const url = GlobalProperty.serverUrl + `/api/system/code`;
-    const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-      };
-
-    this.http.get<ResponseList<CommonCode>>(url, options).pipe(
-      //catchError((err) => Observable.throw(err))
-    ).subscribe(
-      (model: ResponseList<CommonCode>) => {
-        this.commonCodeList = model.data;
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-  }
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<CommonCode>>(
+      GlobalProperty.serverUrl + `/api/system/code`, {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: request
+    })
+  })
 
   selectionChanged(event: any): void {
     const selectedRows = this.gridApi.getSelectedRows();
