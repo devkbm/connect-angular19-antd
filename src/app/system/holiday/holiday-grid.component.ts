@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, output, signal } from '@angular/core';
+import { Component, computed, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -13,13 +13,13 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { DateInfo } from './holiday.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -32,7 +32,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   <!-- [style.height]="'100%'" -->
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="gridList()"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -44,20 +44,19 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   </ag-grid-angular>
   `
 })
-export class HolidayGridComponent extends AgGridCommon implements OnInit {
+export class HolidayGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<DateInfo>();
   rowDoubleClicked = output<DateInfo>();
   editButtonClicked = output<DateInfo>();
 
-  //gridList: Holiday[] = [];
-  gridList = signal<DateInfo[]>([]);
   filteredList = computed(() => {
-    let dateList: Date[] = this.gridList().filter((e) => { return (e.holiday?.holidayName ?? '') !== ''} )
-                                          .map((e) => e.date!);
+    if (!this.gridResource.hasValue()) return [];
+
+    let dateList: Date[] = this.gridResource.value()!.data.filter((e) => { return (e.holiday?.holidayName ?? '') !== ''} )
+                                        .map((e) => e.date!);
     let obj : any[] = [];
     dateList.forEach((element, index) => {
       obj.push({start: element, end: element});
@@ -93,31 +92,16 @@ export class HolidayGridComponent extends AgGridCommon implements OnInit {
     return params.data.date!;
   };
 
-  ngOnInit(): void {
-    //this.getGridList();
-  }
-
-  getGridList(fromDate: string, toDate: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/holiday`;
-    const params = {fromDate: fromDate, toDate: toDate};
-
-    const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-      };
-
-    this.http.get<ResponseList<DateInfo>>(url, options)
-             .pipe(
-                //catchError(this.handleError<ResponseList<DateInfo>>('getHolidayList', undefined))
-              )
-             .subscribe(
-                (model: ResponseList<DateInfo>) => {
-                  this.gridList.set(model.data);
-                  this.notifyService.changeMessage(model.message);
-                }
-              );
-  }
+  gridQuery = signal<{fromDate: string, toDate: string}>({fromDate: '20250101', toDate: '20251231'});
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<DateInfo>>(
+      GlobalProperty.serverUrl + `/api/system/holiday`, {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: request
+    })
+  })
 
   selectionChanged(event: any): void {
     const selectedRows = this.gridApi.getSelectedRows();

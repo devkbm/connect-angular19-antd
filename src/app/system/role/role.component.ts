@@ -206,7 +206,7 @@ export class RoleComponent implements AfterViewInit {
     }
 
     this.closeDrawer();
-    this.grid().getList(params);
+    this.grid().gridQuery.set(params);
   }
 
   delete() {

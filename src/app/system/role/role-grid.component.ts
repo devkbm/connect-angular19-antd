@@ -1,5 +1,7 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -13,13 +15,11 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Role } from './role.model';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-role-grid',
@@ -30,7 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="roleList"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -51,16 +51,13 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     :host::ng-deep .header-right .ag-header-cell-label { flex-direction: row-reverse; }
   `]
 })
-export class RoleGridComponent extends AgGridCommon implements OnInit {
+export class RoleGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Role>();
   rowDoubleClicked = output<Role>();
   editButtonClicked = output<Role>();
-
-  roleList: Role[] = [];
 
   columnDefs : ColDef[] = [
     {
@@ -116,30 +113,16 @@ export class RoleGridComponent extends AgGridCommon implements OnInit {
     return params.data.roleCode!;
   };
 
-  ngOnInit() {
-    this.getList();
-  }
-
-  getList(params?: any): void {
-    const url = GlobalProperty.serverUrl + `/api/system/role`;
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<Role>>(
+      GlobalProperty.serverUrl + `/api/system/role`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: params
-    };
-
-    this.http
-      .get<ResponseList<Role>>(url, options)
-      .pipe(
-        //catchError(this.handleError<ResponseList<Role>>('getRoleList', undefined))
-      )
-      .subscribe(
-        (model: ResponseList<Role>) => {
-          this.roleList = model.data;
-          this.notifyService.changeMessage(model.message);
-        }
-      );
-  }
+      params: request
+    })
+  })
 
   rowClickedEvent(params: RowClickedEvent<Role>): void {
     this.rowClicked.emit(params.data!);

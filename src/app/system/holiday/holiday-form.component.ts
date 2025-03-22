@@ -136,7 +136,7 @@ export class HolidayFormComponent implements AfterViewInit {
   get(date: Date): void {
     const id = formatDate(date,'YYYYMMdd','ko-kr');
 
-    const url = GlobalProperty.serverUrl + `/holiday/${id}`;
+    const url = GlobalProperty.serverUrl + `/api/system/holiday/${id}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -165,7 +165,7 @@ export class HolidayFormComponent implements AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/holiday`;
+    const url = GlobalProperty.serverUrl + `/api/system/holiday`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -186,7 +186,7 @@ export class HolidayFormComponent implements AfterViewInit {
   remove(): void {
     const id = formatDate(this.fg.controls.date.value!,'YYYYMMdd','ko-kr');
 
-    const url = GlobalProperty.serverUrl + `/holiday/${id}`;
+    const url = GlobalProperty.serverUrl + `/api/system/holiday/${id}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true

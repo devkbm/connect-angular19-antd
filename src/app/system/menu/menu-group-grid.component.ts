@@ -1,5 +1,7 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -12,14 +14,12 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { MenuGroup } from './menu-group.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-menu-group-grid',
@@ -30,7 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="menuGroupList"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -42,16 +42,13 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   </ag-grid-angular>
   `
 })
-export class MenuGroupGridComponent extends AgGridCommon implements OnInit {
+export class MenuGroupGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<MenuGroup>();
   rowDoubleClicked = output<MenuGroup>();
   editButtonClicked = output<MenuGroup>();
-
-  menuGroupList: MenuGroup[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -99,30 +96,16 @@ export class MenuGroupGridComponent extends AgGridCommon implements OnInit {
     return params.data.menuGroupCode!;
   };
 
-  ngOnInit() {
-    this.getMenuGroupList();
-  }
-
-  getMenuGroupList(params?: any): void {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<MenuGroup>>(
+      GlobalProperty.serverUrl + `/api/system/menugroup`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: params
-    };
-
-    this.http
-        .get<ResponseList<MenuGroup>>(url, options)
-        .pipe(
-          //catchError((err) => Observable.throw(err))
-        )
-        .subscribe(
-          (model: ResponseList<MenuGroup>) => {
-            this.menuGroupList = model.data;
-            this.notifyService.changeMessage(model.message);
-          }
-        );
-  }
+      params: request
+    })
+  })
 
   selectionChanged(event: any) {
     const selectedRows = this.gridApi.getSelectedRows();

@@ -1,5 +1,7 @@
-import { Component, Input, inject, output } from '@angular/core';
+import { Component, Input, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -13,14 +15,11 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Menu } from './menu.model';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
-
 
 @Component({
   selector: 'app-menu-grid',
@@ -31,7 +30,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="menuList"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -45,7 +44,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 })
 export class MenuGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<any>();
@@ -53,7 +51,6 @@ export class MenuGridComponent extends AgGridCommon {
   editButtonClicked = output<any>();
 
   @Input() menuGroupCode: string = '';
-  menuList: Menu[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -86,26 +83,16 @@ export class MenuGridComponent extends AgGridCommon {
       return params.data.menuGroupCode! + params.data.menuCode!;
   };
 
-  getMenuList(params?: any) {
-    const url = GlobalProperty.serverUrl + `/api/system/menu`;
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<Menu>>(
+      GlobalProperty.serverUrl + `/api/system/menu`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: params
-    };
-
-    this.http
-        .get<ResponseList<Menu>>(url, options)
-        .pipe(
-          //catchError((err) => Observable.throw(err))
-        )
-        .subscribe(
-          (model: ResponseList<Menu>) => {
-            this.menuList = model.data;
-            this.notifyService.changeMessage(model.message);
-          }
-        );
-  }
+      params: request
+    })
+  })
 
   selectionChanged(event: any) {
     const selectedRows = this.gridApi.getSelectedRows();

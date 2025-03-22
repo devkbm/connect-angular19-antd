@@ -237,7 +237,7 @@ export class MenuComponent {
 
     this.drawer.menuGroup.visible = false;
     //this.gridMenu().clearData();
-    this.gridMenuGroup().getMenuGroupList(params);
+    this.gridMenuGroup().gridQuery.set(params);
   }
 
   newMenuGroup(): void {
@@ -267,7 +267,7 @@ export class MenuComponent {
     }
 
     this.drawer.menu.visible = false;
-    this.gridMenu().getMenuList(params);
+    this.gridMenu().gridQuery.set(params);
   }
 
   newMenu(): void {

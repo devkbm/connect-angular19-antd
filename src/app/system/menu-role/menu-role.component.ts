@@ -302,7 +302,7 @@ export class MenuRoleComponent {
     this.menuGroup.selectedItem = args.menuGroupCode;
     this.drawer.menuGroup.formInitId = args.menuGroupCode;
     this.role.selectedItem = '';
-    this.roleGrid().getList({menuGroupCode: this.menuGroup.selectedItem});
+    this.roleGrid().gridQuery.set({menuGroupCode: this.menuGroup.selectedItem});
 
     this.getMenuList();
   }
@@ -319,7 +319,7 @@ export class MenuRoleComponent {
 
   //#region Menu
   getMenuList() {
-    this.menuGrid().getMenuList({menuGroupCode: this.menuGroup.selectedItem});
+    this.menuGrid().gridQuery.set({menuGroupCode: this.menuGroup.selectedItem});
   }
 
   menuClicked(args: any) {

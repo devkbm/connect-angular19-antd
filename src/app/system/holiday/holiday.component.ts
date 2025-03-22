@@ -90,21 +90,22 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     </nz-tab>
 
     <nz-tab nzTitle="공휴일 등록">
-    <ng-template nz-tab>
-      <h3 class="grid-title">공휴일 목록</h3>
-      <div class="grid-wrapper" >
-        <app-holiday-grid
-          (rowClicked)="holidayGridRowClicked($event)"
-          (editButtonClicked)="edit($event)"
-          (rowDoubleClicked)="edit($event)">
-        </app-holiday-grid>
+      <ng-template nz-tab>
+        <h3 class="grid-title">공휴일 목록</h3>
+        <div class="grid-wrapper" >
+          <app-holiday-grid
+            (rowClicked)="holidayGridRowClicked($event)"
+            (editButtonClicked)="edit($event)"
+            (rowDoubleClicked)="edit($event)">
+          </app-holiday-grid>
 
-        <app-calendar-daypilot-navigator
-          [events]="grid().filteredList()"
-          (selectChanged)="navigatorSelectChanged($event)">
-        </app-calendar-daypilot-navigator>
-      </div>
-    </ng-template>
+
+          <app-calendar-daypilot-navigator
+            [events]="grid().filteredList()"
+            (selectChanged)="navigatorSelectChanged($event)">
+          </app-calendar-daypilot-navigator>
+        </div>
+      </ng-template>
     </nz-tab>
   </nz-tabset>
 </app-shape>
@@ -203,7 +204,7 @@ export class HolidayComponent implements AfterViewInit {
     if ( this.tab.index == 0 ) {
       this.calendar().getHolidayList(date.getFullYear()+'0101', date.getFullYear()+'1231');
     } else {
-      this.grid().getGridList(date.getFullYear()+'0101', date.getFullYear()+'1231');
+      this.grid().gridQuery.set({fromDate: date.getFullYear()+'0101', toDate: date.getFullYear()+'1231'});
     }
 
   }
