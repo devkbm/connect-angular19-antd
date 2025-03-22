@@ -1,5 +1,7 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -14,13 +16,10 @@ ModuleRegistry.registerModules([
 ]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { NotifyService } from 'src/app/core/service/notify.service';
-
-import { WordService } from './word.service';
-import { Word } from './word.model';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+
+import { Word } from './word.model';
 
 
 @Component({
@@ -45,10 +44,8 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   `,
   styles: []
 })
-export class WordGridComponent extends AgGridCommon implements OnInit {
+export class WordGridComponent extends AgGridCommon {
 
-  private service = inject(WordService);
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<Word>();
@@ -85,44 +82,16 @@ export class WordGridComponent extends AgGridCommon implements OnInit {
     return params.data.logicalName!;
   };
 
-  ngOnInit() {
-    this.getList();
-  }
-
-  getList(params?: any): void {
-    /*
-    this.service
-        .getList()
-        .subscribe(
-          (model: ResponseList<Word>) => {
-            if (model.data) {
-              this.list = model.data;
-            } else {
-              this.list = [];
-            }
-            this.notifyService.changeMessage(model.message);
-          }
-        );
-    */
-    const url = GlobalProperty.serverUrl + '/api/system/word';
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<Word>>(
+      GlobalProperty.serverUrl + `/api/system/word`, {
       headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
-
-    this.http.get<ResponseList<Word>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<Word>>('getList', undefined))
-    ).subscribe(
-      (model: ResponseList<Word>) => {
-        if (model.data) {
-          this.list = model.data;
-        } else {
-          this.list = [];
-        }
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-  }
+      withCredentials: true,
+      params: request
+    })
+  })
 
   rowClickedFunc(event: RowClickedEvent<Word>) {
     this.rowClicked.emit(event.data!);

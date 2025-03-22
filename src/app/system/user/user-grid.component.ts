@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -14,13 +14,13 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { User } from './user.model';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { HttpClient } from '@angular/common/http';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-grid',
@@ -31,7 +31,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   template: `
     <ag-grid-angular
       [theme]="theme"
-      [rowData]="userList"
+      [rowData]="gridResource.value()?.data"
       [style.height]="'100%'"
       [rowSelection]="rowSelection"
       [columnDefs]="columnDefs"
@@ -43,9 +43,8 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   </ag-grid-angular>
   `
 })
-export class UserGridComponent extends AgGridCommon implements OnInit {
+export class UserGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<User>();
@@ -128,28 +127,16 @@ export class UserGridComponent extends AgGridCommon implements OnInit {
     return params.data.userId!;
   };
 
-  ngOnInit() {
-    this.getUserList();
-  }
-
-  getUserList(params?: any): void {
-    const url = GlobalProperty.serverUrl + '/api/system/user';
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<User>>(
+      GlobalProperty.serverUrl + `/api/system/user`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: params
-    };
-
-    this.http.get<ResponseList<User>>(url, options).pipe(
-    //    catchError(this.handleError<ResponseList<User>>('getUserList', undefined))
-    ).subscribe(
-      (model: ResponseList<User>) => {
-        this.userList = model.data;
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-
-  }
+      params: request
+    })
+  })
 
   rowClickedEvent(event: RowClickedEvent<User>) {
     this.rowClicked.emit(event.data!);

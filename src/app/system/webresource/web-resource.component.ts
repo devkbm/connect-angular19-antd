@@ -1,24 +1,25 @@
 import { Component, OnInit, inject, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
+import { ShapeComponent } from "src/app/core/app/shape.component";
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 import { WebResourceGridComponent } from './web-resource-grid.component';
 import { WebResource } from './web-resource.model';
+import { WebResourceFormDrawerComponent } from './web-resource-form-drawer.component';
 
+import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
+import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { ButtonTemplate, NzButtonsComponent } from 'src/app/third-party/ng-zorro/nz-buttons/nz-buttons.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
-import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
-import { WebResourceFormDrawerComponent } from './web-resource-form-drawer.component';
-import { ShapeComponent } from "src/app/core/app/shape.component";
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-web-resource',
@@ -189,7 +190,7 @@ export class WebResourceComponent implements OnInit {
     }
 
     this.drawer.resource.visible = false;
-    this.grid().getList(params);
+    this.grid().gridQuery.set(params);
   }
 
   newResource(): void {

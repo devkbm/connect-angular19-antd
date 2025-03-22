@@ -248,7 +248,7 @@ export class TermComponent implements OnInit {
     }
 
     this.drawer.term.visible = false;
-    this.termGrid().getList(params);
+    this.termGrid().gridQuery.set(params);
   }
 
   newTerm() {
@@ -269,7 +269,7 @@ export class TermComponent implements OnInit {
   //#region 단어사전
   getWordList() {
     this.drawer.word.visible = false;
-    this.wordGrid().getList();
+    this.wordGrid().gridResource.reload();
   }
 
   newWord() {
@@ -290,7 +290,7 @@ export class TermComponent implements OnInit {
   //#region 도메인
   getDomainList() {
     this.drawer.domain.visible = false;
-    this.domainGrid().getList();
+    this.domainGrid().gridResource.reload();
   }
 
   newDomain() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AgGridAngular } from 'ag-grid-angular';
@@ -15,12 +15,12 @@ ModuleRegistry.registerModules([
 import { ResponseList } from 'src/app/core/model/response-list';
 import { NotifyService } from 'src/app/core/service/notify.service';
 
-import { TermService } from './term.service';
 import { Term } from './term.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-term-grid',
@@ -43,9 +43,8 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   </ag-grid-angular>
   `
 })
-export class TermGridComponent extends AgGridCommon implements OnInit {
+export class TermGridComponent extends AgGridCommon {
 
-  private termService = inject(TermService);
   private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
@@ -87,45 +86,16 @@ export class TermGridComponent extends AgGridCommon implements OnInit {
       return params.data.termId!;
   };
 
-  ngOnInit() {
-    this.getList();
-  }
-
-  getList(params?: any): void {
-    /*
-    this.termService
-        .getTermList(params)
-        .subscribe(
-          (model: ResponseList<Term>) => {
-            if (model.data) {
-              this.termList = model.data;
-            } else {
-              this.termList = [];
-            }
-            this.notifyService.changeMessage(model.message);
-          }
-        );
-    */
-    const url = GlobalProperty.serverUrl + '/api/system/terms';
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<Term>>(
+      GlobalProperty.serverUrl + `/api/system/terms`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: params
-    };
-
-    this.http.get<ResponseList<Term>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<Term>>('getTermList', undefined))
-    ).subscribe(
-      (model: ResponseList<Term>) => {
-        if (model.data) {
-          this.termList = model.data;
-        } else {
-          this.termList = [];
-        }
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-  }
+      params: request
+    })
+  })
 
   rowClickedFunc(event: RowClickedEvent<Term>) {
     this.rowClicked.emit(event.data!);

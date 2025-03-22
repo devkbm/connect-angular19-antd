@@ -1,5 +1,7 @@
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -14,13 +16,11 @@ ModuleRegistry.registerModules([
 ]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { NotifyService } from 'src/app/core/service/notify.service';
-
-import { DataDomainService } from './data-domain.service';
-import { DataDomain } from './data-domain.model';
-import { HttpClient } from '@angular/common/http';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
+
+import { DataDomain } from './data-domain.model';
+
 
 @Component({
   selector: 'app-data-domain-grid',
@@ -31,7 +31,7 @@ import { GlobalProperty } from 'src/app/core/global-property';
   template: `
   <ag-grid-angular
     [theme]="theme"
-    [rowData]="list"
+    [rowData]="gridResource.value()?.data"
     [style.height]="'100%'"
     [rowSelection]="rowSelection"
     [columnDefs]="columnDefs"
@@ -44,17 +44,13 @@ import { GlobalProperty } from 'src/app/core/global-property';
   `,
   styles: []
 })
-export class DataDomainGridComponent extends AgGridCommon implements OnInit {
+export class DataDomainGridComponent extends AgGridCommon {
 
-  private service = inject(DataDomainService);
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<DataDomain>();
   rowDoubleClicked = output<DataDomain>();
   editButtonClicked = output<DataDomain>();
-
-  list: DataDomain[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -85,44 +81,16 @@ export class DataDomainGridComponent extends AgGridCommon implements OnInit {
     return params.data.domainId!;
   };
 
-  ngOnInit() {
-    this.getList();
-  }
-
-  getList(params?: any) {
-    /*
-    this.service
-        .getList()
-        .subscribe(
-          (model: ResponseList<DataDomain>) => {
-            if (model.data) {
-              this.list = model.data;
-            } else {
-              this.list = [];
-            }
-            this.notifyService.changeMessage(model.message);
-          }
-        );
-    */
-    const url = GlobalProperty.serverUrl + '/api/system/datadomin';
-    const options = {
+  gridQuery = signal<any>('');
+  gridResource = rxResource({
+    request: () => this.gridQuery(),
+    loader: ({request}) => this.http.get<ResponseList<DataDomain>>(
+      GlobalProperty.serverUrl + `/api/system/datadomin`, {
       headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
-
-    this.http.get<ResponseList<DataDomain>>(url, options).pipe(
-      //catchError(this.handleError<ResponseList<DataDomain>>('getList', undefined))
-    ).subscribe(
-      (model: ResponseList<DataDomain>) => {
-        if (model.data) {
-          this.list = model.data;
-        } else {
-          this.list = [];
-        }
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-  }
+      withCredentials: true,
+      params: request
+    })
+  })
 
   rowClickedFunc(event: RowClickedEvent<DataDomain>) {
     this.rowClicked.emit(event.data!);

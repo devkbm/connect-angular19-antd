@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, Renderer2, input, effect, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UserImageUploadComponent } from './user-image-upload.component';
@@ -8,6 +9,7 @@ import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 import { User } from './user.model';
 import { Role } from '../role/role.model';
@@ -20,8 +22,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzInputTreeSelectDeptComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select-dept/nz-input-tree-select-dept.component';
-import { HttpClient } from '@angular/common/http';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+
 
 @Component({
   selector: 'app-user-form',
@@ -235,7 +236,7 @@ export class UserFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAuthorityList();
+    this.getRoleList();
     this.getDeptHierarchy();
   }
 
@@ -344,16 +345,6 @@ export class UserFormComponent implements OnInit {
   }
 
   remove(): void {
-    /*
-    this.service
-        .deleteUser(this.fg.controls.userId.value!)
-        .subscribe(
-          (model: ResponseObject<User>) => {
-            this.notifyService.changeMessage(model.message);
-            this.formDeleted.emit(this.fg.getRawValue());
-          }
-        );
-    */
     const url = GlobalProperty.serverUrl + `/api/system/user/${this.fg.controls.userId.value}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
@@ -372,7 +363,7 @@ export class UserFormComponent implements OnInit {
         )
   }
 
-  getAuthorityList(): void {
+  getRoleList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/role`;
     const options = {
       headers: getAuthorizedHttpHeaders(),

@@ -1,4 +1,4 @@
-import { Component, effect, inject, output } from '@angular/core';
+import { Component, effect, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 
@@ -21,7 +21,6 @@ import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-web-resource-grid',
@@ -30,9 +29,6 @@ import { map } from 'rxjs';
     AgGridAngular
   ],
   template: `
-    <!-- [rowData]="_list" -->
-     {{gridResource.value()!.data | json }}
-    <button (click)="gridResource.reload()">reload</button>
     <ag-grid-angular
       [theme]="theme"
       [rowData]="gridResource.value()?.data"
@@ -60,14 +56,11 @@ import { map } from 'rxjs';
 })
 export class WebResourceGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   rowClicked = output<WebResource>();
   rowDoubleClicked = output<WebResource>();
   editButtonClicked = output<WebResource>();
-
-  _list: WebResource[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -98,46 +91,16 @@ export class WebResourceGridComponent extends AgGridCommon {
     return params.data.resourceId!;
   };
 
-  constructor() {
-    super();
-    this.getList();
-    //this.listResource.reload();
-
-    effect(() => {
-      console.log(this.gridResource.value());
-    })
-  }
-
+  gridQuery = signal<any>('');
   gridResource = rxResource({
-    request: () => ({
-      resourceId: '11',
-      resourceName: ''
-    }),
+    request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<WebResource>>(
       GlobalProperty.serverUrl + `/api/system/webresource`, {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true,
-      params: {}
+      params: request
     })
   })
-
-  public getList(params?: any): void {
-    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
-    const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-     };
-
-    this.http.get<ResponseList<WebResource>>(url, options).pipe(
-      //catchError((err) => Observable.throw(err))
-    ).subscribe(
-      (model: ResponseList<WebResource>) => {
-        this._list = model.data;
-        this.notifyService.changeMessage(model.message);
-      }
-    );
-  }
 
   rowClickedEvent(event: RowClickedEvent<WebResource>) {
     this.rowClicked.emit(event.data!);

@@ -1,8 +1,12 @@
-import { Component, OnInit, viewChild } from '@angular/core';
+import { Component, inject, OnInit, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { UserGridComponent } from './user-grid.component';
 import { UserFormDrawerComponent } from './user-form-drawer.component';
@@ -14,9 +18,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
-import { ButtonTemplate } from 'src/app/third-party/ng-zorro/nz-buttons/nz-buttons.component';
 import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
 
 @Component({
@@ -31,6 +35,7 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
     NzIconModule,
     NzDividerModule,
     NzButtonModule,
+    NzPopconfirmModule,
     NzPageHeaderCustomComponent,
     NzSearchAreaComponent,
     NzButtonExcelUploadComponent,
@@ -63,8 +68,6 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
       </div>
 
       <div nz-col [nzSpan]="12" style="text-align: right;">
-        <!--<app-nz-buttons [buttons]="buttons"></app-nz-buttons>-->
-
         <app-nz-button-excel-upload [urn]="'/api/system/user-excel'">
         </app-nz-button-excel-upload>
 
@@ -135,32 +138,9 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
 })
 export class UserComponent implements OnInit {
 
-  grid = viewChild.required(UserGridComponent);
+  private http = inject(HttpClient);
 
-  buttons: ButtonTemplate[] = [
-  {
-    text: '조회',
-    nzType: 'search',
-    click: (e: MouseEvent) => {
-      this.getUserList();
-    }
-  },{
-    text: '신규',
-    nzType: 'form',
-    click: (e: MouseEvent) => {
-      this.newForm();
-    }
-  },{
-    text: '삭제',
-    nzType: 'delete',
-    isDanger: true,
-    popConfirm: {
-      title: '삭제하시겠습니까?',
-      confirmClick: () => {
-        this.deleteUser();
-      }
-    }
-  }];
+  grid = viewChild.required(UserGridComponent);
 
   query: {
     user : { key: string, value: string, list: {label: string, value: string}[] }
@@ -180,8 +160,6 @@ export class UserComponent implements OnInit {
   } = {
     user: { visible: false, formInitId: null }
   }
-
-  //private service = inject(UserService);
 
   ngOnInit() {
   }
@@ -205,20 +183,25 @@ export class UserComponent implements OnInit {
 
     this.drawer.user.visible = false;
 
-    this.grid().getUserList(params);
+    this.grid().gridQuery.set(params);
   }
 
   deleteUser() {
     const userId: string = this.drawer.user.formInitId;
-    /*
-    this.service
-        .deleteUser(userId)
+    const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http
+        .delete<ResponseObject<User>>(url, options).pipe(
+      //     catchError(this.handleError<ResponseObject<User>>('deleteUser', undefined))
+        )
         .subscribe(
           (model: ResponseObject<User>) => {
-            this.getUserList();
           }
-        );
-    */
+        )
   }
 
   userGridSelected(params: User) {
