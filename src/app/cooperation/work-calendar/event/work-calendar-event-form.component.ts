@@ -301,23 +301,10 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
             .subscribe(
               (model: ResponseObject<WorkCalendarEvent>) => {
                 if (model.data) {
-                  console.log(model.data);
                   this.modifyForm(model.data);
                 }
               }
           )
-
-    /*
-    this.service.getWorkGroupSchedule(id)
-        .subscribe(
-            (model: ResponseObject<WorkCalendarEvent>) => {
-              if (model.data) {
-                console.log(model.data);
-                this.modifyForm(model.data);
-              }
-            }
-        );
-      */
   }
 
   save(): void {
@@ -346,16 +333,6 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
             this.formSaved.emit(this.fg.getRawValue());
           }
       )
-
-    /*
-    this.service
-        .saveWorkGroupSchedule(this.fg.getRawValue())
-        .subscribe(
-            (model: ResponseObject<WorkCalendarEvent>) => {
-              this.formSaved.emit(this.fg.getRawValue());
-            }
-        );
-        */
   }
 
   remove(): void {
@@ -376,15 +353,6 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
             this.formDeleted.emit(this.fg.getRawValue());
           }
         )
-
-    /*
-    this.service.deleteWorkGroupSchedule(id)
-        .subscribe(
-            (model: ResponseObject<WorkCalendarEvent>) => {
-              this.formDeleted.emit(this.fg.getRawValue());
-            }
-        );
-      */
   }
 
   getMyWorkGroupList(): void {
@@ -394,16 +362,17 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
       withCredentials: true
     };
 
-    this.http.get<ResponseList<WorkCalendar>>(url, options).pipe(
+    this.http
+        .get<ResponseList<WorkCalendar>>(url, options).pipe(
             //catchError(this.handleError<ResponseList<WorkCalendar>>('getMyWorkGroupList', undefined))
-            )
-            .subscribe(
-              (model: ResponseList<WorkCalendar>) => {
-                this.workGroupList = model.data;
-                //this.notifyService.changeMessage(model.message);
-              }
-            )
-  }
+        )
+        .subscribe(
+          (model: ResponseList<WorkCalendar>) => {
+            this.workGroupList = model.data;
+            //this.notifyService.changeMessage(model.message);
+          }
+        )
+}
 
   allDayCheck(check: boolean) {
     this.isAllDay.set(check);

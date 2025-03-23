@@ -3,6 +3,7 @@ export interface HrmType {
   typeName: string | null;
   sequence: number | null;
   comment: string | null;
+  fieldConfig: string | null;
   /*
   the1AddInfoDesc: string | null;
 	the2AddInfoDesc: string | null;

@@ -74,20 +74,17 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     <form nz-form [formGroup]="fg" nzLayout="vertical" #form>
       <!-- 1 row -->
       <div nz-row nzGutter="8">
-        <div nz-col nzSpan="12">
-          <nz-form-item-custom for="boardParentId" label="상위 게시판">
+        <div nz-col nzSpan="8">
+          <nz-form-item-custom for="boardId" label="게시판ID">
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
-              <nz-input-tree-select
-                formControlName="boardParentId" itemId="boardParentId"
-                [nodes]="parentBoardItems"
-                placeholder="상위 게시판 없음"
-              >
-              </nz-input-tree-select>
+              <input nz-input id="boardId" formControlName="boardId"
+                placeholder="신규"
+              />
             </nz-form-control>
           </nz-form-item-custom>
         </div>
 
-        <div nz-col nzSpan="12">
+        <div nz-col nzSpan="8">
           <nz-form-item-custom for="boardType" label="게시판타입" required>
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <nz-input-select required
@@ -96,6 +93,19 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
                 placeholder="게시판타입을 선택해주세요."
               >
               </nz-input-select>
+            </nz-form-control>
+          </nz-form-item-custom>
+        </div>
+
+        <div nz-col nzSpan="8">
+          <nz-form-item-custom for="boardParentId" label="상위 게시판">
+            <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+              <nz-input-tree-select
+                formControlName="boardParentId" itemId="boardParentId"
+                [nodes]="parentBoardItems"
+                placeholder="상위 게시판 없음"
+              >
+              </nz-input-tree-select>
             </nz-form-control>
           </nz-form-item-custom>
         </div>
@@ -182,7 +192,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
   formClosed = output<any>();
 
   fg = inject(FormBuilder).group({
-    boardId         : new FormControl<string | null>(null),
+    boardId         : new FormControl<string | null>({value: '', disabled: true}),
     boardParentId   : new FormControl<string | null>(null),
     boardName       : new FormControl<string | null>('', { validators: [Validators.required] }),
     boardType       : new FormControl<string | null>('', { validators: [Validators.required] }),
@@ -216,14 +226,13 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
 
   newForm(): void {
     this.fg.reset();
-    this.fg.controls.boardId.enable();
     this.fg.controls.boardType.setValue('BOARD');
 
     this.focusInput();
   }
 
   modifyForm(formData: BoardManagement): void {
-    this.fg.controls.boardId.disable();
+    //this.fg.controls.boardId.disable();
 
     this.fg.patchValue(formData);
   }

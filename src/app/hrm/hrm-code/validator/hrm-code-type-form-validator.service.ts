@@ -26,7 +26,7 @@ export class HrmCodeTypeFormValidatorService {
         debounceTime(1000),
         switchMap((val) => {
 
-          const url = GlobalProperty.serverUrl + `/api/system/hrmtype/${control.value}/valid`;
+          const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${control.value}/valid`;
           const options = {
             headers: getAuthorizedHttpHeaders(),
             withCredentials: true

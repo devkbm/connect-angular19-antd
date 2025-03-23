@@ -170,13 +170,10 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<HrmType>) => {
-            if ( model.data ) {
-              console.log(model.data);
-              this.modifyForm(model.data);
-            } else {
-              this.newForm();
-            }
-            this.notifyService.changeMessage(model.message);
+            model.data ? this.modifyForm(model.data) : this.newForm();
+
+            const val = JSON.parse(model.data.fieldConfig!);
+            console.log(val);
           }
       )
   }

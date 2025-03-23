@@ -97,7 +97,11 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
   workGroupList: any;
   memberList: any;
   color: any;
-  preset_colors = ['#fff', '#000', '#2889e9', '#e920e9', '#fff500', 'rgb(236,64,64)'];
+
+  preset_colors = [
+    '#335c67', '#6d597a', '#e09f3e', '#9e2a2b', '#540b0e',
+    '#031d44', '#04395e', '#70a288', '#dab785', '#d5896f'
+  ];
 
   private renderer = inject(Renderer2);
   private http = inject(HttpClient);
@@ -140,7 +144,7 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
 
   newForm(): void {
     this.fg.controls.memberList.setValue([SessionManager.getUserId()]);
-    //this.fg.get('memberList')?.setValue([SessionManager.getUserId()]);
+    this.fg.controls.color.setValue(this.preset_colors[Math.floor(Math.random() * this.preset_colors.length)]);   // Calendar color random select
   }
 
   modifyForm(formData: WorkCalendar): void {

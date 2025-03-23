@@ -1,10 +1,13 @@
 import { Component, OnInit, AfterViewInit, inject, input, effect, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NotifyService } from 'src/app/core/service/notify.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
 import { HrmCode } from './hrm-code.model';
 
@@ -14,10 +17,11 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyNgZorroAntdModule } from '@ngx-formly/ng-zorro-antd';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator.service';
 
 @Component({
@@ -31,7 +35,9 @@ import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator
     NzInputNumberModule,
     NzCheckboxModule,
     NzDividerModule,
-    NzFormItemCustomComponent
+    NzFormItemCustomComponent,
+    FormlyModule,
+    FormlyNgZorroAntdModule
   ],
   template: `
     {{fg.getRawValue() | json}}
@@ -107,7 +113,9 @@ import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator
         </div>
       </div>
 
-      <!-- 3 row -->
+      <formly-form [form]="this.fg.controls.extraInfo" [fields]="fields"></formly-form>
+
+      <!--
       <div nz-row nzGutter="8">
         <div nz-col nzSpan="12">
           <nz-form-item-custom for="the1AddInfo" label="추가정보1">
@@ -129,7 +137,6 @@ import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator
         </div>
       </div>
 
-      <!-- 4 row -->
       <div nz-row nzGutter="8">
         <div nz-col nzSpan="12">
           <nz-form-item-custom for="the3AddInfo" label="추가정보3">
@@ -151,7 +158,6 @@ import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator
         </div>
       </div>
 
-      <!-- 5 row -->
       <div nz-row nzGutter="8">
         <div nz-col nzSpan="12">
           <nz-form-item-custom for="the5AddInfo" label="추가정보5">
@@ -163,6 +169,7 @@ import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator
           </nz-form-item-custom>
         </div>
       </div>
+      -->
 
     </form>
   `,
@@ -179,7 +186,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   formClosed = output<any>();
 
   fg = inject(FormBuilder).group({
-    typeId        : new FormControl<string | null>(null, { validators: Validators.required }),
+    typeId        : new FormControl<string | null>({value: null, disabled: true}, { validators: Validators.required }),
     code          : new FormControl<string | null>(null, {
                                     validators: Validators.required,
                                     asyncValidators: [this.validator.existingEntityValidator()],
@@ -189,12 +196,21 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
     useYn         : new FormControl<boolean | null>(true),
     sequence      : new FormControl<number | null>(0),
     comment       : new FormControl<string | null>(null),
-    the1AddInfo   : new FormControl<string | null>(null),
-    the2AddInfo   : new FormControl<string | null>(null),
-    the3AddInfo   : new FormControl<string | null>(null),
-    the4AddInfo   : new FormControl<string | null>(null),
-    the5AddInfo   : new FormControl<string | null>(null)
+    extraInfo     : inject(FormBuilder).group({})
   });
+
+  fields: FormlyFieldConfig[] = [
+    /*{
+      key: 'the1AddInfo',
+      type: 'input',
+      props: {
+        label: 'Input',
+        placeholder: 'Placeholder',
+        description: 'Description',
+      },
+    },
+    */
+  ];
 
   formInitId = input<{typeId: string, code: string}>();
 
@@ -256,6 +272,10 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
             } else {
               this.newForm('');
             }
+
+            const val = JSON.parse(model.data.fieldConfig!);
+            this.fields = val;
+            console.log(this.fields);
           }
         )
   }

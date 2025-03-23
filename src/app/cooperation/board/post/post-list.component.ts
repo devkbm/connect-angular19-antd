@@ -1,16 +1,18 @@
 import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 import { NzListModule } from 'ng-zorro-antd/list';
-import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { PostListRowComponent } from './post-list-row.component';
-import { PostList } from './post-list.model';
+
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+
+import { PostListRowComponent } from './post-list-row.component';
+import { PostList } from './post-list.model';
 
 // 무한 스크롤 적용 필요
 // https://www.npmjs.com/package/ngx-infinite-scroll
@@ -25,8 +27,10 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     PostListRowComponent
   ],
   template: `
+    <!-- [style.background-color]="'grey'" -->
     <div
-      [style.height]="'100px'"
+      [style.height]="height()"
+      [style.overflow]="'auto'"
       infiniteScroll
       [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="275"
@@ -36,7 +40,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
       (scrolled)="onScroll($event)"
       (scrolledUp)="onScrollUp($event)"
     >
-
       <!--{{this.pageable | json}}-->
       @for (post of posts; track post.postId; let idx = $index) {
         <app-post-list-row
@@ -64,7 +67,7 @@ export class PostListComponent {
   posts: PostList[] = [];
 
   boardId = input<string>();
-  height = signal<string>('100px');
+  height = signal<string>('calc(100vh - 154px)');
 
   editClicked = output<PostList>();
   viewClicked = output<PostList>();
@@ -79,7 +82,7 @@ export class PostListComponent {
     })
   }
 
-  getList(boardId: any, page: number = 0, size: number = 5): void {
+  getList(boardId: any, page: number = 0, size: number = 20): void {
     let url = GlobalProperty.serverUrl + `/api/grw/board/post_slice?boardId=${boardId}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
@@ -116,7 +119,7 @@ export class PostListComponent {
   }
 
   onScroll(ev: any) {
-    //console.log("scrolled!");
+    console.log("scrolled!");
     //console.log(ev);
 
     if (!this.pageable.isLast) {
@@ -125,7 +128,7 @@ export class PostListComponent {
   }
 
   onScrollUp(ev: any) {
-    //console.log("scrolled Up!");
+    console.log("scrolled Up!");
     //console.log(ev);
   }
 }

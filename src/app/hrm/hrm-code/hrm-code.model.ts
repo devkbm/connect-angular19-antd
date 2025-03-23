@@ -5,6 +5,7 @@ export interface HrmCode {
   useYn: boolean | null;
   sequence: number | null;
   comment: string | null;
+  fieldConfig: string | null;
   the1AddInfo: string | null;
 	the2AddInfo: string | null;
 	the3AddInfo: string | null;

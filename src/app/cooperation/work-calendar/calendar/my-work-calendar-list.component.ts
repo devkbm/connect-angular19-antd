@@ -77,8 +77,6 @@ export class MyWorkCalendarListComponent implements OnInit {
             for (const opt of this.workGroupList) {
               this.options.push({label: opt.name!, value: opt.id!})
             }
-
-            this.notifyService.changeMessage(model.message);
           }
         )
   }
