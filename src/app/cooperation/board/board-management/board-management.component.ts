@@ -8,6 +8,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { BoardFormComponent } from './board-form.component';
 import { BoardTreeComponent } from '../board-hierarcy/board-tree.component';
+import { NzButtonExcelUploadComponent } from "../../../third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
 
 
 @Component({
@@ -18,11 +19,15 @@ import { BoardTreeComponent } from '../board-hierarcy/board-tree.component';
     NzIconModule,
     NzGridModule,
     BoardTreeComponent,
-    BoardFormComponent
-  ],
+    BoardFormComponent,
+    NzButtonExcelUploadComponent
+],
   template: `
     <div nz-row class="search-div">
       <div nz-col [nzSpan]="24" style="text-align: right;">
+        <app-nz-button-excel-upload [urn]="'/api/grw/board/post-excel'">
+        </app-nz-button-excel-upload>
+
         <button nz-button (click)="getBoardTree()">
           <span nz-icon nzType="search" nzTheme="outline"></span>조회
         </button>

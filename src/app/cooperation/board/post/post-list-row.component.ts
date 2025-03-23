@@ -59,7 +59,7 @@ export class PostListRowComponent {
 
   imageSrc = computed(() => {
     if (this.post()?.writerImage) {
-      return GlobalProperty.serverUrl + '/api/system/fileimage/' + this.post()?.writerImage;
+      return GlobalProperty.serverUrl + '/api/system/user/image/' + this.post()?.writerImage;
     } else {
       return undefined;
     }

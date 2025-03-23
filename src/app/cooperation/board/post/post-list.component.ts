@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 
@@ -26,7 +26,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
   ],
   template: `
     <div
-      class="container" [style.height]="this.height()"
+      [style.height]="'100px'"
       infiniteScroll
       [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="275"
@@ -34,23 +34,8 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
       [alwaysCallback]="true"
       [scrollWindow]="false"
       (scrolled)="onScroll($event)"
-      (scrolledUp)="onScrollUp($event)">
-      <!--
-      <nz-list>
-        @for (article of articles; track article.articleId; let idx = $index) {
-          <nz-list-item>
-            <nz-list-item-meta
-              nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              [nzDescription]="article.title">
-              <nz-list-item-meta-title>
-                <a (click)="onViewClicked(article)"><div [innerHTML]="article.contents"></div></a>
-                <button nz-button (click)="onEditClicked(article)"><span nz-icon nzType="search" nzTheme="outline"></span>edit</button>
-              </nz-list-item-meta-title>
-            </nz-list-item-meta>
-          </nz-list-item>
-        }
-      </nz-list>
-      -->
+      (scrolledUp)="onScrollUp($event)"
+    >
 
       <!--{{this.pageable | json}}-->
       @for (post of posts; track post.postId; let idx = $index) {
@@ -67,10 +52,6 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
     </div>
   `,
   styles: `
-    .container {
-      overflow: auto;
-    }
-
     .hr-line {
       border-width:1px 0 0 0; border-color:#818181;
     }
@@ -83,7 +64,7 @@ export class PostListComponent {
   posts: PostList[] = [];
 
   boardId = input<string>();
-  height = input<string>('100%');
+  height = signal<string>('100px');
 
   editClicked = output<PostList>();
   viewClicked = output<PostList>();
@@ -98,7 +79,7 @@ export class PostListComponent {
     })
   }
 
-  getList(boardId: any, page: number = 0, size: number = 10): void {
+  getList(boardId: any, page: number = 0, size: number = 5): void {
     let url = GlobalProperty.serverUrl + `/api/grw/board/post_slice?boardId=${boardId}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
@@ -107,21 +88,23 @@ export class PostListComponent {
 
     url = url + '&page='+ page + '&size='+ size;
 
-    this.http.get<ResponseSpringslice<PostList>>(url, options).pipe(
+    this.http
+        .get<ResponseSpringslice<PostList>>(url, options).pipe(
         //  catchError((err) => Observable.throw(err))
-      ).subscribe(
-        (model: ResponseSpringslice<PostList>) => {
-          if (model.numberOfElements > 0) {
-            if (model.first) this.posts = [];
+        )
+        .subscribe(
+          (model: ResponseSpringslice<PostList>) => {
+            if (model.numberOfElements > 0) {
+              if (model.first) this.posts = [];
 
-            this.posts.push(...model.content);
-            this.pageable ={page: model.number, isLast: model.last};
-          } else {
-            this.posts = [];
+              this.posts.push(...model.content);
+              this.pageable ={page: model.number, isLast: model.last};
+            } else {
+              this.posts = [];
+            }
+            //this.notifyService.changeMessage(model.message);
           }
-          //this.notifyService.changeMessage(model.message);
-        }
-      );
+        );
   }
 
   onEditClicked(post: any) {
