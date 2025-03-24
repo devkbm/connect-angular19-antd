@@ -115,62 +115,6 @@ import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator
 
       <formly-form [form]="this.fg.controls.extraInfo" [fields]="fields"></formly-form>
 
-      <!--
-      <div nz-row nzGutter="8">
-        <div nz-col nzSpan="12">
-          <nz-form-item-custom for="the1AddInfo" label="추가정보1">
-            <nz-form-control>
-              <textarea nz-input id="the1AddInfo" formControlName="the1AddInfo"
-                placeholder="설명을 입력해주세요." [rows]="5">
-              </textarea>
-            </nz-form-control>
-          </nz-form-item-custom>
-        </div>
-        <div nz-col nzSpan="12">
-          <nz-form-item-custom for="the2AddInfo" label="추가정보2">
-            <nz-form-control>
-              <textarea nz-input id="the2AddInfo" formControlName="the2AddInfo"
-                placeholder="설명을 입력해주세요." [rows]="5">
-              </textarea>
-            </nz-form-control>
-          </nz-form-item-custom>
-        </div>
-      </div>
-
-      <div nz-row nzGutter="8">
-        <div nz-col nzSpan="12">
-          <nz-form-item-custom for="the3AddInfo" label="추가정보3">
-            <nz-form-control>
-              <textarea nz-input id="the3AddInfo" formControlName="the3AddInfo"
-                placeholder="설명을 입력해주세요." [rows]="5">
-              </textarea>
-            </nz-form-control>
-          </nz-form-item-custom>
-        </div>
-        <div nz-col nzSpan="12">
-          <nz-form-item-custom for="the4AddInfo" label="추가정보4">
-            <nz-form-control>
-              <textarea nz-input id="the4AddInfo" formControlName="the4AddInfo"
-                placeholder="설명을 입력해주세요." [rows]="5">
-              </textarea>
-            </nz-form-control>
-          </nz-form-item-custom>
-        </div>
-      </div>
-
-      <div nz-row nzGutter="8">
-        <div nz-col nzSpan="12">
-          <nz-form-item-custom for="the5AddInfo" label="추가정보5">
-            <nz-form-control>
-              <textarea nz-input id="the5AddInfo" formControlName="the5AddInfo"
-                placeholder="설명을 입력해주세요." [rows]="5">
-              </textarea>
-            </nz-form-control>
-          </nz-form-item-custom>
-        </div>
-      </div>
-      -->
-
     </form>
   `,
   styles: []
@@ -180,12 +124,13 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   private notifyService = inject(NotifyService);
   private validator = inject(HrmCodeFormValidatorService);
   private http = inject(HttpClient);
+  private fb = inject(FormBuilder);
 
   formSaved = output<any>();
   formDeleted = output<any>();
   formClosed = output<any>();
 
-  fg = inject(FormBuilder).group({
+  fg = this.fb.group({
     typeId        : new FormControl<string | null>({value: null, disabled: true}, { validators: Validators.required }),
     code          : new FormControl<string | null>(null, {
                                     validators: Validators.required,
@@ -196,11 +141,12 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
     useYn         : new FormControl<boolean | null>(true),
     sequence      : new FormControl<number | null>(0),
     comment       : new FormControl<string | null>(null),
-    extraInfo     : inject(FormBuilder).group({})
+    extraInfo     : new FormGroup({})
   });
 
   fields: FormlyFieldConfig[] = [
-    /*{
+    /*
+    {
       key: 'the1AddInfo',
       type: 'input',
       props: {
@@ -237,7 +183,6 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
     this.fg.controls.typeId.setValue(typeId);
     this.fg.controls.useYn.setValue(true);
 
-    this.fg.controls.typeId.disable();
     this.fg.controls.code.enable();
   }
 
@@ -267,15 +212,16 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
         )
         .subscribe(
           (model: ResponseObject<HrmCode>) => {
+            this.fields = JSON.parse(model.data.fieldConfig!);
+
             if ( model.data ) {
               this.modifyForm(model.data);
             } else {
               this.newForm('');
             }
 
-            const val = JSON.parse(model.data.fieldConfig!);
-            this.fields = val;
-            console.log(this.fields);
+            //console.log(model.data.extraInfo);
+            //console.log(this.fields);
           }
         )
   }

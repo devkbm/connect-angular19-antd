@@ -6,9 +6,5 @@ export interface HrmCode {
   sequence: number | null;
   comment: string | null;
   fieldConfig: string | null;
-  the1AddInfo: string | null;
-	the2AddInfo: string | null;
-	the3AddInfo: string | null;
-	the4AddInfo: string | null;
-	the5AddInfo: string | null;
+  extraInfo: any;
 }
