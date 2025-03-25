@@ -180,6 +180,8 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   newForm(typeId: string): void {
+    this.getExtraColumn(typeId);
+
     this.fg.controls.typeId.setValue(typeId);
     this.fg.controls.useYn.setValue(true);
 
@@ -187,7 +189,26 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   modifyForm(formData: HrmCode): void {
-    this.fg.patchValue(formData);
+    console.log(formData);
+    console.log(this.fg.controls);
+
+    setTimeout(() => {
+      /*
+      this.fg.setValue({
+        typeId: "HR0000",
+        code: "A01",
+        codeName: "입사",
+        useYn: true,
+        sequence: 1,
+        comment: "11",
+        extraInfo: {
+            "th1AddInfo": "12",
+            "th2AddInfo": "21"
+        }
+        });
+      */
+        this.fg.patchValue(formData);
+    })
 
     this.fg.controls.code.disable();
   }
@@ -258,6 +279,24 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
           (model: ResponseObject<HrmCode>) => {
             this.notifyService.changeMessage(model.message);
             this.formDeleted.emit(this.fg.getRawValue());
+          }
+        )
+  }
+
+  getExtraColumn(typeId: string): void {
+    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}/extra`;
+    const options = {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true
+    }
+
+    this.http.get<ResponseObject<any>>(url, options).pipe(
+          //catchError(this.handleError<ResponseObject<boolean>>('valid', undefined))
+        )
+        .subscribe(
+          (model: ResponseObject<any>) => {
+            console.log(model.data);
+            this.fields = JSON.parse(model.data!);
           }
         )
   }

@@ -87,6 +87,18 @@ import { HttpClient } from '@angular/common/http';
         </div>
       </div>
 
+      <div nz-row nzGutter="8">
+        <div nz-col nzSpan="24">
+          <nz-form-item-custom for="fieldConfig" label="설명">
+            <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+              <textarea nz-input id="fieldConfig" formControlName="fieldConfig"
+              placeholder="" [rows]="8">
+              </textarea>
+            </nz-form-control>
+          </nz-form-item-custom>
+        </div>
+      </div>
+
     </form>
   `,
   styles: []
@@ -110,7 +122,8 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
                       }),
     typeName        : new FormControl<string | null>(null, { validators: Validators.required }),
     sequence        : new FormControl<number | null>(0),
-    comment         : new FormControl<string | null>(null)
+    comment         : new FormControl<string | null>(null),
+    fieldConfig     : new FormControl<string | null>(null),
     /*
     the1AddInfoDesc : new FormControl<string | null>(null),
     the2AddInfoDesc : new FormControl<string | null>(null),
