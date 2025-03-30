@@ -3,6 +3,7 @@ export interface StaffAppointmentRecord {
   staffName: string | null;
   seq: string | null;
   appointmentTypeCode: string | null;
+  applyType: string | null;
   appointmentDate: Date | null;
   appointmentEndDate: Date | null;
   recordName: string | null;

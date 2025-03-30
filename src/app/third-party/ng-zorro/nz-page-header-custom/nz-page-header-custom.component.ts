@@ -32,7 +32,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     </nz-page-header>
 
   `,
-  styles: []
+  styles: [`
+  `]
 })
 export class NzPageHeaderCustomComponent {
 

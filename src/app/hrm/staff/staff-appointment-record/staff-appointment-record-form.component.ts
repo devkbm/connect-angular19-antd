@@ -71,10 +71,9 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
         </div>
       </div>
 
-      <!-- 2 row -->
       <div nz-row nzGutter="8">
 
-        <div nz-col nzSpan="6">
+        <div nz-col nzSpan="4">
           <nz-form-item-custom for="seq" label="발령순번">
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <input nz-input id="seq" formControlName="seq" readonly
@@ -83,12 +82,24 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
           </nz-form-item-custom>
         </div>
 
-        <div nz-col nzSpan="6">
+        <div nz-col nzSpan="4">
           <nz-form-item-custom for="appointmentTypeCode" label="발령분류" required>
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <nz-input-select required
                 formControlName="appointmentTypeCode" itemId="appointmentTypeCode"
                 [options]="appointmentTypeList" [opt_value]="'code'" [opt_label]="'codeName'"
+                placeholder="Please select">
+              </nz-input-select>
+            </nz-form-control>
+          </nz-form-item-custom>
+        </div>
+
+        <div nz-col nzSpan="4">
+          <nz-form-item-custom for="applyType" label="적용구분" required>
+            <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+              <nz-input-select required
+                formControlName="applyType" itemId="applyType"
+                [options]="applyTypeList" [opt_value]="'code'" [opt_label]="'codeName'"
                 placeholder="Please select">
               </nz-input-select>
             </nz-form-control>
@@ -112,6 +123,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
             </nz-form-control>
           </nz-form-item-custom>
         </div>
+
       </div>
 
       <!-- 3 row -->
@@ -136,7 +148,7 @@ import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
 
       </div>
 
-      <nz-divider nzPlain nzText="발령" nzOrientation="center"></nz-divider>
+      <nz-divider nzPlain nzText="발령 내역" nzOrientation="center"></nz-divider>
       <!-- 4 row -->
       <div nz-row nzGutter="8">
         <div nz-col nzSpan="8">
@@ -258,6 +270,8 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
 
   bizTypeList = [{code:'code', name:'name'},{code:'code2', name:'name2'}];
 
+  applyTypeList = [{code:'10', codeName:'예약적용'},{code:'02', codeName:'즉시적용'}];
+
   /**
    * https://soopdop.github.io/2020/12/01/index-signatures-in-typescript/
    * string literal로 접근하기위한 변수
@@ -310,6 +324,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
       staffName               : new FormControl<string | null>(null),
       seq                     : new FormControl<string | null>(null),
       appointmentTypeCode     : new FormControl<string | null>(null),
+      applyType               : new FormControl<string | null>(null),
       appointmentDate         : new FormControl<Date | null>(null),
       appointmentEndDate      : new FormControl<Date | null>(null),
       recordName              : new FormControl<string | null>(null),

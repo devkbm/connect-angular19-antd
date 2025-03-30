@@ -23,6 +23,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { HrmCodeFormValidatorService } from './validator/hrm-code-form-validator.service';
+import { AutoFocusDirective } from 'src/app/core/form/auto-focus.directive';
 
 @Component({
   selector: 'app-hrm-code-form',
@@ -180,7 +181,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   newForm(typeId: string): void {
-    this.getExtraColumn(typeId);
+    this.getExtraFieldConfig(typeId);
 
     this.fg.controls.typeId.setValue(typeId);
     this.fg.controls.useYn.setValue(true);
@@ -283,8 +284,8 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
         )
   }
 
-  getExtraColumn(typeId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}/extra`;
+  getExtraFieldConfig(typeId: string): void {
+    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}`;
     const options = {
       headers: getAuthorizedHttpHeaders(),
       withCredentials: true
@@ -296,7 +297,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<any>) => {
             console.log(model.data);
-            this.fields = JSON.parse(model.data!);
+            this.fields = JSON.parse(model.data.fieldConfig!);
           }
         )
   }
