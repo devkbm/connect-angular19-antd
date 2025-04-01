@@ -10,6 +10,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSplitterModule } from 'ng-zorro-antd/splitter';
+
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 
@@ -24,6 +26,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
     NzIconModule,
     NzInputModule,
     NzDividerModule,
+    NzSplitterModule,
     NzPageHeaderCustomComponent,
     DeptTreeComponent,
     DeptFormComponent,
@@ -74,6 +77,23 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
 
 <app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}">
+  <nz-splitter>
+    <nz-splitter-panel nzDefaultSize="10%" nzMin="10%" nzMax="50%" [nzCollapsible]="true">
+      <h3 class="grid-title">부서코드 목록</h3>
+
+      <app-dept-tree
+        [searchValue]="queryValue"
+        (itemSelected)="selectedItem($event)">
+      </app-dept-tree>
+    </nz-splitter-panel>
+    <nz-splitter-panel>
+      <app-dept-form
+        (formSaved)="getDeptTree()"
+        (formDeleted)="getDeptTree()">
+      </app-dept-form>
+    </nz-splitter-panel>
+  </nz-splitter>
+  <!--
   <div class="container">
     <div>
       <h3 class="grid-title">부서코드 목록</h3>
@@ -93,6 +113,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
       </div>
     </div>
   </div>
+-->
 </app-shape>
   `,
   styles: `

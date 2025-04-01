@@ -202,6 +202,10 @@ import { DeptFormValidatorService } from './validator/dept-form-validator.servic
 
   `,
   styles: [`
+    [nz-form] {
+      margin: 10px;
+    }
+
     [nz-button] {
       margin-right: 8px;
     }
@@ -326,7 +330,6 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
               this.getDeptHierarchy();
               this.newForm();
             }
-            this.notifyService.changeMessage(model.message);
           }
       )
   }
