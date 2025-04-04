@@ -1,6 +1,7 @@
 export interface PostList {
   boardId: string;
   postId: string;
+  writerId: string;
   writerName: string;
   writerImage: string;
   title: string;

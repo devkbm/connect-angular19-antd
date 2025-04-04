@@ -59,7 +59,12 @@ export class PostListRowComponent {
 
   imageSrc = computed(() => {
     if (this.post()?.writerImage) {
-      return GlobalProperty.serverUrl + '/api/system/user/image/' + this.post()?.writerImage;
+
+      let urlParams = new URLSearchParams();
+      urlParams.set("companyCode", sessionStorage.getItem("companyCode")!);
+      urlParams.set("userId", this.post()?.writerId!);
+
+      return GlobalProperty.serverUrl + '/api/system/user/image' + '?' + urlParams; //+ this.post()?.writerImage;
     } else {
       return undefined;
     }
