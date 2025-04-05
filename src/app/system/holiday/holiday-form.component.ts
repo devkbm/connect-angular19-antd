@@ -13,7 +13,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -137,10 +137,7 @@ export class HolidayFormComponent implements AfterViewInit {
     const id = formatDate(date,'YYYYMMdd','ko-kr');
 
     const url = GlobalProperty.serverUrl + `/api/system/holiday/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<Holiday>>(url, options).pipe(
@@ -149,7 +146,6 @@ export class HolidayFormComponent implements AfterViewInit {
         .subscribe(
           (model: ResponseObject<Holiday>) => {
             model.data ? this.modifyForm(model.data) : this.newForm(date);
-            this.notifyService.changeMessage(model.message);
           }
       )
   }
@@ -166,10 +162,7 @@ export class HolidayFormComponent implements AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/holiday`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<Holiday>>(url, this.fg.getRawValue(), options).pipe(
@@ -187,10 +180,7 @@ export class HolidayFormComponent implements AfterViewInit {
     const id = formatDate(this.fg.controls.date.value!,'YYYYMMdd','ko-kr');
 
     const url = GlobalProperty.serverUrl + `/api/system/holiday/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<Holiday>>(url, options).pipe(

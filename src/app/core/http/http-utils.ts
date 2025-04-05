@@ -5,5 +5,11 @@ export function getAuthorizedHttpHeaders(): HttpHeaders {
         .set('Content-Type', 'application/json')
         .set('X-Requested-With', 'XMLHttpRequest')
         .set('Authorization', sessionStorage.getItem('token') as string);
+}
 
+export function getHttpOptions() {
+  return {
+    headers: getAuthorizedHttpHeaders(),
+    withCredentials: true
+  }
 }
