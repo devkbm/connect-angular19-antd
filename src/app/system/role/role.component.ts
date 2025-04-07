@@ -19,7 +19,7 @@ import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-pag
 import { ButtonTemplate, NzButtonsComponent } from 'src/app/third-party/ng-zorro/nz-buttons/nz-buttons.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -212,10 +212,7 @@ export class RoleComponent implements AfterViewInit {
   delete() {
     const id = this.grid().getSelectedRows()[0].roleCode;
     const url = GlobalProperty.serverUrl + `/api/system/role/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<Role>>(url, options).pipe(

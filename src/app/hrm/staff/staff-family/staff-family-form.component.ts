@@ -17,7 +17,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-family-form',
@@ -206,10 +206,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
 
   get(staffId: string, seq: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/family`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffFamily>>(url, options).pipe(
@@ -224,10 +221,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
 
   save() {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<StaffFamily>>(url, this.fg.getRawValue(), options).pipe(
@@ -243,10 +237,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family/${this.fg.controls.seq.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<StaffFamily>>(url, options).pipe(

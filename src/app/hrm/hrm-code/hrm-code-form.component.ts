@@ -7,7 +7,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NotifyService } from 'src/app/core/service/notify.service';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { HrmCode } from './hrm-code.model';
 
@@ -224,10 +224,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
 
   get(typeId: string, code: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}/code/${code}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<HrmCode>>(url, options).pipe(
           //catchError(this.handleError<ResponseObject<boolean>>('valid', undefined))
@@ -250,10 +247,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
 
   save(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/type/code`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<HrmCode>>(url, this.fg.getRawValue(), options).pipe(
         //  catchError(this.handleError<ResponseObject<HrmCode>>('save', undefined))
@@ -268,10 +262,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${this.fg.controls.typeId.value}/code/${this.fg.controls.code.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<HrmCode>>(url, options).pipe(
           // catchError(this.handleError<ResponseObject<HrmCode>>('remove', undefined))
@@ -286,10 +277,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
 
   getExtraFieldConfig(typeId: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<any>>(url, options).pipe(
           //catchError(this.handleError<ResponseObject<boolean>>('valid', undefined))

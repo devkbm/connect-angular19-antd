@@ -7,6 +7,7 @@ import { DataService } from 'src/app/core/service/data.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { TeamJoinableUserModel, TeamModel } from './team.model';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +24,7 @@ export class TeamService extends DataService {
    */
   getList(params?: any): Observable<ResponseList<TeamModel>> {
     const url = `${this.API_URL}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: params
-    };
+    const options = getHttpOptions(params);
 
     return this.http
       .get<ResponseList<TeamModel>>(url, options)
@@ -42,10 +39,7 @@ export class TeamService extends DataService {
    */
   get(id: string): Observable<ResponseObject<TeamModel>> {
     const url = `${this.API_URL}/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
       .get<ResponseObject<TeamModel>>(url, options)
@@ -60,10 +54,7 @@ export class TeamService extends DataService {
    */
   save(team: TeamModel): Observable<ResponseObject<TeamModel>> {
     const url = `${this.API_URL}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
       .post<ResponseObject<TeamModel>>(url, team, options)
@@ -79,10 +70,7 @@ export class TeamService extends DataService {
    */
   remove(id: string): Observable<ResponseObject<TeamModel>> {
     const url = `${this.API_URL}/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
       .delete<ResponseObject<TeamModel>>(url, options)
@@ -93,10 +81,7 @@ export class TeamService extends DataService {
 
   getAllUserList(): Observable<ResponseList<TeamJoinableUserModel>> {
     const url = `${this.API_URL}/allmember`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
       .get<ResponseList<TeamJoinableUserModel>>(url, options)

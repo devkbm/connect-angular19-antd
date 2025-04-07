@@ -19,7 +19,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { BizCodeType } from './biz-code-type.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -89,10 +89,7 @@ export class BizCodeTypeGridComponent extends AgGridCommon implements OnInit {
 
   getList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/bizcodetype`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<BizCodeType>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<BizCodeType>>('getList', undefined))

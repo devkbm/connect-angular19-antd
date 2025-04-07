@@ -16,7 +16,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Menu } from './menu.model';
@@ -87,11 +87,9 @@ export class MenuGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Menu>>(
-      GlobalProperty.serverUrl + `/api/system/menu`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/menu`,
+      getHttpOptions(request)
+    )
   })
 
   selectionChanged(event: any) {

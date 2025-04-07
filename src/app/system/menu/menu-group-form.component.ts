@@ -12,7 +12,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { MenuGroupFormValidatorService } from './validator/menu-group-form-validator.service';
 
 @Component({
@@ -146,10 +146,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
 
   get(menuGroupCode: string) {
     const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<MenuGroup>>(url, options).pipe(
@@ -175,10 +172,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/menugroup/${this.fg.controls.menuGroupCode}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<MenuGroup>>(url, this.fg.getRawValue(), options).pipe(
@@ -194,10 +188,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
 
   remove() {
     const url = GlobalProperty.serverUrl + `/api/system/menugroup/${this.fg.controls.menuGroupCode.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<MenuGroup>>(url, options).pipe(

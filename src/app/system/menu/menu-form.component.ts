@@ -18,7 +18,7 @@ import { NzInputSelectComponent } from "../../third-party/ng-zorro/nz-input-sele
 import { NzInputTreeSelectComponent } from "../../third-party/ng-zorro/nz-input-tree-select/nz-input-tree-select.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { MenuFormValidatorService } from './validator/menu-form-validator.service';
 
 @Component({
@@ -265,10 +265,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
 
   get(menuGroupCode: string, menuCode: string) {
     const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<Menu>>(url, options).pipe(
@@ -300,10 +297,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
     const menuGroupCode = this.fg.controls.menuGroupCode.value;
     const menuCode = this.fg.controls.menuCode.value;
     const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<Menu>>(url, this.fg.getRawValue(), options).pipe(
@@ -322,10 +316,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
     const menuGroupCode = this.fg.controls.menuGroupCode.value;
     const menuCode = this.fg.controls.menuCode.value;
     const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<Menu>>(url, options).pipe(
@@ -344,10 +335,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
     if (!menuGroupId) return;
 
     const url = GlobalProperty.serverUrl + `/api/system/menuhierarchy/${menuGroupId}}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<MenuHierarchy>>(url, options).pipe(
@@ -362,10 +350,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
 
   getMenuGroupList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<MenuGroup>>(url, options).pipe(
@@ -381,10 +366,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
 
   getMenuTypeList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/menu/menutype`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
     .get<ResponseObject<any>>(url, options).pipe(
@@ -400,10 +382,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
 
   getResourceList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/webresource`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<any>>(url, options).pipe(
       //catchError((err) => Observable.throw(err))

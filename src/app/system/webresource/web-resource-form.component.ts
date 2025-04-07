@@ -16,7 +16,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { WebResourceFormValidatorService } from './validator/web-resource-form-validator.service';
 
 
@@ -172,10 +172,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
 
   get(id: string): void {
     const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<WebResource>>(url, options).pipe(
       //catchError((err) => Observable.throw(err))
@@ -199,10 +196,8 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/webresource`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     this.http.post<ResponseObject<WebResource>>(url, this.fg.getRawValue(), options).pipe(
       //catchError((err) => Observable.throw(err))
     ).subscribe(
@@ -216,10 +211,8 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   remove() {
     const id = this.fg.controls.resourceId.value!;
     const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     this.http.delete<ResponseObject<WebResource>>(url, options).pipe(
       //catchError((err) => Observable.throw(err))
     ).subscribe(
@@ -232,10 +225,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
 
   getCommonCodeList() {
     const url = GlobalProperty.serverUrl + `/api/system/webresource/resourcetype`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<ResouceTypeEnum>>(url, options).pipe(
     ).subscribe(

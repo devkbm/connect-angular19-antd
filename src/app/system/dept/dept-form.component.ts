@@ -17,7 +17,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { DeptFormValidatorService } from './validator/dept-form-validator.service';
 
 @Component({
@@ -314,10 +314,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
 
   get(id: string): void {
     const url = GlobalProperty.serverUrl + `/api/system/dept/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<Dept>>(url, options).pipe(
           //catchError(this.handleError<ResponseObject<Dept>>('getDept', undefined))
@@ -346,10 +343,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/dept`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<Dept>>(url, this.fg.getRawValue(), options).pipe(
         //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
@@ -364,10 +358,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/system/dept/${this.fg.controls.deptCode.value!}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<Dept>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
@@ -382,10 +373,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
 
   getDeptHierarchy(): void {
     const url = GlobalProperty.serverUrl + `/api/system/depttree`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))

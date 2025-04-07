@@ -22,7 +22,7 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzInputSelectStaffComponent } from 'src/app/third-party/ng-zorro/nz-input-select-staff/nz-input-select-staff.component';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -220,10 +220,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
 
   get(id: string) {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<AttendanceApplication>>(url, options).pipe(
@@ -238,10 +235,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
 
   save() {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<AttendanceApplication>>(url, this.fg.getRawValue(), options).pipe(
@@ -257,10 +251,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
 
   remove() {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/${this.fg.controls.dutyId.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<AttendanceApplication>>(url, options).pipe(
@@ -290,10 +281,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
 
   getDutyDateList(fromDate: string, toDate: string) {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/period/${fromDate}/${toDate}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<AttendanceDate>>(url, options).pipe(

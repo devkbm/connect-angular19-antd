@@ -15,7 +15,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { NotifyService } from 'src/app/core/service/notify.service';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { ResponseList } from 'src/app/core/model/response-list';
 
@@ -95,11 +95,7 @@ export class AttendanceApplicationGridComponent extends AgGridCommon implements 
 
   public getGridList(staffNo: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: {staffId : staffNo}
-    };
+    const options = getHttpOptions({staffId : staffNo});
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))
@@ -137,11 +133,7 @@ export class AttendanceApplicationGridComponent extends AgGridCommon implements 
 
   getList(params: any) {
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: params
-    };
+    const options = getHttpOptions(params);
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))

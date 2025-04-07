@@ -19,7 +19,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { User } from './user.model';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { HttpClient } from '@angular/common/http';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -131,11 +131,9 @@ export class UserGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<User>>(
-      GlobalProperty.serverUrl + `/api/system/user`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/user`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedEvent(event: RowClickedEvent<User>) {

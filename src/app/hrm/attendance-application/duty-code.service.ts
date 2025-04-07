@@ -7,6 +7,7 @@ import { DataService } from 'src/app/core/service/data.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { DutyCode } from './duty-code';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Injectable({
@@ -20,11 +21,7 @@ export class DutyCodeService extends DataService {
 
   getDutyCodeList(params: any): Observable<ResponseList<DutyCode>> {
     const url = `${this.API_URL}/dutycode`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: params
-    };
+    const options = getHttpOptions(params);
 
     return this.http.get<ResponseList<DutyCode>>(url, options).pipe(
       catchError(this.handleError<ResponseList<DutyCode>>('getDutyCodeList', undefined))
@@ -33,10 +30,7 @@ export class DutyCodeService extends DataService {
 
   getValidDutyCode(id: string): Observable<ResponseObject<boolean>> {
     const url = `${this.API_URL}/dutycode/${id}/valid`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseObject<boolean>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<boolean>>('getValidDutyCode', undefined))
@@ -49,10 +43,7 @@ export class DutyCodeService extends DataService {
    */
   getDutyCode(id: string): Observable<ResponseObject<DutyCode>> {
     const url = `${this.API_URL}/dutycode/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseObject<DutyCode>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<DutyCode>>('getDutyCode', undefined))
@@ -65,10 +56,8 @@ export class DutyCodeService extends DataService {
    */
   saveDutyCode(dutyCode: DutyCode): Observable<ResponseObject<DutyCode>> {
     const url = `${this.API_URL}/dutycode`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     return this.http.post<ResponseObject<DutyCode>>(url, dutyCode, options).pipe(
       catchError(this.handleError<ResponseObject<DutyCode>>('saveDutyCode', undefined))
     );
@@ -80,10 +69,8 @@ export class DutyCodeService extends DataService {
    */
   deleteDutyCode(id: string): Observable<ResponseObject<DutyCode>> {
     const url = `${this.API_URL}/dutycode/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     return this.http
               .delete<ResponseObject<DutyCode>>(url, options)
               .pipe(

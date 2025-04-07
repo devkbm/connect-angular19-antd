@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { catchError, debounceTime, map, Observable, of, switchMap } from 'rxjs';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 @Injectable({
@@ -29,10 +29,7 @@ export class HrmCodeFormValidatorService {
         switchMap((val) => {
 
           const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}/code/${control.value}/valid`;
-          const options = {
-            headers: getAuthorizedHttpHeaders(),
-            withCredentials: true
-          }
+          const options = getHttpOptions();
 
           return this.http.get<ResponseObject<boolean>>(url, options).pipe(
                     // catchError(this.handleError<ResponseObject<boolean>>('checkUser', undefined))

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 
@@ -66,10 +66,7 @@ export class StaffCurrentAppointmentDescriptionComponent {
   get(staffNo: string): void {
 
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffNo}/currentappointment`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffCurrentAppointment>>(url, options).pipe(

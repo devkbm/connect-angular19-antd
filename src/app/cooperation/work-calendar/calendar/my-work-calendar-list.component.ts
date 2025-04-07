@@ -10,7 +10,7 @@ import { NzCheckboxModule, NzCheckboxOption } from 'ng-zorro-antd/checkbox';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { NotifyService } from 'src/app/core/service/notify.service';
 
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
 
 @Component({
@@ -62,10 +62,7 @@ export class MyWorkCalendarListComponent implements OnInit {
 
   getMyWorkGroupList(): void {
     const url =  GlobalProperty.serverUrl + `/api/grw/myworkcalendar`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<any>>(url, options).pipe(
             //catchError(this.handleError<ResponseList<WorkCalendar>>('getWorkGroupList', undefined))

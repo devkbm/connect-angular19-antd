@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { DataService } from './data.service';
 import { ResponseObject } from '../model/response-object';
 import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from '../http/http-utils';
 
 export interface SystemUserProfile {
   companyCode: string;
@@ -47,10 +48,7 @@ export class UserSessionService extends DataService {
 
   getMyProfile(): Observable<ResponseObject<SystemUserProfile>> {
     const url = `${this.API_URL}/my-profile`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
       .get<ResponseObject<SystemUserProfile>>(url, options).pipe(

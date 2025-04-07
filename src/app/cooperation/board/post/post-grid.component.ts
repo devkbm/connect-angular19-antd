@@ -18,7 +18,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { Post } from './post.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -123,10 +123,7 @@ export class PostGridComponent extends AgGridCommon implements OnInit {
     */
 
     let url = GlobalProperty.serverUrl + `/api/grw/board/post?boardId=${boardId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<Post>>(url, options).pipe(
       //  catchError((err) => Observable.throw(err))

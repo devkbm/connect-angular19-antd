@@ -14,7 +14,7 @@ import { NzInputRregnoComponent } from 'src/app/third-party/ng-zorro/nz-input-rr
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-new-staff-form',
@@ -119,10 +119,7 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
 
   save() {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/create`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<NewStaff>>(url, this.fg.getRawValue(), options).pipe(

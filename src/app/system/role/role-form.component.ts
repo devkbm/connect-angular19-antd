@@ -15,7 +15,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { RoleFormValidatorService } from './validator/role-form-validator.service';
 
 
@@ -249,10 +249,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
 
   get(id: string): void {
     const url = GlobalProperty.serverUrl + `/api/system/role/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<Role>>(url, options)
@@ -279,10 +276,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/role`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<Role>>(url, this.fg.getRawValue(), options).pipe(
@@ -298,10 +292,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/system/role/${this.fg.controls.roleCode.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<Role>>(url, options).pipe(
@@ -317,10 +308,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
 
   getMenuGroupList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<MenuGroup>>(url, options).pipe(

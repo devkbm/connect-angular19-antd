@@ -9,7 +9,7 @@ import { CalendarDaypilotComponent, ModeChangedArgs } from 'src/app/third-party/
 import { CalendarFullcalendarComponent } from "../../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 export interface NewDateSelectedArgs {
   workCalendarId: number;
@@ -98,15 +98,11 @@ export class WorkCalendarViewComponent implements AfterViewInit {
     }
 
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: {
+    const options = getHttpOptions({
         fkWorkCalendar : this.fkWorkCalendar,
         fromDate: this.from,
         toDate: this.to
-      }
-    };
+      });
 
     this.http
         .get<ResponseList<WorkCalendarEvent>>(url, options).pipe(

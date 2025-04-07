@@ -21,7 +21,7 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { NzInputTreeSelectDeptComponent } from 'src/app/third-party/ng-zorro/nz-input-tree-select-dept/nz-input-tree-select-dept.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -395,10 +395,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
 
   get(staffId: string, id: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffAppointmentRecord>>(url, options).pipe(
@@ -413,10 +410,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
 
   save(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/appointmentrecord`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<StaffAppointmentRecord>>(url, this.fg.getRawValue(), options).pipe(
@@ -432,10 +426,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
 
   remove(staffId: string, id: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<StaffAppointmentRecord>>(url, options).pipe(

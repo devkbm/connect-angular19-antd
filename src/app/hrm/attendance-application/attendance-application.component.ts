@@ -16,7 +16,7 @@ import { AttendanceApplicationGrid } from './attendance-application-grid.model';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
@@ -163,11 +163,7 @@ export class AttendanceApplicationComponent implements OnInit, AfterViewInit {
     };
 
     const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: params
-    };
+    const options = getHttpOptions(params);
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
       //catchError(this.handleError<ResponseList<DutyApplicationGrid>>('getDutyApplicationList', undefined))

@@ -9,7 +9,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { ResponseSpringslice } from 'src/app/core/model/response-springslice';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { PostListRowComponent } from './post-list-row.component';
 import { PostList } from './post-list.model';
@@ -84,10 +84,7 @@ export class PostListComponent {
 
   getList(boardId: any, page: number = 0, size: number = 20): void {
     let url = GlobalProperty.serverUrl + `/api/grw/board/post_slice?boardId=${boardId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     url = url + '&page='+ page + '&size='+ size;
 

@@ -5,7 +5,7 @@ import { formatDate } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
@@ -290,10 +290,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
 
   get(id: number): void {
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<WorkCalendarEvent>>(url, options).pipe(
             //catchError(this.handleError<ResponseObject<WorkCalendarEvent>>('getWorkGroup', undefined))
@@ -319,10 +316,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
     }
 
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<WorkCalendarEvent>>(url, this.fg.getRawValue(), options).pipe(
@@ -339,10 +333,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
     const id = this.fg.controls.id.value!;
 
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<WorkCalendarEvent>>(url, options).pipe(
@@ -357,10 +348,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
 
   getMyWorkGroupList(): void {
     const url =  GlobalProperty.serverUrl + `/api/grw/myworkcalendar`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<WorkCalendar>>(url, options).pipe(

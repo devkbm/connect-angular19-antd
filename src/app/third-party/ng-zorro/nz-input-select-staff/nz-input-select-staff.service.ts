@@ -5,6 +5,7 @@ import { map, tap, catchError } from 'rxjs/operators';
 
 import { DataService } from 'src/app/core/service/data.service';
 import { ResponseList } from 'src/app/core/model/response-list';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 export interface Staff {
   staffId: string;
@@ -32,11 +33,7 @@ export class NzInputSelectStaffService extends DataService {
 
   getList(params?: any): Observable<ResponseList<Staff>> {
     const url = `${this.API_URL}`;
-    const options = {
-        headers: this.getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-     };
+    const options = getHttpOptions(params);
 
     return this.http.get<ResponseList<Staff>>(url, options).pipe(
       catchError(this.handleError<ResponseList<Staff>>('getList', undefined))

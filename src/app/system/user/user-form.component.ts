@@ -9,7 +9,7 @@ import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { User } from './user.model';
 import { Role } from '../role/role.model';
@@ -280,10 +280,7 @@ export class UserFormComponent implements OnInit {
 
   get(userId: string): void {
     const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<User>>(url, options).pipe(
@@ -327,10 +324,7 @@ export class UserFormComponent implements OnInit {
     */
 
     const url = GlobalProperty.serverUrl + `/api/system/user`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<User>>(url, this.fg.getRawValue(), options).pipe(
@@ -346,10 +340,7 @@ export class UserFormComponent implements OnInit {
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/system/user/${this.fg.controls.userId.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions()
 
     this.http
         .delete<ResponseObject<User>>(url, options).pipe(
@@ -365,10 +356,7 @@ export class UserFormComponent implements OnInit {
 
   getRoleList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/role`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions()
 
     this.http
         .get<ResponseList<Role>>(url, options).pipe(
@@ -383,10 +371,7 @@ export class UserFormComponent implements OnInit {
 
   getDeptHierarchy(): void {
     const url = GlobalProperty.serverUrl + `/api/system/role`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions()
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
         //  catchError(this.handleError<ResponseList<DeptHierarchy>>('getDeptHierarchyList', undefined))

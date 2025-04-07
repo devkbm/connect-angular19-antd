@@ -19,7 +19,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-duty-responsibility-form',
@@ -193,10 +193,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
   get(staffId: string, seq: string): void {
 
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/dutyresponsibility/${seq}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffDutyResponsibility>>(url, options).pipe(
@@ -221,10 +218,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
     }
 
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo}/dutyresponsibility`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<StaffDutyResponsibility>>(url, this.fg.getRawValue(), options).pipe(

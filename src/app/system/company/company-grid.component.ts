@@ -17,7 +17,7 @@ import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/bu
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { Company } from './company.model';
 
@@ -87,11 +87,9 @@ export class CompanyGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Company>>(
-      GlobalProperty.serverUrl + `/api/system/company`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/company`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedFunc(event: RowClickedEvent<Company>) {

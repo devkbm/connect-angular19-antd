@@ -19,7 +19,7 @@ import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-it
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-biz-code-type-form',
@@ -205,10 +205,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   get(id: string): void {
     const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<BizCodeType>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<BizCodeType>>('get', undefined))
@@ -233,10 +230,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/bizcodetype`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<BizCodeType>>(url, this.fg.getRawValue(), options).pipe(
     //      catchError(this.handleError<ResponseObject<BizCodeType>>('save', undefined))
@@ -251,10 +245,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<BizCodeType>>(url, options).pipe(
             //catchError(this.handleError<ResponseObject<BizCodeType>>('delete', undefined))
@@ -269,10 +260,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   getSystemList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/system`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<SelectControlModel>>(url, options).pipe(
         //  catchError(this.handleError<ResponseList<SelectControlModel>>('getSystemList', undefined))

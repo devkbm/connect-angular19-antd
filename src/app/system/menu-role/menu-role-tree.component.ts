@@ -13,7 +13,7 @@ import { NzTreeNodeKey } from 'ng-zorro-antd/core/tree';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 function convert(tree: MenuRoleHierarchy[]) {
@@ -102,10 +102,7 @@ export class MenuRoleTreeComponent {
 
   public getHierarchy(): void {
     const url = GlobalProperty.serverUrl + `/api/system/menurolehierarchy/${this.menuGroupCode()}/${this.roleCode()}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<MenuRoleHierarchy>>(url, options).pipe(
@@ -146,10 +143,7 @@ export class MenuRoleTreeComponent {
     this.setSaveNodes();
 
     const url = GlobalProperty.serverUrl + `/api/system/menurole`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseList<MenuRoleMapping>>(url, this.saveNodes, options).pipe(

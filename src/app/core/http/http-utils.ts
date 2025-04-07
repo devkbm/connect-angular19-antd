@@ -7,7 +7,15 @@ export function getAuthorizedHttpHeaders(): HttpHeaders {
         .set('Authorization', sessionStorage.getItem('token') as string);
 }
 
-export function getHttpOptions() {
+export function getHttpOptions(params?: any) {
+  if (params) {
+    return {
+      headers: getAuthorizedHttpHeaders(),
+      withCredentials: true,
+      params: params
+    }
+  }
+
   return {
     headers: getAuthorizedHttpHeaders(),
     withCredentials: true

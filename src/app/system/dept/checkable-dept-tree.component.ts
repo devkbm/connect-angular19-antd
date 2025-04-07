@@ -7,7 +7,7 @@ import { DeptHierarchy } from './dept-hierarchy.model';
 import { NzFormatEmitEvent, NzTreeComponent, NzTreeModule } from 'ng-zorro-antd/tree';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -45,10 +45,7 @@ export class CheckableDeptTreeComponent {
 
   public getDeptHierarchy(): void {
     const url = GlobalProperty.serverUrl + `/api/system/depttree`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))

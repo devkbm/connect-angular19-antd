@@ -16,7 +16,7 @@ import { UserProfileComponent } from 'src/app/app-layout/user-profile/user-profi
 import { SideMenuComponent } from 'src/app/app-layout/side-menu/side-menu.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from '../core/global-property';
-import { getAuthorizedHttpHeaders } from '../core/http/http-utils';
+import { getHttpOptions } from '../core/http/http-utils';
 import { ResponseList } from '../core/model/response-list';
 
 @Component({
@@ -118,10 +118,7 @@ export class AppLayoutComponent implements OnInit  {
 
   test(): void {
     const url = GlobalProperty.serverUrl + `/api/system/user/auth1`;
-    const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true
-      };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<any>>(url, options).pipe(
       //catchError((err) => Observable.throw(err))

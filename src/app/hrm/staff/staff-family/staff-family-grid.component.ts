@@ -19,7 +19,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { StaffFamily } from './staff-family.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -87,10 +87,9 @@ export class StaffFamilyGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffFamily>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/family`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    })
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/family`,
+      getHttpOptions(request)
+    )
   })
 
   selectionChanged(event: any) {

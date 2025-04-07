@@ -17,7 +17,7 @@ ModuleRegistry.registerModules([
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { StaffSchoolCareer } from './staff-school-career.model';
 
@@ -89,10 +89,9 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffSchoolCareer>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/schoolcareer`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    })
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/schoolcareer`,
+      getHttpOptions(request)
+    )
   })
 
   selectionChanged(event: any) {

@@ -15,7 +15,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { HrmCodeTypeFormValidatorService } from './validator/hrm-code-type-form-validator.service';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -173,10 +173,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   get(code: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${code}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<HrmType>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<HrmType>>('get', undefined))
@@ -203,10 +200,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<HrmType>>(url, this.fg.getRawValue(), options).pipe(
         //  catchError(this.handleError<ResponseObject<HrmType>>('save', undefined))
@@ -222,10 +216,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
   remove(): void {
     const id = this.fg.controls.typeId.value!;
     const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<HrmType>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<HrmType>>('remove', undefined))

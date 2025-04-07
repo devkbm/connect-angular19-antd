@@ -17,7 +17,7 @@ ModuleRegistry.registerModules([
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { Word } from './word.model';
 
@@ -86,11 +86,9 @@ export class WordGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Word>>(
-      GlobalProperty.serverUrl + `/api/system/word`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/word`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedFunc(event: RowClickedEvent<Word>) {

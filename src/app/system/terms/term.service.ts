@@ -8,6 +8,7 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Term } from './term.model';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +21,7 @@ export class TermService extends DataService {
 
   getTermList(params?: any): Observable<ResponseList<Term>> {
     const url = `${this.API_URL}`;
-    const options = {
-        headers: this.getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-     };
+    const options = getHttpOptions(params);
 
     return this.http.get<ResponseList<Term>>(url, options).pipe(
       catchError(this.handleError<ResponseList<Term>>('getTermList', undefined))
@@ -33,10 +30,7 @@ export class TermService extends DataService {
 
   get(id: string): Observable<ResponseObject<Term>> {
     const url = `${this.API_URL}/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-   };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseObject<Term>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<Term>>('getTerm', undefined))
@@ -45,10 +39,8 @@ export class TermService extends DataService {
 
   save(term: Term): Observable<ResponseObject<Term>> {
     const url = `${this.API_URL}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     console.log(url);
     return this.http.post<ResponseObject<Term>>(url, term, options).pipe(
       catchError(this.handleError<ResponseObject<Term>>('registerTerm', undefined))
@@ -57,10 +49,7 @@ export class TermService extends DataService {
 
   delete(id: string): Observable<ResponseObject<Term>> {
     const url = `${this.API_URL}/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
               .delete<ResponseObject<Term>>(url, options)
@@ -71,10 +60,7 @@ export class TermService extends DataService {
 
   getSystemTypeList(): Observable<ResponseObject<any>> {
     const url = `${this.API_URL}/systemType`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-   };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseObject<any>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<any>>('getSystemTypeList', undefined))

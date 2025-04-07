@@ -19,7 +19,7 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -248,10 +248,7 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
 
   get(staffId: string, seq: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/schoolcareer/${seq}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffSchoolCareer>>(url, options).pipe(
@@ -266,10 +263,7 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
 
   save() {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/schoolcareer`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<StaffSchoolCareer>>(url, this.fg.getRawValue(), options).pipe(
@@ -285,10 +279,7 @@ export class StaffSchoolCareerFormComponent implements OnInit, AfterViewInit, On
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/schoolcareer/${this.fg.controls.seq.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<StaffSchoolCareer>>(url, options).pipe(

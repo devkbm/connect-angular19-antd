@@ -18,7 +18,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { DateInfo } from './holiday.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 
@@ -96,11 +96,9 @@ export class HolidayGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<DateInfo>>(
-      GlobalProperty.serverUrl + `/api/system/holiday`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/holiday`,
+      getHttpOptions(request)
+    )
   })
 
   selectionChanged(event: any): void {

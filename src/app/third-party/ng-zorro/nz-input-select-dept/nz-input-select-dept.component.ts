@@ -8,7 +8,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { NzInputSelectDeptModel } from './nz-input-select-dept.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'nz-input-select-dept',
@@ -85,11 +85,7 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor, OnInit 
     const params = {isEnabled: true};
 
     const url = GlobalProperty.serverUrl + `/api/system/dept`;
-    const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-      };
+    const options = getHttpOptions(params);
 
     this.http.get<ResponseList<NzInputSelectDeptModel>>(url, options).pipe(
         //  catchError(this.handleError<ResponseList<NzInputSelectDeptModel>>('getDeptList', undefined))

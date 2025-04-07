@@ -16,7 +16,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { Role } from './role.model';
@@ -117,11 +117,9 @@ export class RoleGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Role>>(
-      GlobalProperty.serverUrl + `/api/system/role`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/role`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedEvent(params: RowClickedEvent<Role>): void {

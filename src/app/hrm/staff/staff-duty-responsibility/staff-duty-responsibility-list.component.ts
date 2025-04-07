@@ -7,7 +7,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { StaffDutyResponsibility } from './staff-duty-responsibility.model';
 
@@ -39,10 +39,9 @@ export class StaffDutyResponsibilityListComponent {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffDutyResponsibility>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/dutyresponsibility`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    })
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/dutyresponsibility`,
+      getHttpOptions()
+    )
   })
 
 }

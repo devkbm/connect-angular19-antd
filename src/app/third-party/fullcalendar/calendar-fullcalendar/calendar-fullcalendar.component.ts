@@ -17,7 +17,7 @@ import { DateInfo } from 'src/app/system/holiday/holiday.model';
 import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-calendar-event.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-calendar-fullcalendar',
@@ -136,15 +136,11 @@ export class CalendarFullcalendarComponent {
     };
 
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: {
+    const options = getHttpOptions({
         fkWorkCalendar : 1,
         fromDate: '20250101',
         toDate: '20250131'
-      }
-    };
+      });
 
     this.http
         .get<ResponseList<WorkCalendarEvent>>(url, options).pipe(

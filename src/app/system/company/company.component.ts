@@ -17,7 +17,7 @@ import { CompanyGridComponent } from './company-grid.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { Company } from './company.model';
 
@@ -196,10 +196,7 @@ export class CompanyComponent implements OnInit {
     const id = this.grid().getSelectedRows()[0].companyCode;
 
     const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<Company>>(url, options).pipe(
         //   catchError(this.handleError<ResponseObject<Company>>('delete', undefined))

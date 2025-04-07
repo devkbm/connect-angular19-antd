@@ -9,6 +9,7 @@ import { map, tap, catchError } from 'rxjs/operators';
 
 import { TodoGroupModel } from './todo-group.model';
 import { TodoModel } from './todo.model';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,7 @@ export class TodoService extends DataService {
 
   getMyTodoGroupList(params?: any): Observable<ResponseList<TodoGroupModel>> {
     const url = `${this.API_URL}/group/mylist`;
-    const options = {
-        headers: this.getAuthorizedHttpHeaders(),
-        withCredentials: true,
-        params: params
-     };
+    const options = getHttpOptions(params);
 
     return this.http.get<ResponseList<TodoGroupModel>>(url, options).pipe(
       catchError(this.handleError<ResponseList<TodoGroupModel>>('getMyTodogroupList', undefined))
@@ -34,10 +31,8 @@ export class TodoService extends DataService {
 
   newTodoGroup(): Observable<ResponseObject<TodoGroupModel>> {
     const url = `${this.API_URL}/group/new`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     return this.http.post<ResponseObject<TodoGroupModel>>(url, null, options).pipe(
       catchError(this.handleError<ResponseObject<TodoGroupModel>>('newTodoGroup', undefined))
     );
@@ -45,10 +40,8 @@ export class TodoService extends DataService {
 
   saveTodoGroup(obj: TodoGroupModel): Observable<ResponseObject<TodoGroupModel>> {
     const url = `${this.API_URL}/group`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     return this.http.post<ResponseObject<TodoGroupModel>>(url, obj, options).pipe(
       catchError(this.handleError<ResponseObject<TodoGroupModel>>('saveTodoGroup', undefined))
     );
@@ -56,10 +49,7 @@ export class TodoService extends DataService {
 
   deleteTodoGroup(id: string): Observable<ResponseObject<TodoGroupModel>> {
     const url = `${this.API_URL}/group/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http.delete<ResponseObject<TodoGroupModel>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<TodoGroupModel>>('saveTodoGroup', undefined))
@@ -68,10 +58,7 @@ export class TodoService extends DataService {
 
   getTodoList(groupId: string): Observable<ResponseList<TodoModel>> {
     const url = `${this.API_URL}/group/${groupId}/list`;
-    const options = {
-        headers: this.getAuthorizedHttpHeaders(),
-        withCredentials: true
-     };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseList<TodoModel>>(url, options).pipe(
       catchError(this.handleError<ResponseList<TodoModel>>('getTodoList', undefined))
@@ -80,10 +67,8 @@ export class TodoService extends DataService {
 
   saveTodo(obj: TodoModel): Observable<ResponseObject<TodoModel>> {
     const url = `${this.API_URL}/group/todo`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
+
     return this.http.post<ResponseObject<TodoModel>>(url, obj, options).pipe(
       catchError(this.handleError<ResponseObject<TodoModel>>('saveTodo', undefined))
     );
@@ -91,10 +76,7 @@ export class TodoService extends DataService {
 
   deleteTodo(groupId: string, id: string): Observable<ResponseObject<TodoModel>> {
     const url = `${this.API_URL}/group/${groupId}/todo/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http.delete<ResponseObject<TodoModel>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<TodoModel>>('saveTodoGroup', undefined))

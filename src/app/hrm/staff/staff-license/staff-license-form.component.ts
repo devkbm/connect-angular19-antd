@@ -18,7 +18,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-license-form',
@@ -194,10 +194,7 @@ export class StaffLicenseFormComponent implements OnInit, AfterViewInit, OnChang
 
   get(staffId: string, seq: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/license/${seq}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffLicense>>(url, options).pipe(
@@ -212,10 +209,7 @@ export class StaffLicenseFormComponent implements OnInit, AfterViewInit, OnChang
 
   save() {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/license`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<StaffLicense>>(url, this.fg.getRawValue(), options).pipe(
@@ -231,10 +225,7 @@ export class StaffLicenseFormComponent implements OnInit, AfterViewInit, OnChang
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/license/${this.fg.controls.seq.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<StaffLicense>>(url, options).pipe(

@@ -23,7 +23,7 @@ import { Post } from './post.model';
 import { PostFileUploadComponent } from './post-file-upload.component';
 import { SessionManager } from 'src/app/core/session-manager';
 import { HttpClient } from '@angular/common/http';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -209,10 +209,7 @@ export class PostFormComponent implements AfterViewInit {
 
   get(id: any): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<Post>>(url, options).pipe(
@@ -236,10 +233,7 @@ export class PostFormComponent implements AfterViewInit {
 
   save(): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/post`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<string>>(url, this.fg.getRawValue(), options).pipe(
@@ -264,10 +258,7 @@ export class PostFormComponent implements AfterViewInit {
 
   remove(id: any): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
     this.http
         .delete<ResponseObject<Post>>(url, options).pipe(
           //catchError((err) => Observable.throw(err))

@@ -16,7 +16,7 @@ import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud
 import { NzListRoadAddressComponent } from 'src/app/third-party/ng-zorro/nz-list-road-address/nz-list-road-address.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-staff-contact-form',
@@ -205,10 +205,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
 
   get(staffId: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/contact`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<StaffContact>>(url, options).pipe(
@@ -223,10 +220,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
 
   save() {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/contact`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<StaffContact>>(url, this.fg.getRawValue(), options).pipe(

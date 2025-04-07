@@ -9,6 +9,7 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { HrmCode } from '../hrm-code/hrm-code.model';
 import { ResponseMap } from 'src/app/core/model/response-map';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Injectable({
@@ -22,11 +23,7 @@ export class HrmCodeService extends DataService {
 
   getMapList(params: any): Observable<ResponseMap<HrmCode>> {
     const url = `${this.API_URL}/hrmtype/codelist`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: params
-    };
+    const options = getHttpOptions(params);
 
     return this.http.get<ResponseMap<HrmCode>>(url, options).pipe(
       catchError(this.handleError<ResponseMap<HrmCode>>('getMapList', undefined))
@@ -35,11 +32,7 @@ export class HrmCodeService extends DataService {
 
   getList(params: any): Observable<ResponseList<HrmCode>> {
     const url = `${this.API_URL}/hrmtype/code`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: params
-    };
+    const options = getHttpOptions(params);
 
     return this.http.get<ResponseList<HrmCode>>(url, options).pipe(
       catchError(this.handleError<ResponseList<HrmCode>>('getList', undefined))

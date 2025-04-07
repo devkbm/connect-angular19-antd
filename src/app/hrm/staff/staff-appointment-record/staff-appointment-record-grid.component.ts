@@ -18,7 +18,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { StaffAppointmentRecord } from './staff-appointment-record.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -93,10 +93,9 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffAppointmentRecord>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/record`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    })
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/record`,
+      getHttpOptions()
+    )
   })
 
   selectionChanged(event: any) {

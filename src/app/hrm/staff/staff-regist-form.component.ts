@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NotifyService } from 'src/app/core/service/notify.service';
 import { GlobalProperty } from 'src/app/core/global-property';
@@ -233,10 +233,7 @@ export class StaffRegistFormComponent implements OnInit {
   get(staffId: string): void {
 
     const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<Staff>>(url, options).pipe(
@@ -262,10 +259,7 @@ export class StaffRegistFormComponent implements OnInit {
 
   save(): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .post<ResponseObject<Staff>>(url, this.fg.getRawValue(), options).pipe(

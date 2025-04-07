@@ -8,6 +8,7 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DataDomain } from './data-domain.model';
 import { HtmlSelectOption } from 'src/app/third-party/ng-zorro/nz-input-select/html-select-option';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Injectable({
@@ -21,10 +22,7 @@ export class DataDomainService extends DataService {
 
   getDatabaseList(): Observable<ResponseList<HtmlSelectOption>> {
     const url = `${this.API_URL}/database`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-   };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseList<HtmlSelectOption>>(url, options).pipe(
       catchError(this.handleError<ResponseList<HtmlSelectOption>>('getDatabaseList', undefined))
@@ -33,10 +31,7 @@ export class DataDomainService extends DataService {
 
   getList(): Observable<ResponseList<DataDomain>> {
     const url = `${this.API_URL}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-   };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseList<DataDomain>>(url, options).pipe(
       catchError(this.handleError<ResponseList<DataDomain>>('getList', undefined))
@@ -45,10 +40,7 @@ export class DataDomainService extends DataService {
 
   get(id: string): Observable<ResponseObject<DataDomain>> {
     const url = `${this.API_URL}/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-   };
+    const options = getHttpOptions();
 
     return this.http.get<ResponseObject<DataDomain>>(url, options).pipe(
       catchError(this.handleError<ResponseObject<DataDomain>>('get', undefined))
@@ -57,10 +49,7 @@ export class DataDomainService extends DataService {
 
   save(term: DataDomain): Observable<ResponseObject<DataDomain>> {
     const url = `${this.API_URL}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http.post<ResponseObject<DataDomain>>(url, term, options).pipe(
       catchError(this.handleError<ResponseObject<DataDomain>>('save', undefined))
@@ -69,10 +58,7 @@ export class DataDomainService extends DataService {
 
   delete(id: string): Observable<ResponseObject<DataDomain>> {
     const url = `${this.API_URL}/${id}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
               .delete<ResponseObject<DataDomain>>(url, options)

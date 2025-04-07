@@ -6,7 +6,7 @@ import { FileUploadModule, FileUploader } from 'ng2-file-upload';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { HttpClient } from '@angular/common/http';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 export interface UploadedFile {
   uid: string;
@@ -211,10 +211,7 @@ export class PostFileUploadComponent {
 
   deleteFile(postId: string, fileId: string) {
     let url = GlobalProperty.serverUrl + `/api/grw/board/post/${postId}/file/${fileId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.delete<boolean>(url, options).pipe(
       //  catchError((err) => Observable.throw(err))

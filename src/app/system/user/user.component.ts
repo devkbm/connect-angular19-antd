@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ShapeComponent } from "src/app/core/app/shape.component";
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { UserGridComponent } from './user-grid.component';
@@ -189,10 +189,7 @@ export class UserComponent implements OnInit {
   deleteUser() {
     const userId: string = this.drawer.user.formInitId;
     const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<User>>(url, options).pipe(

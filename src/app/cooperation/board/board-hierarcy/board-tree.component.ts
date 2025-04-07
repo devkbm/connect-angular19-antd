@@ -7,7 +7,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { BoardHierarchy } from './board-hierarchy.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -47,10 +47,7 @@ export class BoardTreeComponent {
 
   getboardHierarchy(): void {
     let url = GlobalProperty.serverUrl + `/api/grw/boardHierarchy`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
     this.http
         .get<ResponseList<BoardHierarchy>>(url, options)
         .pipe(

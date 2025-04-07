@@ -6,6 +6,7 @@ import { DataService } from 'src/app/core/service/data.service';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { MenuHierarchy } from './app-layout.model';
+import { getHttpOptions } from '../core/http/http-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,7 @@ export class AppLayoutService extends DataService {
 
   getMenuHierarchy(menuGroupId: String): Observable<ResponseList<MenuHierarchy>> {
     const url = `${this.API_URL}/menuhierarchy/${menuGroupId}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
               .get<ResponseList<MenuHierarchy>>(url, options)
@@ -32,10 +30,7 @@ export class AppLayoutService extends DataService {
 
   getUserMenuHierarchy(userId: String, menuGroupId: String): Observable<ResponseList<MenuHierarchy>> {
     const url = `${this.API_URL}/menuhierarchy/${userId}/${menuGroupId}`;
-    const options = {
-      headers: this.getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     return this.http
               .get<ResponseList<MenuHierarchy>>(url, options)

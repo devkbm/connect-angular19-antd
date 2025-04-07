@@ -19,7 +19,7 @@ import { Term } from './term.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -87,11 +87,9 @@ export class TermGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Term>>(
-      GlobalProperty.serverUrl + `/api/system/terms`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/terms`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedFunc(event: RowClickedEvent<Term>) {

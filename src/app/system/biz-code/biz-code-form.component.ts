@@ -15,7 +15,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-biz-code-form',
@@ -165,10 +165,7 @@ export class BizCodeFormComponent implements AfterViewInit {
 
   get(typeId: string, code: string): void {
     const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/${typeId}/bizcode/${code}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<BizCode>>(url, options).pipe(
          // catchError(this.handleError<ResponseObject<BizCode>>('get', undefined))
@@ -193,10 +190,7 @@ export class BizCodeFormComponent implements AfterViewInit {
     }
 
     const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/bizcode`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<BizCode>>(url, this.fg.getRawValue(), options).pipe(
           //catchError(this.handleError<ResponseObject<BizCode>>('save', undefined))
@@ -211,10 +205,7 @@ export class BizCodeFormComponent implements AfterViewInit {
 
   remove(): void {
     const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}/bizcode/${this.fg.controls.code.value!}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<BizCode>>(url, options).pipe(
          // catchError(this.handleError<ResponseObject<BizCode>>('get', undefined))

@@ -12,7 +12,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
 export interface PartnerStaff {
@@ -113,10 +113,7 @@ export class PartnerStaffFormComponent {
 
   get(staffNo: string): void {
     const url = GlobalProperty.serverUrl + `/api/hrm/partnerstaff/${staffNo}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseObject<PartnerStaff>>(url, options).pipe(
@@ -131,10 +128,7 @@ export class PartnerStaffFormComponent {
 
     save(): void {
       const url = GlobalProperty.serverUrl + `/api/hrm/partnerstaff`;
-      const options = {
-        headers: getAuthorizedHttpHeaders(),
-        withCredentials: true
-      };
+      const options = getHttpOptions();
 
       this.http
           .post<ResponseObject<PartnerStaff>>(url, this.fg.getRawValue(), options).pipe(

@@ -12,7 +12,7 @@ import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-it
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-company-form',
@@ -154,10 +154,7 @@ export class CompanyFormComponent  {
 
   get(id: string) {
     const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<Company>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<Company>>('get', undefined))
@@ -183,10 +180,7 @@ export class CompanyFormComponent  {
     }
 
     const url = GlobalProperty.serverUrl + `/api/system/company`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<Company>>(url, this.fg.getRawValue(), options).pipe(
          // catchError(this.handleError<ResponseObject<Company>>('save', undefined))
@@ -201,10 +195,7 @@ export class CompanyFormComponent  {
 
   remove() {
     const url = GlobalProperty.serverUrl + `/api/system/company/${this.fg.controls.companyCode.value!}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<Company>>(url, options).pipe(
        //   catchError(this.handleError<ResponseObject<Company>>('delete', undefined))

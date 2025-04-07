@@ -19,7 +19,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { WebResource } from './web-resource.model';
 import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -95,11 +95,9 @@ export class WebResourceGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<WebResource>>(
-      GlobalProperty.serverUrl + `/api/system/webresource`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/webresource`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedEvent(event: RowClickedEvent<WebResource>) {

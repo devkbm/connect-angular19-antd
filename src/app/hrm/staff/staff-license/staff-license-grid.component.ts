@@ -16,7 +16,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { StaffLicense } from './staff-license.model';
@@ -85,10 +85,9 @@ export class StaffLicenseGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffLicense>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/license`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    })
+      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/license`,
+      getHttpOptions(request)
+    )
   })
 
   selectionChanged(event: any) {

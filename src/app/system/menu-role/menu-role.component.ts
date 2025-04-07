@@ -22,7 +22,7 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -232,10 +232,8 @@ export class MenuRoleComponent {
 
   getMenuGroupList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
+
     this.http
         .get<ResponseList<MenuGroup>>(url, options).pipe(
                 //catchError((err) => Observable.throw(err))
@@ -251,10 +249,7 @@ export class MenuRoleComponent {
 
   getRoleList(): void {
     const url = GlobalProperty.serverUrl + `/api/system/role`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<Role>>(url, options).pipe(

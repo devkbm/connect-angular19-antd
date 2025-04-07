@@ -17,7 +17,7 @@ import { AgGridCommon } from 'src/app/third-party/ag-grid/ag-grid-common';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { Staff } from './staff.model';
 
@@ -83,11 +83,9 @@ export class StaffGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Staff>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/hrm/staff`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedFunc(event: RowClickedEvent<Staff>) {

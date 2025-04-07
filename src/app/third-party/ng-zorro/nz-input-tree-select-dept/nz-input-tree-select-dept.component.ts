@@ -7,7 +7,7 @@ import { NzInputTreeSelectDept } from './nz-input-tree-select-dept.model';
 import { NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'nz-input-tree-select-dept',
@@ -68,10 +68,7 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnI
 
   getDeptHierarchy(): void {
     const url = GlobalProperty.serverUrl + `/api/system/depttree`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<NzInputTreeSelectDept>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))

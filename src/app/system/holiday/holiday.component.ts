@@ -24,7 +24,7 @@ import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/ca
 import { DateSelectArg } from '@fullcalendar/core/index.js';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-holiday',
@@ -231,10 +231,7 @@ export class HolidayComponent implements AfterViewInit {
     if (id === null) return;
 
     const url = GlobalProperty.serverUrl + `/holiday/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<Holiday>>(url, options).pipe(

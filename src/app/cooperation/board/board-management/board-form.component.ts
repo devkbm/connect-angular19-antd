@@ -19,7 +19,7 @@ import { NzFormItemCustomComponent } from "src/app/third-party/ng-zorro/nz-form-
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -243,10 +243,8 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
 
   get(id: string): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
+
     this.http
         .get<ResponseObject<BoardManagement>>(url, options)
         .pipe(
@@ -276,10 +274,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
     }
 
     const url = GlobalProperty.serverUrl + `/api/grw/board`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
     this.http
         .post<ResponseObject<BoardManagement>>(url, this.fg.getRawValue(), options)
         .pipe(
@@ -294,10 +289,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
 
   remove(): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/${this.fg.controls.boardId.value}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .delete<ResponseObject<BoardManagement>>(url, options)
@@ -314,10 +306,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
 
   getboardHierarchy(): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/boardType`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<BoardHierarchy>>(url, options)
@@ -338,10 +327,7 @@ export class BoardFormComponent implements OnInit, AfterViewInit {
 
   getBoardTypeList(): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/boardType`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
         .get<ResponseList<any>>(url, options)

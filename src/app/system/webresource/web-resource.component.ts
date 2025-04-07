@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { WebResourceGridComponent } from './web-resource-grid.component';
 import { WebResource } from './web-resource.model';
@@ -207,10 +207,7 @@ export class WebResourceComponent implements OnInit {
     const id = this.grid().getSelectedRows()[0].resourceId;
 
     const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
     this.http.delete<ResponseObject<WebResource>>(url, options).pipe(
       //catchError((err) => Observable.throw(err))
     ).subscribe(

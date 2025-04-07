@@ -16,7 +16,7 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { NzInputNgxColorsComponent } from 'src/app/third-party/ngx-colors/nz-input-ngx-colors.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
@@ -157,10 +157,7 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
 
   get(id: number): void {
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseObject<WorkCalendar>>(url, options).pipe(
         //    catchError(this.handleError<ResponseObject<WorkCalendar>>('getWorkGroup', undefined))
@@ -179,10 +176,7 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
 
   save(): void {
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.post<ResponseObject<WorkCalendar>>(url, this.fg.getRawValue(), options).pipe(
         //    catchError(this.handleError<ResponseObject<WorkCalendar>>('getWorkGroup', undefined))
@@ -198,10 +192,7 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
     const id: number = this.fg.controls.workCalendarId.value!;
 
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.delete<ResponseObject<WorkCalendar>>(url, options).pipe(
           //catchError(this.handleError<ResponseObject<WorkCalendar>>('deleteWorkGroup', undefined))
@@ -215,10 +206,7 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
 
   getAllMember(): void {
     const url =  GlobalProperty.serverUrl + `/api/system/user`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    };
+    const options = getHttpOptions();
 
     this.http.get<ResponseList<WorkCalendarMember>>(url, options).pipe(
         //  catchError(this.handleError<ResponseList<WorkCalendarMember>>('getMemberList', undefined))

@@ -16,7 +16,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
 
 import { DataDomain } from './data-domain.model';
@@ -85,11 +85,9 @@ export class DataDomainGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<DataDomain>>(
-      GlobalProperty.serverUrl + `/api/system/datadomin`, {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: request
-    })
+      GlobalProperty.serverUrl + `/api/system/datadomin`,
+      getHttpOptions(request)
+    )
   })
 
   rowClickedFunc(event: RowClickedEvent<DataDomain>) {

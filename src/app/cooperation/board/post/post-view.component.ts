@@ -10,7 +10,7 @@ import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-do
 import { PostFileUploadComponent } from './post-file-upload.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders } from 'src/app/core/http/http-utils';
+import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-post-view',
@@ -63,10 +63,7 @@ export class PostViewComponent {
 
   get(id: any): void {
     const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true
-    }
+    const options = getHttpOptions();
 
     this.http
       .get<ResponseObject<Post>>(url, options)
@@ -87,13 +84,9 @@ export class PostViewComponent {
 
   updateHitCount(id: any, userId: any) {
     const url = GlobalProperty.serverUrl + `/api/grw/board/post/hitcnt`;
-    const param = {id: id, userId: userId};
+    const params = {id: id, userId: userId};
 
-    const options = {
-      headers: getAuthorizedHttpHeaders(),
-      withCredentials: true,
-      params: param
-    };
+    const options = getHttpOptions(params);
 
     this.http
         .get<ResponseObject<void>>(url, options)
