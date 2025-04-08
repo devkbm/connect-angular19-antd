@@ -179,7 +179,6 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
     ).subscribe(
       (model: ResponseObject<WebResource>) => {
         model.data ? this.modifyForm(model.data) : this.newForm();
-        this.notifyService.changeMessage(model.message);
       }
     );
   }
@@ -231,7 +230,6 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
     ).subscribe(
       (model: ResponseList<ResouceTypeEnum>) => {
         this.resourceTypeList = model.data;
-        this.notifyService.changeMessage(model.message);
       }
     );
 

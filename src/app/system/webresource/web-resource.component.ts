@@ -20,6 +20,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { WebResourceSearchComponent } from './web-resource-search.component';
 
 @Component({
   selector: 'app-web-resource',
@@ -36,6 +37,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NzSearchAreaComponent,
     WebResourceGridComponent,
     WebResourceFormDrawerComponent,
+    WebResourceSearchComponent,
     ShapeComponent
 ],
   template: `
@@ -45,41 +47,11 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 
 <ng-template #search>
   <app-nz-search-area>
-    <div nz-row>
-      <div nz-col [nzSpan]="12">
-        <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzSuffix]="suffixIconSearch">
-          <ng-template #addOnBeforeTemplate>
-            <nz-select [(ngModel)]="query.resource.key">
-              @for (option of query.resource.list; track option.value) {
-                <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
-              }
-            </nz-select>
-          </ng-template>
-          <input type="text" [(ngModel)]="query.resource.value" nz-input placeholder="input search text" (keyup.enter)="getList()">
-          <ng-template #suffixIconSearch>
-            <span nz-icon nzType="search"></span>
-          </ng-template>
-        </nz-input-group>
-      </div>
-      <div nz-col [nzSpan]="12" style="text-align: right;">
-        <app-nz-buttons [buttons]="buttons"></app-nz-buttons>
-        <!--
-        <button nz-button (click)="getList()">
-          <span nz-icon nzType="search"></span>조회
-        </button>
-        <nz-divider nzType="vertical"></nz-divider>
-        <button nz-button (click)="initForm()">
-          <span nz-icon nzType="form" nzTheme="outline"></span>신규
-        </button>
-        <nz-divider nzType="vertical"></nz-divider>
-        <button nz-button nzDanger="true"
-          nz-popconfirm nzPopconfirmTitle="삭제하시겠습니까?"
-          (nzOnConfirm)="delete()" (nzOnCancel)="false">
-          <span nz-icon nzType="delete" nzTheme="outline"></span>삭제
-        </button>
-        -->
-      </div>
-    </div>
+    <app-web-resource-search
+      (search)="getList($event)"
+      (newForm)="newResource()"
+      (deleteForm)="delete()"
+    />
   </app-nz-search-area>
 </ng-template>
 
@@ -104,7 +76,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 
 <app-web-resource-form-drawer
   [drawer]="drawer.resource"
-  (drawerClosed)="getList()">
+  (drawerClosed)="getList('1')">
 </app-web-resource-form-drawer>
   `,
   styles: `
@@ -135,45 +107,6 @@ export class WebResourceComponent implements OnInit {
 
   grid = viewChild.required(WebResourceGridComponent);
 
-  query: {
-    resource : { key: string, value: string, list: {label: string, value: string}[] }
-  } = {
-    resource : {
-      key: 'resourceCode',
-      value: '',
-      list: [
-        {label: '리소스코드', value: 'resourceCode'},
-        {label: '리소스명', value: 'resourceName'},
-        {label: 'URL', value: 'url'},
-        {label: '설명', value: 'description'}
-      ]
-    }
-  }
-
-  buttons: ButtonTemplate[] = [{
-    text: '조회',
-    nzType: 'search',
-    click: (e: MouseEvent) => {
-      this.getList();
-    }
-  },{
-    text: '신규',
-    nzType: 'form',
-    click: (e: MouseEvent) => {
-      this.newResource();
-    }
-  },{
-    text: '삭제',
-    nzType: 'delete',
-    isDanger: true,
-    popConfirm: {
-      title: '삭제하시겠습니까?',
-      confirmClick: () => {
-        this.delete();
-      }
-    }
-  }];
-
   drawer: {
     resource: { visible: boolean, formInitId: any }
   } = {
@@ -183,12 +116,14 @@ export class WebResourceComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getList(): void {
+  getList(params: any): void {
+    /*
     let params: any = new Object();
     if ( this.query.resource.value !== '') {
       params[this.query.resource.key] = this.query.resource.value;
     }
-
+    */
+    console.log(params);
     this.drawer.resource.visible = false;
     this.grid().gridQuery.set(params);
   }
@@ -212,7 +147,8 @@ export class WebResourceComponent implements OnInit {
       //catchError((err) => Observable.throw(err))
     ).subscribe(
       (model: ResponseObject<WebResource>) => {
-        this.getList();
+        //this.notifyService.changeMessage(model.message);
+        this.getList('');
       }
     );
 
