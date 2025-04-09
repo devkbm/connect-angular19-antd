@@ -22,6 +22,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
+import { UesrSearchComponent } from './uesr-search.component';
 
 @Component({
   selector: 'app-user',
@@ -41,7 +42,8 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
     NzButtonExcelUploadComponent,
     UserGridComponent,
     UserFormDrawerComponent,
-    ShapeComponent
+    ShapeComponent,
+    UesrSearchComponent
 ],
   template: `
 <ng-template #header>
@@ -50,6 +52,13 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
 
 <ng-template #search>
   <app-nz-search-area>
+    <app-uesr-search
+      (search)="getUserList($event)"
+      (newForm)="newForm()"
+      (deleteForm)="deleteUser()"
+    >
+    </app-uesr-search>
+    <!--
     <div nz-row>
       <div nz-col [nzSpan]="12">
         <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzSuffix]="suffixIconSearch">
@@ -86,6 +95,7 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
         </button>
       </div>
     </div>
+    -->
   </app-nz-search-area>
 </ng-template>
 
@@ -109,7 +119,7 @@ import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-bu
 
 <app-user-form-drawer
   [drawer]="drawer.user"
-  (drawerClosed)="getUserList()">
+  (drawerClosed)="getUserList('')">
 </app-user-form-drawer>
   `,
   styles: `
@@ -175,12 +185,13 @@ export class UserComponent implements OnInit {
     this.drawer.user.visible = true;
   }
 
-  getUserList() {
+  getUserList(params: any) {
+    /*
     let params: any = new Object();
     if ( this.query.user.value !== '') {
       params[this.query.user.key] = this.query.user.value;
     }
-
+*/
     this.drawer.user.visible = false;
 
     this.grid().gridQuery.set(params);

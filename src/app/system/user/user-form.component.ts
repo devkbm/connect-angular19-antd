@@ -296,7 +296,6 @@ export class UserFormComponent implements OnInit {
               this.imageBase64 = '';
             }
 
-            this.notifyService.changeMessage(model.message);
           }
         )
   }
