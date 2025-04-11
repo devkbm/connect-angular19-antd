@@ -14,6 +14,7 @@ import { NzSplitterModule } from 'ng-zorro-antd/splitter';
 
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { DeptSearchComponent } from "./dept-search.component";
 
 @Component({
   selector: 'app-dept',
@@ -30,14 +31,20 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
     NzPageHeaderCustomComponent,
     DeptTreeComponent,
     DeptFormComponent,
-    ShapeComponent
+    ShapeComponent,
+    DeptSearchComponent
 ],
   template: `
 <ng-template #header>
   <nz-page-header-custom title="부서코드 등록" subtitle="This is a subtitle"></nz-page-header-custom>
 </ng-template>
 
+
+
 <ng-template #search>
+
+
+  <!--
   <div nz-row>
     <div nz-col [nzSpan]="12">
       <nz-input-group nzSearch [nzSuffix]="suffixIconSearch">
@@ -56,33 +63,34 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
         <span nz-icon nzType="form" nzTheme="outline"></span>신규
       </button>
       <nz-divider nzType="vertical"></nz-divider>
-      <!--
-        nz-popconfirm nzPopconfirmTitle="저장하시겠습니까?"
-        (nzOnConfirm)="saveDept()" (nzOnCancel)="false">
-      -->
       <button nz-button nzType="primary" (click)="saveDept()">
         <span nz-icon nzType="save" nzTheme="outline"></span>저장
       </button>
       <nz-divider nzType="vertical"></nz-divider>
-      <!--
-        nz-popconfirm nzPopconfirmTitle="삭제하시겠습니까?"
-        (nzOnConfirm)="deleteDept()" (nzOnCancel)="false">
-      -->
       <button nz-button nzDanger (click)="deleteDept()">
         <span nz-icon nzType="delete" nzTheme="outline"></span>삭제
       </button>
     </div>
   </div>
+  -->
 </ng-template>
 
-
-<app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}">
+<!-- <app-shape [header]="{template: header, height: 'var(--page-header-height)'}" [search]="{template: search, height: 'var(--page-search-height)'}"> -->
+<app-shape [header]="{template: header, height: 'var(--page-header-height)'}">
+  <app-dept-search
+    #deptsearch
+    (search)="getDeptTree()"
+    (newForm)="initForm()"
+    (saveForm)="saveDept()"
+    (deleteForm)="deleteDept()"
+  />
+  <br/>
   <nz-splitter>
     <nz-splitter-panel nzDefaultSize="10%" nzMin="10%" nzMax="50%" [nzCollapsible]="true">
       <h3 class="grid-title">부서코드 목록</h3>
 
       <app-dept-tree
-        [searchValue]="queryValue"
+        [searchValue]="deptsearch.queryValue()"
         (itemSelected)="selectedItem($event)">
       </app-dept-tree>
     </nz-splitter-panel>
