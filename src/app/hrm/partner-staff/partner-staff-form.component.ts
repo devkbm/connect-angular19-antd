@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, output, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -98,6 +98,16 @@ export class PartnerStaffFormComponent {
     blngDeptCode                : new FormControl<string | null>(null),
     workDeptCode                : new FormControl<string | null>(null),
   });
+
+  formInitId = input<string>('');
+
+  constructor() {
+    effect(() => {
+      if (this.formInitId()) {
+        this.get(this.formInitId());
+      }
+    })
+  }
 
   newForm(): void {
     this.fg.reset();

@@ -1,0 +1,70 @@
+import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@angular/core';
+
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+
+import { WebResourceFormComponent } from 'src/app/system/webresource/web-resource-form.component';
+import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
+
+import { PartnerStaffFormComponent } from "./partner-staff-form.component";
+
+@Component({
+  selector: 'app-partner-staff-form-drawer',
+  imports: [
+    NzDrawerModule,
+    NzCrudButtonGroupComponent,
+    PartnerStaffFormComponent
+],
+  template: `
+    <nz-drawer
+      [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom':'53px' }"
+      [nzMaskClosable]="true"
+      nzWidth="80%"
+      [nzVisible]="drawer().visible"
+      nzTitle="협력직원 등록"
+      [nzFooter]="footerTpl"
+      (nzOnClose)="drawer().visible = false">
+        <app-partner-staff-form *nzDrawerContent
+          [formInitId]="drawer().formInitId"
+          (formSaved)="closeDrawer($event)"
+          (formDeleted)="closeDrawer($event)"
+          (formClosed)="drawer().visible = false">
+        </app-partner-staff-form>
+    </nz-drawer>
+
+    <ng-template #footerTpl>
+      <div style="float: right">
+        <app-nz-crud-button-group
+          [searchVisible]="false"
+          [isSavePopupConfirm]="false"
+          (closeClick)="closeDrawer()"
+          (saveClick)="save()"
+          (deleteClick)="remove()">
+        </app-nz-crud-button-group>
+      </div>
+    </ng-template>
+  `,
+  styles: `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PartnerStaffFormDrawerComponent {
+
+  drawer = input.required<{visible: boolean, formInitId: any}>();
+  drawerClosed = output<any>();
+
+  form = viewChild.required(WebResourceFormComponent);
+
+  save() {
+    this.form().save();
+  }
+
+  remove() {
+    this.form().remove();
+  }
+
+  closeDrawer(params?: any) {
+    this.form().closeForm();
+
+    this.drawerClosed.emit(params);
+  }
+}
