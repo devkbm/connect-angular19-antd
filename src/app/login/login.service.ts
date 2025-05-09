@@ -7,6 +7,7 @@ import { UserToken } from './user-token.model';
 import { Observable } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { getHttpOptions } from '../core/http/http-utils';
+import { GlobalProperty } from '../core/global-property';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +71,7 @@ export class LoginService extends DataService {
   }
 
   getAuthToken(companyCode: string): Observable<UserToken> {
-    const url = 'http://localhost:8090/api/system/user/auth?companyCode='+companyCode;
+    const url = GlobalProperty.serverUrl + '/api/system/user/auth?companyCode='+companyCode;
 
     const options = getHttpOptions();
 
@@ -80,7 +81,7 @@ export class LoginService extends DataService {
   }
 
   getOAuth2Token(companyCode: string): Observable<UserToken> {
-    const url = 'http://localhost:8090/api/system/user/oauth2?companyCode='+companyCode;
+    const url = GlobalProperty.serverUrl + '/api/system/user/oauth2?companyCode='+companyCode;
 
     const options = getHttpOptions();
 

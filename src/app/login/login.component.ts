@@ -6,6 +6,7 @@ import { UserToken } from './user-token.model';
 import { SessionManager } from 'src/app/core/session-manager';
 import { WindowRef } from 'src/app/core/window-ref';
 import { CommonModule } from '@angular/common';
+import { GlobalProperty } from '../core/global-property';
 
 @Component({
   selector: 'app-login',
@@ -159,7 +160,7 @@ export class LoginComponent implements OnInit {
   }
 
   socialLogin(): void {
-    window.location.href = 'http://localhost:8090/oauth2/authorization/google?companyCode=001';
+    window.location.href = GlobalProperty.serverUrl + '/oauth2/authorization/google?companyCode=001';
   }
 
   test() {

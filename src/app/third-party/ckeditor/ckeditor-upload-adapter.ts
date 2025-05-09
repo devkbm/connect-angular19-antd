@@ -1,9 +1,11 @@
 // https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/upload-adapter.html#the-complete-implementation
 
+import { GlobalProperty } from "src/app/core/global-property";
+
 export class CkeditorUploadAdapter {
   xhr: any;
   loader: any;
-  UPLOAD_URL: string = 'http://localhost:8090/common/file/';
+  UPLOAD_URL: string = GlobalProperty.serverUrl + '/common/file/';
 
   constructor( loader: any) {
     // The file loader instance to use during the upload.
