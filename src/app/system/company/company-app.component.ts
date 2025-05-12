@@ -19,7 +19,6 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { Company } from './company.model';
 
 @Component({
   selector: 'app-company',
@@ -116,7 +115,7 @@ import { Company } from './company.model';
   }
   `
 })
-export class CompanyComponent implements OnInit {
+export class CompanyApp implements OnInit {
 
   private http = inject(HttpClient);
 
@@ -198,11 +197,11 @@ export class CompanyComponent implements OnInit {
     const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
     const options = getHttpOptions();
 
-    this.http.delete<ResponseObject<Company>>(url, options).pipe(
+    this.http.delete<ResponseObject<void>>(url, options).pipe(
         //   catchError(this.handleError<ResponseObject<Company>>('delete', undefined))
         )
         .subscribe(
-          (model: ResponseObject<Company>) => {
+          (model: ResponseObject<void>) => {
             this.getList();
           }
       )

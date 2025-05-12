@@ -273,7 +273,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
   }
 
   focusInput() {
-    this.renderer.selectRootElement('#deptCode').focus();
+    //this.renderer.selectRootElement('#deptCode').focus();
   }
 
   newForm(): void {

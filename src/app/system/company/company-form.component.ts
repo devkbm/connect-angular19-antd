@@ -6,13 +6,41 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
 import { NotifyService } from 'src/app/core/service/notify.service';
-import { Company } from './company.model';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { NzFormItemCustomComponent } from "../../third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component";
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+
+export interface Company {
+  /**
+   * 회사코드
+   */
+  companyCode: string | null;
+  /**
+   * 회사명
+   */
+  companyName: string | null;
+  /**
+   * 사업자등록번호
+   */
+  businessRegistrationNumber: string | null;
+  /**
+   * 법인번호
+   */
+  coporationNumber: string | null;
+  /**
+   * 대표자
+   */
+  nameOfRepresentative: string | null;
+  /**
+   * 설립일
+   */
+  establishmentDate: Date | null;
+}
+
 
 @Component({
   selector: 'app-company-form',
@@ -162,7 +190,6 @@ export class CompanyFormComponent  {
         .subscribe(
           (model: ResponseObject<Company>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.notifyService.changeMessage(model.message);
           }
         )
 

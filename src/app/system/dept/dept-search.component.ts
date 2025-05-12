@@ -9,6 +9,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputSelectCompanyComponent } from "../../third-party/ng-zorro/nz-input-select-company/nz-input-select-company.component";
 
 @Component({
   selector: 'app-dept-search',
@@ -23,10 +24,12 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NzSelectModule,
     NzDividerModule,
     NzPopconfirmModule,
-  ],
+    NzInputSelectCompanyComponent
+],
   template: `
     <div nz-row>
-      <div nz-col [nzSpan]="12">
+      <div nz-col [nzSpan]="12" style="display: flex;">
+        <app-nz-input-select-company> </app-nz-input-select-company>
         <nz-input-group nzSearch [nzSuffix]="suffixIconSearch">
           <input type="text" [(ngModel)]="queryValue" nz-input placeholder="input search text">
         </nz-input-group>

@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, //canActivateChild: [AuthGuardService],
     children: [
-      {path: 'company',       loadComponent: () => import('./company/company.component').then(m => m.CompanyComponent)},
+      {path: 'company',       loadComponent: () => import('./company/company-app.component').then(m => m.CompanyApp)},
       {path: 'user',          loadComponent: () => import('./user/user.component').then(m => m.UserComponent), data: {breadcrumb: 'user'}},
       {path: 'role',          loadComponent: () => import('./role/role.component').then(m => m.RoleComponent)},
       {path: 'menu',          loadComponent: () => import('./menu/menu.component').then(m => m.MenuComponent)},
