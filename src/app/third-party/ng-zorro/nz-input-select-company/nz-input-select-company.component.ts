@@ -26,6 +26,7 @@ export interface CompanyModel {
     FormsModule, NzFormModule, NzSelectModule
   ],
   template: `
+  <!-- (ngModelChange)="onChange($event)" -->
    <nz-select
       [nzId]="itemId()"
       [ngModel]="_value()"
@@ -34,7 +35,8 @@ export interface CompanyModel {
       [nzMode]="mode()"
       nzShowSearch
       (blur)="onTouched()"
-      (ngModelChange)="onChange($event)">
+      
+      >
       @for (option of _list; track option[opt_value()]) {
         <nz-option
           [nzLabel]="option[opt_label()]"
@@ -109,6 +111,7 @@ export class NzInputSelectCompanyComponent implements ControlValueAccessor, OnIn
         .subscribe(
           (model: ResponseList<CompanyModel>) => {
             this._list = model.data;
+            this._value.set(this._list[0].companyCode);
           }
         )
   }
