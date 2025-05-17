@@ -29,7 +29,7 @@ import { NzInputSelectCompanyComponent } from "../../third-party/ng-zorro/nz-inp
   template: `
     <div nz-row>
       <div nz-col [nzSpan]="12" style="display: flex;">
-        <app-nz-input-select-company> </app-nz-input-select-company>
+        <app-nz-input-select-company (valueChange)="change($event)"></app-nz-input-select-company>
         <nz-input-group nzSearch [nzSuffix]="suffixIconSearch">
           <input type="text" [(ngModel)]="queryValue" nz-input placeholder="input search text">
         </nz-input-group>
@@ -77,6 +77,10 @@ export class DeptSearchComponent {
   newForm = output<void>();
   saveForm = output<void>();
   deleteForm = output<void>();
+
+  change(val: any) {
+    console.log(val);
+  }
 
   btnSearchClicked() {
     this.search.emit({});

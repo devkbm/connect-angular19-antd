@@ -8,32 +8,31 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { NzInputSelectDeptModel } from './nz-input-select-dept.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'nz-input-select-dept',
   imports: [FormsModule, NzFormModule, NzSelectModule],
   template: `
     <nz-select
-        [nzId]="itemId()"
-        [ngModel]="_value()"
-        [nzDisabled]="disabled()"
-        [nzPlaceHolder]="placeholder()"
-        [nzMode]="mode()"
-        nzShowSearch
-        (blur)="onTouched()"
-        (ngModelChange)="onChange($event)">
-        @for (option of deptList; track option[opt_value()]) {
-          <nz-option
-            [nzLabel]="option[opt_label()]"
-            [nzValue]="option[opt_value()]">
-          </nz-option>
-        }
-      </nz-select>
+      [nzId]="itemId()"
+      [(ngModel)]="value"
+      (blur)="onTouched()"
+      [nzDisabled]="disabled()"
+      [nzPlaceHolder]="placeholder()"
+      [nzMode]="mode()"
+      nzShowSearch>
+      @for (option of deptList; track option[opt_value()]) {
+        <nz-option
+          [nzLabel]="option[opt_label()]"
+          [nzValue]="option[opt_value()]">
+        </nz-option>
+      }
+    </nz-select>
   `,
   styles: []
 })
-export class NzInputSelectDeptComponent implements ControlValueAccessor, OnInit {
+export class NzInputSelectDeptComponent implements ControlValueAccessor {
 
   itemId = input<string>('');
   required = input<boolean>(false);
@@ -47,7 +46,7 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor, OnInit 
   onTouched!: () => void;
 
   _disabled = false;
-  _value = model();
+  value = model();
 
   deptList: NzInputSelectDeptModel[] = [];
 
@@ -57,14 +56,12 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor, OnInit 
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-  }
 
-  ngOnInit(): void {
     this.getDeptList();
   }
 
   writeValue(obj: any): void {
-    this._value.set(obj);
+    this.value.set(obj);
   }
 
   setDisabledState(isDisabled: boolean): void {

@@ -1,13 +1,32 @@
-import { Component, inject, input, model, OnInit, Optional, Self, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model, OnInit, Optional, Self, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { ResponseList } from 'src/app/core/model/response-list';
-import { NzInputTreeSelectDept } from './nz-input-tree-select-dept.model';
 import { NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export class NzInputTreeSelectDept {
+  constructor(
+    public parentDeptCode: string,
+    public deptCode: string,
+    public deptNameKorean: string,
+    public deptAbbreviationKorean: string,
+    public deptNameEnglish: string,
+    public deptAbbreviationEnglish: string,
+    public fromDate: string,
+    public toDate: string,
+    public seq: number,
+    public comment: string,
+
+    public title: string,
+    public key: string,
+    public isLeaf: boolean,
+    public children: NzInputTreeSelectDept[]) {}
+}
+
 
 @Component({
   selector: 'nz-input-tree-select-dept',
@@ -16,14 +35,16 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
     <nz-tree-select
         [nzId]="itemId()"
         [ngModel]="_value()"
-        [nzNodes]="nodes()"
-        [nzDisabled]="_disabled"
-        [nzPlaceHolder]="placeholder()"
+        (ngModelChange)="onChange($event)"
         (blur)="onTouched()"
-        (ngModelChange)="onChange($event)">
+        [nzDisabled]="_disabled"
+        [nzNodes]="nodes()"
+        [nzPlaceHolder]="placeholder()"
+        >
     </nz-tree-select>
   `,
-  styles: []
+  styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnInit {
 

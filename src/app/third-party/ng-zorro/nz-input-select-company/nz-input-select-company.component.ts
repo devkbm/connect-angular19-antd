@@ -1,4 +1,4 @@
-import { Component, Self, Optional, OnInit, input, model, inject, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { Component, Self, Optional, input, model, inject, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -26,16 +26,15 @@ export interface CompanyModel {
     FormsModule, NzFormModule, NzSelectModule
   ],
   template: `
-  <!-- (ngModelChange)="onChange($event)" -->
+   <!--{{value()}}-->
    <nz-select
       [nzId]="itemId()"
-      [ngModel]="_value()"
+      [(ngModel)]="value"
+      (blur)="onTouched()"
       [nzDisabled]="disabled()"
       [nzPlaceHolder]="placeholder()"
       [nzMode]="mode()"
       nzShowSearch
-      (blur)="onTouched()"
-      
       >
       @for (option of _list; track option[opt_value()]) {
         <nz-option
@@ -49,7 +48,7 @@ export interface CompanyModel {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NzInputSelectCompanyComponent implements ControlValueAccessor, OnInit {
+export class NzInputSelectCompanyComponent implements ControlValueAccessor {
 
   itemId = input<string>('');
   required = input<boolean>(false);
@@ -61,11 +60,11 @@ export class NzInputSelectCompanyComponent implements ControlValueAccessor, OnIn
 
   select = viewChild.required(NzSelectComponent);
 
-  onChange!: (value: string) => void;
-  onTouched!: () => void;
+  onChange!: (value: any) => {};
+  onTouched!: () => {};
 
   _disabled = false;
-  _value = model();
+  value = model<string | null>(null);
 
   _list: CompanyModel[] = [];
 
@@ -75,14 +74,12 @@ export class NzInputSelectCompanyComponent implements ControlValueAccessor, OnIn
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-  }
 
-  ngOnInit(): void {
     this.getCompanyList();
   }
 
   writeValue(obj: any): void {
-    this._value.set(obj);
+    this.value = obj;
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -111,7 +108,8 @@ export class NzInputSelectCompanyComponent implements ControlValueAccessor, OnIn
         .subscribe(
           (model: ResponseList<CompanyModel>) => {
             this._list = model.data;
-            this._value.set(this._list[0].companyCode);
+
+            this.value.set(this._list[0].companyCode);
           }
         )
   }
