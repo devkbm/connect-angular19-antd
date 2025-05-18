@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, output, signal, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -72,6 +72,7 @@ import { NzInputSelectCompanyComponent } from "../../third-party/ng-zorro/nz-inp
 export class DeptSearchComponent {
 
   queryValue = signal('');
+  companyCode = model<string>('001');
 
   search = output<Object>();
   newForm = output<void>();
@@ -79,11 +80,14 @@ export class DeptSearchComponent {
   deleteForm = output<void>();
 
   change(val: any) {
+    this.companyCode.set(val);
     console.log(val);
+
+    this.btnSearchClicked();
   }
 
   btnSearchClicked() {
-    this.search.emit({});
+    this.search.emit({companyCode: this.companyCode()});
   }
 
   btnNewClicked() {

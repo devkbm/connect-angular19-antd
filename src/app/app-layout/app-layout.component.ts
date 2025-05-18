@@ -129,4 +129,18 @@ export class AppLayoutComponent implements OnInit  {
     );
   }
 
+  logout() {
+    const url = GlobalProperty.serverUrl + `/api/system/user/logout`;
+    const options = getHttpOptions();
+
+    this.http.get<ResponseList<any>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseList<any>) => {
+        console.log(model);
+        this.router.navigate(['/login']);
+      }
+    );
+  }
+
 }

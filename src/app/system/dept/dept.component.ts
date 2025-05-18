@@ -91,6 +91,7 @@ import { DeptSearchComponent } from "./dept-search.component";
 
       <app-dept-tree
         [searchValue]="deptsearch.queryValue()"
+        [companyCode]="deptsearch.companyCode()"
         (itemSelected)="selectedItem($event)">
       </app-dept-tree>
     </nz-splitter-panel>
@@ -179,7 +180,7 @@ export class DeptComponent implements OnInit, AfterViewInit {
   }
 
   getDeptTree(): void {
-    this.tree().getDeptHierarchy();
+    this.tree().getDeptHierarchy(this.tree().companyCode());
   }
 
   initForm(): void {

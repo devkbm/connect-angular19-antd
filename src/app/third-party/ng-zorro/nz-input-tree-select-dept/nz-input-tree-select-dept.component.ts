@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, model, OnInit, Optional, Self, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model, Optional, Self, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
@@ -8,23 +8,22 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
-export class NzInputTreeSelectDept {
-  constructor(
-    public parentDeptCode: string,
-    public deptCode: string,
-    public deptNameKorean: string,
-    public deptAbbreviationKorean: string,
-    public deptNameEnglish: string,
-    public deptAbbreviationEnglish: string,
-    public fromDate: string,
-    public toDate: string,
-    public seq: number,
-    public comment: string,
+export interface NzInputTreeSelectDept {
+  parentDeptCode: string;
+  deptCode: string;
+  deptNameKorean: string;
+  deptAbbreviationKorean: string;
+  deptNameEnglish: string;
+  deptAbbreviationEnglish: string;
+  fromDate: string;
+  toDate: string;
+  seq: number;
+  comment: string;
 
-    public title: string,
-    public key: string,
-    public isLeaf: boolean,
-    public children: NzInputTreeSelectDept[]) {}
+  title: string;
+  key: string;
+  isLeaf: boolean;
+  children: NzInputTreeSelectDept[];
 }
 
 
@@ -33,20 +32,20 @@ export class NzInputTreeSelectDept {
   imports: [FormsModule, NzFormModule, NzTreeSelectModule],
   template: `
     <nz-tree-select
-        [nzId]="itemId()"
-        [ngModel]="_value()"
-        (ngModelChange)="onChange($event)"
-        (blur)="onTouched()"
-        [nzDisabled]="_disabled"
-        [nzNodes]="nodes()"
-        [nzPlaceHolder]="placeholder()"
-        >
+      [nzId]="itemId()"
+      [ngModel]="value()"
+      (ngModelChange)="onChange($event)"
+      (blur)="onTouched()"
+      [nzDisabled]="_disabled"
+      [nzNodes]="nodes()"
+      [nzPlaceHolder]="placeholder()"
+      >
     </nz-tree-select>
   `,
-  styles: [],
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnInit {
+export class NzInputTreeSelectDeptComponent implements ControlValueAccessor {
 
   itemId = input<string>('');
   required = input<boolean | string>(false);
@@ -55,7 +54,7 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnI
   nodes = signal<NzTreeNodeOptions[] | NzTreeNode[] | NzInputTreeSelectDept[]>([]);
 
   _disabled = false;
-  _value = model<string>();
+  value = model<string | null>(null);
 
   onChange!: (value: string) => void;
   onTouched!: () => void;
@@ -66,14 +65,12 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor, OnI
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-  }
 
-  ngOnInit(): void {
     this.getDeptHierarchy();
   }
 
   writeValue(obj: any): void {
-    this._value.set(obj);
+    this.value.set(obj);
   }
   setDisabledState(isDisabled: boolean): void {
     this._disabled = isDisabled;

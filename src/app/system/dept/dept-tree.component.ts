@@ -36,14 +36,15 @@ export class DeptTreeComponent {
   nodeItems: DeptHierarchy[] = [];
 
   searchValue = input.required<string>();
+  companyCode = input.required<string>();
 
   itemSelected = output<any>();
 
   private http = inject(HttpClient);
 
-  public getDeptHierarchy(): void {
+  public getDeptHierarchy(companyCode: string) {
     const url = GlobalProperty.serverUrl + `/api/system/depttree`;
-    const options = getHttpOptions();
+    const options = getHttpOptions({company: companyCode});
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(
         //  catchError(this.handleError<ResponseObject<Dept>>('saveDept', undefined))
