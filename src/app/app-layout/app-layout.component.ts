@@ -18,6 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from '../core/global-property';
 import { getHttpOptions } from '../core/http/http-utils';
 import { ResponseList } from '../core/model/response-list';
+import { catchError, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-app-layout',
@@ -130,6 +131,7 @@ export class AppLayoutComponent implements OnInit  {
   }
 
   logout() {
+    /*
     const url = GlobalProperty.serverUrl + `/api/system/user/logout`;
     const options = getHttpOptions();
 
@@ -139,6 +141,25 @@ export class AppLayoutComponent implements OnInit  {
       (model: ResponseList<any>) => {
         console.log(model);
         this.router.navigate(['/login']);
+      }
+    );
+    */
+
+    const url1 = GlobalProperty.serverUrl + `/api/system/user/auth1`;
+    const url2 = GlobalProperty.serverUrl + `/api/system/user/logout`;
+    const options = getHttpOptions();
+
+    const auth = this.http.get<ResponseList<any>>(url1, options).pipe(
+      
+    );
+    const out = this.http.get<ResponseList<any>>(url2, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    );
+
+    combineLatest([auth, out]).subscribe(
+      (model: ResponseList<any>[]) => {
+        console.log(model);
+        //this.router.navigate(['/login']);
       }
     );
   }
