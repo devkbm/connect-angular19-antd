@@ -151,7 +151,7 @@ export class AppLayoutComponent implements OnInit  {
 
     const auth = this.http.get<ResponseList<any>>(url1, options).pipe(
       
-    );
+    ); 
     const out = this.http.get<ResponseList<any>>(url2, options).pipe(
       //catchError((err) => Observable.throw(err))
     );
