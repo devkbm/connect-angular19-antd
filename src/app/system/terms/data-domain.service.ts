@@ -7,9 +7,14 @@ import { DataService } from 'src/app/core/service/data.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DataDomain } from './data-domain.model';
-import { HtmlSelectOption } from 'src/app/third-party/ng-zorro/nz-input-select/html-select-option';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
+
+export interface HtmlSelectOption {
+  label: string;
+  value: string | number;
+  [key: string]: any;
+}
 
 @Injectable({
   providedIn: 'root'

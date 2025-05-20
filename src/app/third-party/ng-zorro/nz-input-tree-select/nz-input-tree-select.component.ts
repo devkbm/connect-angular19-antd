@@ -14,11 +14,12 @@ import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
     <nz-tree-select
       [nzId]="itemId()"
       [ngModel]="_value()"
+      (ngModelChange)="onChange($event)"
+      (blur)="onTouched()"
       [nzNodes]="nodes()"
       [nzDisabled]="disabled()"
       [nzPlaceHolder]="placeholder()"
-      (blur)="onTouched()"
-      (ngModelChange)="onChange($event)">
+      >
     </nz-tree-select>
   `,
   styles: `

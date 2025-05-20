@@ -56,12 +56,14 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor {
   _disabled = false;
   value = model<string | null>(null);
 
-  onChange!: (value: string) => void;
+  onChange!: (value: any) => void;
   onTouched!: () => void;
 
   private http = inject(HttpClient);
+  private ngControl = inject(NgControl, { self: true, optional: true });
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  //constructor(@Self()  @Optional() private ngControl: NgControl) {
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

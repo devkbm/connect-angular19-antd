@@ -9,13 +9,18 @@ import { ResponseObject } from 'src/app/core/model/response-object';
 
 import { DataDomainService } from './data-domain.service';
 import { DataDomain } from './data-domain.model';
-import { HtmlSelectOption } from 'src/app/third-party/ng-zorro/nz-input-select/html-select-option';
 
 import { NzCrudButtonGroupComponent } from 'src/app/third-party/ng-zorro/nz-crud-button-group/nz-crud-button-group.component';
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
+
+export interface HtmlSelectOption {
+  label: string;
+  value: string | number;
+  [key: string]: any;
+}
 
 
 @Component({

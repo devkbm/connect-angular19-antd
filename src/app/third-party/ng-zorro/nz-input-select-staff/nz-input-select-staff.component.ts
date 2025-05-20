@@ -1,12 +1,30 @@
 import { Self, Optional, Component, Input, OnInit, input, model, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { Staff, NzInputSelectStaffService } from './nz-input-select-staff.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModeType, NzSelectModule } from 'ng-zorro-antd/select';
+
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface Staff {
+  staffId: string;
+  companyCode: string;
+  staffNo: string;
+  name: string;
+  nameEng: string;
+  nameChi: string;
+  residentRegistrationNumber: string;
+  gender: string;
+  birthday: Date;
+  imagePath: string;
+
+  [key:string]:any;
+}
 
 @Component({
   selector: 'nz-input-select-staff',
@@ -52,7 +70,7 @@ export class NzInputSelectStaffComponent implements ControlValueAccessor, OnInit
   _disabled = false;
   _value = model();
 
-  private service = inject(NzInputSelectStaffService);
+  private http = inject(HttpClient);
 
   constructor(@Self()  @Optional() private ngControl: NgControl) {
     if (this.ngControl) {
@@ -85,12 +103,16 @@ export class NzInputSelectStaffComponent implements ControlValueAccessor, OnInit
   getStaffList(): void {
     const params = {isEnabled: true};
 
-    this.service
-         .getList(params)
-         .subscribe(
+    const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
+    const options = getHttpOptions({isEnabled: true});
+
+    this.http.get<ResponseList<Staff>>(url, options).pipe(
+          //catchError(this.handleError<ResponseList<Staff>>('getList', undefined))
+        )
+        .subscribe(
           (model: ResponseList<Staff>) => {
             this._list = model.data;
           }
-      );
+        );
   }
 }

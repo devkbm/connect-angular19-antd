@@ -5,10 +5,25 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModeType, NzSelectModule } from 'ng-zorro-antd/select';
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { NzInputSelectDeptModel } from './nz-input-select-dept.model';
+
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface NzInputSelectDeptModel {
+  deptId: string;
+  deptCode: string;
+  parentDeptCode: string;
+  deptNameKorean: string;
+  deptAbbreviationKorean: string;
+  deptNameEnglish: string;
+  deptAbbreviationEnglish: string;
+  fromDate: Date;
+  toDate: Date;
+  seq: number;
+  comment: string;
+  [key:string]:any;
+}
 
 @Component({
   selector: 'nz-input-select-dept',

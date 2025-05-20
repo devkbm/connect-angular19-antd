@@ -3,6 +3,12 @@ import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 
 import { NzSelectModeType, NzSelectModule } from 'ng-zorro-antd/select';
 
+export interface HtmlSelectOption {
+  label: string;
+  value: string | number;
+  [key: string]: any;
+}
+
 @Component({
   selector: 'nz-input-select',
   imports: [FormsModule, NzSelectModule],
@@ -19,7 +25,7 @@ import { NzSelectModeType, NzSelectModule } from 'ng-zorro-antd/select';
     @for (option of options(); track option[opt_value()]) {
       <nz-option
         [nzLabel]="custom_label ? custom_label(option, $index) : option[opt_label()]"
-        [nzValue]="option[opt_value()]">asf
+        [nzValue]="option[opt_value()]">
       </nz-option>
     }
     </nz-select>
