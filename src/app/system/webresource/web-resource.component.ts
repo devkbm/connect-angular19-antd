@@ -14,7 +14,6 @@ import { WebResourceFormDrawerComponent } from './web-resource-form-drawer.compo
 
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
-import { ButtonTemplate, NzButtonsComponent } from 'src/app/third-party/ng-zorro/nz-buttons/nz-buttons.component';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -32,7 +31,6 @@ import { WebResourceSearchComponent } from './web-resource-search.component';
     NzFormModule,
     NzSelectModule,
     NzInputModule,
-    NzButtonsComponent,
     NzPageHeaderCustomComponent,
     NzSearchAreaComponent,
     WebResourceGridComponent,

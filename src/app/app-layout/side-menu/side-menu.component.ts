@@ -1,6 +1,7 @@
 import { Component, inject, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { NzMenuModeType, NzMenuModule, NzMenuThemeType } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -8,9 +9,11 @@ import { NzImageModule } from 'ng-zorro-antd/image';
 
 import { MenuHierarchy } from '../app-layout.model';
 
-import { AppLayoutService } from '../app-layout.service';
-import { SessionManager } from '../../core/session-manager';
-import { ResponseList } from '../../core/model/response-list';
+import { SessionManager } from 'src/app/core/session-manager';
+import { ResponseList } from 'src/app/core/model/response-list';
+
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
   selector: 'app-side-menu',
@@ -100,7 +103,7 @@ import { ResponseList } from '../../core/model/response-list';
 export class SideMenuComponent {
 
   private router = inject(Router);
-  private service = inject(AppLayoutService);
+  private http = inject(HttpClient);
 
   menuInfo: {theme: NzMenuThemeType, mode: NzMenuModeType, inline_indent: number, isCollapsed: boolean, menuItems: MenuHierarchy[]} = {
     theme: 'dark',
@@ -132,8 +135,13 @@ export class SideMenuComponent {
 
   getMenuList(menuGroupCode: string): void {
 
-    this.service
-        .getUserMenuHierarchy(SessionManager.getUserId() as string, menuGroupCode)
+    const userId = SessionManager.getUserId() as string;
+    const url =  GlobalProperty.serverUrl + `/api/system/menuhierarchy/${userId}/${menuGroupCode}`;
+    const options = getHttpOptions();
+
+    this.http.get<ResponseList<MenuHierarchy>>(url, options).pipe(
+          // catchError(this.handleError<ResponseObject<BizCode>>('get', undefined))
+        )
         .subscribe(
           (model: ResponseList<MenuHierarchy>) => {
             this.menuInfo.menuItems = model.data;

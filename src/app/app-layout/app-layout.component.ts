@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { UserSessionService } from 'src/app/core/service/user-session.service';
 import { NotifyService } from 'src/app/core/service/notify.service';
-import { AppLayoutService } from './app-layout.service';
+
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -34,8 +34,149 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
     UserProfileComponent,
     SideMenuComponent
  ],
-  templateUrl: './app-layout.component.html',
-  styleUrls: ['./app-layout.component.css']
+  template: `
+<nz-layout>
+
+  <nz-sider
+    class="sidebar"
+    nzCollapsible
+    [(nzCollapsed)]="sideMenu.isCollapsed"
+    [nzCollapsedWidth]="0"
+    [nzWidth]="200"
+    [nzTrigger]="triggerTemplate">
+      <app-side-menu class="sidebar" [menuGroupCode]="sideMenu.menuGroupCode" [menuUrl]="sideMenu.url">
+      </app-side-menu>
+  </nz-sider>
+
+  <nz-layout>
+    <nz-header class="header">
+      <span nz-icon class="collapse-icon" [nzType]="sideMenu.isCollapsed ? 'menu-unfold' : 'menu-fold'" (click)="sideMenu.isCollapsed=!sideMenu.isCollapsed"></span>
+
+      <nz-select
+        class="sidemenugroup"
+        nzShowSearch
+        [(ngModel)]="menuGroupInfo.selectedId"
+        (ngModelChange)="moveToMenuGroupUrl($event)">
+          @for (menuGroup of menuGroupInfo.list; track menuGroup.menuGroupCode) {
+            <nz-option
+              [nzValue]="menuGroup.menuGroupCode"
+              [nzLabel]="menuGroup.menuGroupName">
+            </nz-option>
+          }
+      </nz-select>
+
+      <button (click)="test()">ddd</button>
+      <button (click)="logout()">logout</button>
+
+      <nz-avatar class="avatar" nzShape="square" [nzSize]='48' [nzSrc]="profileAvatarSrc" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          프로필 정보
+          <app-user-profile></app-user-profile>
+        </nz-dropdown-menu>
+      </nz-avatar>
+    </nz-header>
+
+
+    <nz-content class="main-content">
+      <router-outlet></router-outlet>
+    </nz-content>
+
+    <!--
+    <div class="footer">
+      {{footerMessage}}
+    </div>
+    -->
+  </nz-layout>
+</nz-layout>
+  `,
+  styles: `
+.logo {
+  display: flex;
+  /*위에서 아래로 수직 배치*/
+  flex-direction: column;
+  /*중앙정렬*/
+  justify-content: center;
+  text-align: center;
+  width: 200px;
+  height: 64px;
+
+  background-color: darkslategray;
+  color: white;
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 0.6;
+  font-family: 'Bangers', cursive;
+  letter-spacing: 5px;
+  text-shadow: 5px 2px #222324, 2px 4px #222324, 3px 5px #222324;
+}
+
+.sidebar {
+  background: black;
+  height: calc(100vh - 64px);
+  /* text 드래그 막기 */
+  -webkit-touch-callout: none;  /* iOS Safari */
+  -webkit-user-select: none;    /* Safari */
+  -khtml-user-select: none;     /* Konqueror HTML */
+  -moz-user-select: none;       /* Old versions of Firefox */
+  -ms-user-select: none;        /* Internet Explorer/Edge */
+  user-select: none;            /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+.header {
+  height: var(--app-header-height);
+  padding: 0;
+  margin: 0;
+  align-content: center;
+  vertical-align: middle;
+}
+
+.collapse-icon {
+  margin-top: 16px;
+  margin-left: 5px;
+  font-size: 24px;
+  color:rgb(185, 173, 159);
+  vertical-align: top;
+}
+
+.sidemenugroup {
+  width: 150px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.avatar {
+  float: right;
+  margin-top: 8px;
+  margin-right: 20px;
+  vertical-align: top;
+}
+
+.main-content {
+  margin-top: var(--app-content-margin-height);
+  margin-right: 12px;
+  margin-bottom: 0px;
+  margin-left: 12px;
+  background-color: black;
+  /* 헤더, 본문 margin, 푸터를 제외한 높이로 설정 */
+  height: calc(100vh - (var(--app-header-height) + var(--app-content-margin-height) + var(--app-footer-height)));
+  width: auto;
+  /*overflow-y: hidden;*/
+}
+
+.footer {
+  position: sticky;
+  margin: 0px;
+  height: var(--app-footer-height);
+  text-align: center;
+  vertical-align: middle;
+  background-color: black;
+}
+
+.menu {
+  height: 100%;
+}
+
+  `
 })
 export class AppLayoutComponent implements OnInit  {
 
@@ -55,7 +196,6 @@ export class AppLayoutComponent implements OnInit  {
 
   private notifyService = inject(NotifyService);
   private sessionService = inject(UserSessionService);
-  // private service = inject(AppLayoutService);
   private router = inject(Router);
   private http = inject(HttpClient);
 

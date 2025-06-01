@@ -5,9 +5,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ShapeComponent } from "src/app/core/app/shape.component";
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
 
+import { UesrSearchComponent } from './uesr-search.component';
 import { UserGridComponent } from './user-grid.component';
 import { UserFormDrawerComponent } from './user-form-drawer.component';
 import { User } from './user.model';
@@ -19,10 +20,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
-import { NzButtonExcelUploadComponent } from "src/app/third-party/ng-zorro/nz-button-excel-upload/nz-button-excel-upload.component";
-import { UesrSearchComponent } from './uesr-search.component';
 
 @Component({
   selector: 'app-user',
@@ -39,7 +39,6 @@ import { UesrSearchComponent } from './uesr-search.component';
     NzPopconfirmModule,
     NzPageHeaderCustomComponent,
     NzSearchAreaComponent,
-    NzButtonExcelUploadComponent,
     UserGridComponent,
     UserFormDrawerComponent,
     ShapeComponent,
@@ -58,44 +57,6 @@ import { UesrSearchComponent } from './uesr-search.component';
       (deleteForm)="deleteUser()"
     >
     </app-uesr-search>
-    <!--
-    <div nz-row>
-      <div nz-col [nzSpan]="12">
-        <nz-input-group nzSearch [nzAddOnBefore]="addOnBeforeTemplate" [nzSuffix]="suffixIconSearch">
-          <ng-template #addOnBeforeTemplate>
-            <nz-select [(ngModel)]="query.user.key">
-              @for (option of query.user.list; track option.value) {
-              <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
-              }
-            </nz-select>
-          </ng-template>
-          <input type="text" [(ngModel)]="query.user.value" nz-input placeholder="input search text" (keyup.enter)="getUserList()">
-          <ng-template #suffixIconSearch>
-            <span nz-icon nzType="search"></span>
-          </ng-template>
-        </nz-input-group>
-      </div>
-
-      <div nz-col [nzSpan]="12" style="text-align: right;">
-        <app-nz-button-excel-upload [urn]="'/api/system/user-excel'">
-        </app-nz-button-excel-upload>
-
-        <button nz-button (click)="getUserList()">
-          <span nz-icon nzType="search"></span>조회
-        </button>
-        <nz-divider nzType="vertical"></nz-divider>
-        <button nz-button (click)="newForm()">
-          <span nz-icon nzType="form" nzTheme="outline"></span>신규
-        </button>
-        <nz-divider nzType="vertical"></nz-divider>
-        <button nz-button nzDanger="true"
-          nz-popconfirm nzPopconfirmTitle="삭제하시겠습니까?"
-          (nzOnConfirm)="deleteUser()" (nzOnCancel)="false">
-            <span nz-icon nzType="delete" nzTheme="outline"></span>삭제
-        </button>
-      </div>
-    </div>
-    -->
   </app-nz-search-area>
 </ng-template>
 
