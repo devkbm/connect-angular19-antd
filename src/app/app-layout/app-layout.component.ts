@@ -64,9 +64,8 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
             </nz-option>
           }
       </nz-select>
-
-      <button (click)="test()">ddd</button>
-      <button (click)="logout()">logout</button>
+      
+      <button (click)="test()">ddd</button>            
 
       <nz-avatar class="avatar" nzShape="square" [nzSize]='48' [nzSrc]="profileAvatarSrc" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -180,7 +179,7 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
 })
 export class AppLayoutComponent implements OnInit  {
 
-  profileAvatarSrc: string = '';
+  profileAvatarSrc: string | undefined;
 
   menuGroupInfo: {list: {menuGroupCode: string, menuGroupName: string, menuGroupUrl: string}[], selectedId: string} = {
     list: [],
@@ -245,7 +244,7 @@ export class AppLayoutComponent implements OnInit  {
     const profilePictureUrl: string | null = this.sessionService.getAvartarImageString();
     if (profilePictureUrl) {
       this.profileAvatarSrc = profilePictureUrl as string;
-    }
+    } 
   }
 
   getMenuGroupUrl(menuGroupCode: string) {
