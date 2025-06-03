@@ -61,17 +61,26 @@ import { ResponseList } from 'src/app/core/model/response-list';
         <nz-icon nzType="edit" />
       </ng-template>
       <ng-template #actionEllipsis>
-        <button 
-          nz-button          
+        <!--
+        <button
+          nz-button
           nzType="text"
           nz-popconfirm
           nzPopconfirmTitle="로그아웃 하시겠습니까?"
           (nzOnConfirm)="logout()"
           (nzOnCancel)="false"
-          nzPopconfirmPlacement="bottomRight"        
+          nzPopconfirmPlacement="bottomRight"
           >
           <nz-icon nzType="logout"/>
-        </button>        
+        </button>
+-->
+        <nz-icon nzType="logout"
+          nz-popconfirm
+          nzPopconfirmTitle="로그아웃 하시겠습니까?"
+          (nzOnConfirm)="logout()"
+          (nzOnCancel)="false"
+          nzPopconfirmPlacement="bottomRight"
+          />
       </ng-template>
 
     </div>
@@ -79,7 +88,8 @@ import { ResponseList } from 'src/app/core/model/response-list';
   styles: [`
     .card {
       width: 300px;
-      height: 147px;
+      //height: 147px;
+      height: calc(100% - 22px);
       background-color: green;
       border: 1px solid rgb(232, 232, 232);
       box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);

@@ -64,8 +64,8 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
             </nz-option>
           }
       </nz-select>
-      
-      <button (click)="test()">ddd</button>            
+
+      <button (click)="test()">ddd</button>
 
       <nz-avatar class="avatar" nzShape="square" [nzSize]='48' [nzSrc]="profileAvatarSrc" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -125,8 +125,8 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
   height: var(--app-header-height);
   padding: 0;
   margin: 0;
-  align-content: center;
-  vertical-align: middle;
+  //align-content: center;
+  //vertical-align: text-top;
 }
 
 .collapse-icon {
@@ -139,8 +139,10 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
 
 .sidemenugroup {
   width: 150px;
+  padding-top: 12px;
   margin-right: 10px;
   margin-left: 10px;
+  vertical-align: top;
 }
 
 .avatar {
@@ -244,7 +246,7 @@ export class AppLayoutComponent implements OnInit  {
     const profilePictureUrl: string | null = this.sessionService.getAvartarImageString();
     if (profilePictureUrl) {
       this.profileAvatarSrc = profilePictureUrl as string;
-    } 
+    }
   }
 
   getMenuGroupUrl(menuGroupCode: string) {
