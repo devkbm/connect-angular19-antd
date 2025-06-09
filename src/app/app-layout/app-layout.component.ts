@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { UserSessionService } from 'src/app/core/service/user-session.service';
 import { NotifyService } from 'src/app/core/service/notify.service';
@@ -198,12 +198,17 @@ export class AppLayoutComponent implements OnInit  {
   private notifyService = inject(NotifyService);
   private sessionService = inject(UserSessionService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
 
   ngOnInit(): void {
     this.notifyService.currentMessage.subscribe(message => this.footerMessage = message);
+    console.log(this.router.url);
 
-    this.setInitMenuGroup();
+    if (this.router.url !== '/profile/edit') {
+      this.setInitMenuGroup();
+    }
+
     this.setAvatar();
   }
 
