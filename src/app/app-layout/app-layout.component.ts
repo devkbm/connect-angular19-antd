@@ -205,11 +205,22 @@ export class AppLayoutComponent implements OnInit  {
     this.notifyService.currentMessage.subscribe(message => this.footerMessage = message);
     console.log(this.router.url);
 
+    this.setMenuGroup();
+
     if (this.router.url !== '/profile/edit') {
       this.setInitMenuGroup();
     }
 
     this.setAvatar();
+  }
+
+  setMenuGroup() {
+    const stringMenuGroupList = sessionStorage.getItem('menuGroupList') as string;
+    this.menuGroupInfo.list = JSON.parse(stringMenuGroupList);
+
+    const sessionMenuGroup    = sessionStorage.getItem('selectedMenuGroup') as string;
+    this.menuGroupInfo.selectedId = sessionMenuGroup;
+    this.sideMenu.menuGroupCode = sessionMenuGroup;
   }
 
   /**
