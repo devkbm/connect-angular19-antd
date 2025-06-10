@@ -109,10 +109,16 @@ export class UserProfileFormComponent {
       return;
     }
 
+    const val = {
+      userId: this.fg.controls.userId.value,
+      beforePassword: this.fg.controls.beforePassword.value,
+      afterPassword: this.fg.controls.afterPassword.value
+    }
+
     const url =  GlobalProperty.serverUrl + `/api/system/user/${this.fg.controls.userId.value}/changepassword`;
     const options = getHttpOptions();
 
-    this.http.post<ResponseObject<boolean>>(url, this.fg.getRawValue(), options).pipe(
+    this.http.post<ResponseObject<boolean>>(url, val, options).pipe(
           //catchError(this.handleError<ResponseObject<BizCode>>('save', undefined))
         )
         .subscribe(
