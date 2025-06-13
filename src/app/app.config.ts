@@ -1,5 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withDebugTracing } from '@angular/router';
 
 import { registerLocaleData } from '@angular/common';
 import ko from '@angular/common/locales/ko';
@@ -22,7 +22,10 @@ import { ko_KR, provideNzI18n } from 'ng-zorro-antd/i18n';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes, withComponentInputBinding()),
+    provideRouter(routes,
+    withComponentInputBinding(),
+    //withDebugTracing()
+  ),
     provideHttpClient(withXsrfConfiguration({cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN'}), withInterceptorsFromDi()),
     //importProvidersFrom(FormsModule),
     { provide: HTTP_INTERCEPTORS, useClass: CustomHttpInterceptor, multi: true },

@@ -180,7 +180,7 @@ export class LoginComponent implements OnInit {
           (model: UserToken) => {
           this.setItemSessionStorage(model);
 
-          this.router.navigate([this.FIRST_PAGE_URL]);
+          this.router.navigate([this.FIRST_PAGE_URL, {isForwarding: true}]);
           }
         );
   }

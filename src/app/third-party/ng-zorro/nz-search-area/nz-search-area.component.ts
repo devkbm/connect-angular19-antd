@@ -1,9 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-nz-search-area',
+  imports: [CommonModule],
   template: `
     <div class="search-area" [style.height]="height()">
+      <!--{{height() | json}}-->
       <ng-content></ng-content>
     </div>
   `,
@@ -21,6 +24,6 @@ import { Component, input } from '@angular/core';
   `]
 })
 export class NzSearchAreaComponent {
-  height = input<any>();
+  height = input<any>('46px');
 
 }

@@ -1,6 +1,6 @@
 import { Component, inject, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { NzMenuModeType, NzMenuModule, NzMenuThemeType } from 'ng-zorro-antd/menu';
@@ -14,6 +14,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-side-menu',
@@ -37,7 +38,9 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
                 [nzPaddingLeft]="menu.level * 24"
                 [nzDisabled]="menu.disabled"
                 routerLinkActive="active" [routerLink]="menu.url"
+                (click)="saveSessionUrl()"
               >
+
             <!--(click)="moveToUrl(menu.url)" -->
                 <!-- [nzSelected]="menu.selected" -->
                 <!--<a routerLinkActive="active" [routerLink]="menu.url"></a>-->
@@ -114,7 +117,9 @@ export class SideMenuComponent {
   }
 
   menuGroupCode = input<string>('');
-  menuUrl = input<string>('');
+
+  previousUrl: string = '';
+  currentUrl: string = '';
 
   constructor() {
     effect(() => {
@@ -122,15 +127,27 @@ export class SideMenuComponent {
         this.getMenuList(this.menuGroupCode());
       }
 
-      if (this.menuUrl() !== '') {
-        this.moveToUrl(this.menuUrl());
-      }
     })
   }
 
-  moveToUrl(url: string) {
-    sessionStorage.setItem('selectedMenu', url);
-    this.router.navigate([url]);
+  saveSessionUrl() {
+
+    // 최초 접속한 url 저장되지 않은 오류가 있음, 해결방법 확인 필요
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.previousUrl = this.currentUrl;
+      this.currentUrl = event.url;
+
+      //sessionStorage.setItem('lastVisitUrl', this.router.url);
+
+      if (this.previousUrl && this.previousUrl !== '/login' && this.previousUrl !== '/home;isForwarding=true') {
+        sessionStorage.setItem('lastVisitUrl', this.previousUrl);
+      }
+
+    });
+
+
   }
 
   getMenuList(menuGroupCode: string): void {

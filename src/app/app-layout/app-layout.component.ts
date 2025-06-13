@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, inject } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
@@ -19,6 +19,7 @@ import { GlobalProperty } from '../core/global-property';
 import { getHttpOptions } from '../core/http/http-utils';
 import { ResponseList } from '../core/model/response-list';
 import { catchError, combineLatest, of, switchMap } from 'rxjs';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-app-layout',
@@ -31,6 +32,7 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
     NzIconModule,
     NzSelectModule,
     NzDropDownModule,
+    NzButtonModule,
     UserProfileComponent,
     SideMenuComponent
  ],
@@ -44,7 +46,7 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
     [nzCollapsedWidth]="0"
     [nzWidth]="200"
     [nzTrigger]="triggerTemplate">
-      <app-side-menu class="sidebar" [menuGroupCode]="sideMenu.menuGroupCode" [menuUrl]="sideMenu.url">
+      <app-side-menu class="sidebar" [menuGroupCode]="sideMenu.menuGroupCode">
       </app-side-menu>
   </nz-sider>
 
@@ -65,7 +67,8 @@ import { catchError, combineLatest, of, switchMap } from 'rxjs';
           }
       </nz-select>
 
-      <button (click)="test()">ddd</button>
+      <button nz-button (click)="test()">ddd</button>
+      <button nz-button (click)="test2()">이동</button>
 
       <nz-avatar class="avatar" nzShape="square" [nzSize]='48' [nzSrc]="profileAvatarSrc" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -193,7 +196,9 @@ export class AppLayoutComponent implements OnInit  {
 
   footerMessage: string = '';
 
-  sideMenu : {menuGroupCode: string, url: string, isCollapsed: boolean} = {menuGroupCode: '', url: '', isCollapsed: false};
+  sideMenu : {menuGroupCode: string, isCollapsed: boolean} = {menuGroupCode: '', isCollapsed: false};
+
+  isForwarding = input<boolean>(false);
 
   private notifyService = inject(NotifyService);
   private sessionService = inject(UserSessionService);
@@ -202,63 +207,44 @@ export class AppLayoutComponent implements OnInit  {
   private http = inject(HttpClient);
 
   ngOnInit(): void {
+    this.setAvatar();
+
     this.notifyService.currentMessage.subscribe(message => this.footerMessage = message);
-    console.log(this.router.url);
-
-    /*
-    this.setMenuGroup();
-
-    if (this.router.url !== '/profile/edit') {
-      this.setInitMenuGroup();
-    }
-    */
 
     this.setInitMenuGroup();
-    this.setAvatar();
-  }
 
-  setMenuGroup() {
-    const stringMenuGroupList = sessionStorage.getItem('menuGroupList') as string;
-    this.menuGroupInfo.list = JSON.parse(stringMenuGroupList);
+    console.log(this.menuGroupInfo.list);
+    console.log(this.isForwarding());
+    console.log(this.router.url);
+    console.log(this.router.url.split(';')[0].split('/')[1]);
+    console.log(this.getMenuGroupCode(this.router.url.split(';')[0].split('/')[1]));
 
-    const sessionMenuGroup    = sessionStorage.getItem('selectedMenuGroup') as string;
-    this.menuGroupInfo.selectedId = sessionMenuGroup;
-    this.sideMenu.menuGroupCode = sessionMenuGroup;
-  }
+    if (this.isForwarding()) {
+      const sessionMenuGroup  = sessionStorage.getItem('selectedMenuGroup');
 
-  /**
-   * 초기 메뉴 그룹을 설정한다.
-   */
-  setInitMenuGroup(): void {
-    const stringMenuGroupList = sessionStorage.getItem('menuGroupList') as string;
-    const sessionMenuGroup    = sessionStorage.getItem('selectedMenuGroup') as string;
+      if (sessionMenuGroup !== 'null' && sessionMenuGroup) {
+        this.menuGroupInfo.selectedId = sessionMenuGroup;
+        this.sideMenu.menuGroupCode = sessionMenuGroup;
+      } else {
+        this.menuGroupInfo.selectedId = this.menuGroupInfo.list[0].menuGroupCode;
+        this.sideMenu.menuGroupCode = this.menuGroupInfo.list[0].menuGroupCode;
+      }
 
-    this.menuGroupInfo.list = JSON.parse(stringMenuGroupList);
-
-    if (sessionMenuGroup) {
-      this.menuGroupInfo.selectedId = sessionMenuGroup;
-      this.sideMenu.menuGroupCode = sessionMenuGroup;
-
-      this.moveToMenuGroupUrl(this.sideMenu.menuGroupCode);
-      //const LAST_VISIT_URL = sessionStorage.getItem('selectedMenu') as string;
-      //this.moveToUrl(LAST_VISIT_URL);
+      const lastVisitUrl    = sessionStorage.getItem('lastVisitUrl');
+      if (lastVisitUrl !== 'null' && lastVisitUrl) {
+        this.router.navigate([lastVisitUrl]);
+      } else {
+        this.moveToMenuGroupUrl(this.menuGroupInfo.selectedId);
+      }
 
     } else {
-      this.menuGroupInfo.selectedId = this.menuGroupInfo.list[0].menuGroupCode;
-      this.moveToMenuGroupUrl(this.menuGroupInfo.selectedId);
+      const menuGroupUrl = this.router.url.split(';')[0].split('/')[1];
+      const menuGroupCode = this.getMenuGroupCode(menuGroupUrl);
+
+      this.menuGroupInfo.selectedId = menuGroupCode;
+      this.sideMenu.menuGroupCode = menuGroupCode;
     }
-  }
 
-  moveToMenuGroupUrl(menuGroupCode: string) {
-    sessionStorage.setItem('selectedMenuGroup', menuGroupCode);
-    this.sideMenu.menuGroupCode = menuGroupCode;
-
-    this.router.navigate([this.getMenuGroupUrl(menuGroupCode)]);
-  }
-
-  moveToUrl(url: string) {
-    this.sideMenu.url = url;
-    this.router.navigate([url]);
   }
 
   setAvatar(): void {
@@ -266,6 +252,31 @@ export class AppLayoutComponent implements OnInit  {
     if (profilePictureUrl) {
       this.profileAvatarSrc = profilePictureUrl as string;
     }
+  }
+
+  /**
+   * 상단 메뉴그룹 콤보박스 데이터를 설정한다.
+   */
+  setInitMenuGroup() {
+    const stringMenuGroupList = sessionStorage.getItem('menuGroupList') as string;
+    this.menuGroupInfo.list   = JSON.parse(stringMenuGroupList);
+  }
+
+  getMenuGroupCode(url: string) {
+    for (const menuGroup of this.menuGroupInfo.list) {
+      if (menuGroup.menuGroupUrl === url) {
+        return menuGroup.menuGroupCode;
+      }
+    }
+    return '';
+  }
+
+  moveToMenuGroupUrl(menuGroupCode: string) {
+    this.menuGroupInfo.selectedId = menuGroupCode;
+    this.sideMenu.menuGroupCode = menuGroupCode;
+    sessionStorage.setItem('selectedMenuGroup', menuGroupCode);
+
+    this.router.navigate([this.getMenuGroupUrl(menuGroupCode)]);
   }
 
   getMenuGroupUrl(menuGroupCode: string) {
@@ -277,17 +288,8 @@ export class AppLayoutComponent implements OnInit  {
     return '';
   }
 
-  test(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/user/auth1`;
-    const options = getHttpOptions();
-
-    this.http.get<ResponseList<any>>(url, options).pipe(
-      //catchError((err) => Observable.throw(err))
-    ).subscribe(
-      (model: ResponseList<any>) => {
-        console.log(model);
-      }
-    );
+  moveToUrl(url: string) {
+    this.router.navigate([url]);
   }
 
   logout() {
@@ -343,6 +345,27 @@ export class AppLayoutComponent implements OnInit  {
         //this.router.navigate(['/login']);
       }
     );
+  }
+
+
+  test(): void {
+    const url = GlobalProperty.serverUrl + `/api/system/user/auth1`;
+    const options = getHttpOptions();
+
+    this.http.get<ResponseList<any>>(url, options).pipe(
+      //catchError((err) => Observable.throw(err))
+    ).subscribe(
+      (model: ResponseList<any>) => {
+        console.log(model);
+      }
+    );
+  }
+
+  test2(): void {
+    sessionStorage.setItem('selectedMenuGroup', 'ENV');
+    sessionStorage.setItem('lastVisitUrl', '/profile/edit');
+
+    this.router.navigate(['/profile/edit']);
   }
 
 }
