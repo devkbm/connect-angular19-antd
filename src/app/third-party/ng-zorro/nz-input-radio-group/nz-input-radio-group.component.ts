@@ -1,5 +1,5 @@
+import { Component, Input, TemplateRef, OnInit, viewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Self, Optional, Component, Input, TemplateRef, OnInit, viewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgModel, NgControl, FormsModule } from '@angular/forms';
 import { NzFormControlComponent, NzFormModule } from 'ng-zorro-antd/form';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
@@ -44,7 +44,8 @@ export class NzInputRadioGroupComponent implements ControlValueAccessor, OnInit 
   onChange!: (value: string) => void;
   onTouched!: () => void;
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

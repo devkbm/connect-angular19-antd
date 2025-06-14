@@ -6,7 +6,6 @@ import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-
 import { WebResource } from './web-resource.model';
 import { ResouceTypeEnum } from './resource-type-enum';
 
@@ -131,13 +130,13 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
     description   : new FormControl<string | null>(null)
   });
 
-  formInitId = input<string>('');
+  formDataId = input<string>('');
 
   constructor() {
 
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId());
+      if (this.formDataId()) {
+        this.get(this.formDataId());
       }
     })
   }

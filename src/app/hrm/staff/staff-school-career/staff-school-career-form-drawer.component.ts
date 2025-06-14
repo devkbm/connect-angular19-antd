@@ -19,7 +19,7 @@ import { StaffSchoolCareerFormComponent } from './staff-school-career-form.compo
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-staff-school-career-form *nzDrawerContent
-          [formInitId]="drawer().formInitId"
+          [formDataId]="drawer().formDataId"
           [staff]="selectedStaff()"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
@@ -43,7 +43,7 @@ import { StaffSchoolCareerFormComponent } from './staff-school-career-form.compo
 })
 export class StaffSchoolCareerFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, formInitId: any}>();
+  drawer = input.required<{visible: boolean, formDataId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<StaffSchoolCareerFormComponent>(StaffSchoolCareerFormComponent);

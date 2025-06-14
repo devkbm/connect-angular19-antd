@@ -1,4 +1,4 @@
-import { Self, Optional, Component, Input, OnInit, input, model, inject } from '@angular/core';
+import { Component, Input, OnInit, input, model, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
@@ -72,7 +72,9 @@ export class NzInputSelectStaffComponent implements ControlValueAccessor, OnInit
 
   private http = inject(HttpClient);
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

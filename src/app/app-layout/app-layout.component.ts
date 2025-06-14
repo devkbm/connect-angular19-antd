@@ -133,7 +133,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 }
 
 .collapse-icon {
-  margin-top: 16px;
+  margin-top: 20px;
   margin-left: 5px;
   font-size: 24px;
   color:rgb(185, 173, 159);
@@ -142,10 +142,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 
 .sidemenugroup {
   width: 150px;
-  padding-top: 12px;
+  //padding-top: 12px;
   margin-right: 10px;
   margin-left: 10px;
-  vertical-align: top;
+  //vertical-align: top;
 }
 
 .avatar {

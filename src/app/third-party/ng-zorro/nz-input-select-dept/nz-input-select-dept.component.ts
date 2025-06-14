@@ -1,4 +1,4 @@
-import { Component, Self, Optional, OnInit, input, model, inject } from '@angular/core';
+import { Component, input, model, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -67,7 +67,9 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor {
 
   private http = inject(HttpClient);
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

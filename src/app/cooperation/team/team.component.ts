@@ -60,7 +60,7 @@ import { TeamFormComponent } from './team-form.component';
     (nzOnClose)="drawer.team.visible = false">
 
     <app-team-form *nzDrawerContent
-      [formInitId]="drawer.team.formInitId"
+      [formDataId]="drawer.team.formDataId"
       (formSaved)="getGridList('d')"
       (formDeleted)="getGridList('d')"
       (formClosed)="drawer.team.visible = false">
@@ -119,9 +119,9 @@ export class TeamComponent implements OnInit {
   grid = viewChild.required(TeamGridComponent);
 
   drawer: {
-    team: { visible: boolean, formInitId: string },
+    team: { visible: boolean, formDataId: string },
   } = {
-    team: { visible: false, formInitId: '' }
+    team: { visible: false, formDataId: '' }
   }
 
   gridList: TeamModel[] = [];
@@ -131,12 +131,12 @@ export class TeamComponent implements OnInit {
   }
 
   newTeam() {
-    this.drawer.team.formInitId = '';
+    this.drawer.team.formDataId = '';
     this.drawer.team.visible = true;
   }
 
   editTeam(team: any) {
-    this.drawer.team.formInitId = team.teamId;
+    this.drawer.team.formDataId = team.teamId;
     this.drawer.team.visible = true;
   }
 

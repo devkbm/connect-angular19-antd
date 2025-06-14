@@ -1,4 +1,4 @@
-import { Component, Self, Optional, input, model, inject, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { Component, input, model, inject, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -70,7 +70,9 @@ export class NzInputSelectCompanyComponent implements ControlValueAccessor {
 
   private http = inject(HttpClient);
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

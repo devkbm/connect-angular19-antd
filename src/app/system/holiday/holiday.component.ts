@@ -166,9 +166,9 @@ export class HolidayComponent implements AfterViewInit {
   }
 
   drawer: {
-    holiday: { visible: boolean, formInitId: any }
+    holiday: { visible: boolean, formDataId: any }
   } = {
-    holiday: { visible: false, formInitId: null }
+    holiday: { visible: false, formDataId: null }
   }
 
   tab: {
@@ -212,12 +212,12 @@ export class HolidayComponent implements AfterViewInit {
   newHoliday2(selectInfo: DateSelectArg) {
     console.log(selectInfo);
 
-    this.drawer.holiday.formInitId = selectInfo.startStr;
+    this.drawer.holiday.formDataId = selectInfo.startStr;
     this.openDrawer();
   }
 
   newHoliday(): void {
-    this.drawer.holiday.formInitId = null;
+    this.drawer.holiday.formDataId = null;
     this.openDrawer();
   }
 
@@ -246,18 +246,18 @@ export class HolidayComponent implements AfterViewInit {
   }
 
   holidayGridRowClicked(item: any): void {
-    this.drawer.holiday.formInitId = item.date;
+    this.drawer.holiday.formDataId = item.date;
   }
 
   edit(item: any): void {
-    this.drawer.holiday.formInitId = item.date;
+    this.drawer.holiday.formDataId = item.date;
     this.openDrawer();
   }
 
   navigatorSelectChanged(params: any) {
     //console.log(params);
     //console.log(params.start.value as Date);
-    this.drawer.holiday.formInitId = params.start.value as Date;
+    this.drawer.holiday.formDataId = params.start.value as Date;
     this.openDrawer();
   }
 }

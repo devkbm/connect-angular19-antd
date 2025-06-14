@@ -165,12 +165,12 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
     comment   : new FormControl<string | null>(null)
   });
 
-  formInitId = input<string>('');
+  formDataId = input<string>('');
 
   constructor() {
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId());
+      if (this.formDataId()) {
+        this.get(this.formDataId());
       }
     });
   }
@@ -180,7 +180,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.formInitId()) {
+    if (this.formDataId()) {
     } else {
       this.newForm();
     }

@@ -56,7 +56,7 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
 
       @defer {
       <app-work-calendar-view class="calendar"
-        [fkWorkCalendar]="drawer.workGroup.formInitId"
+        [fkWorkCalendar]="drawer.workGroup.formDataId"
         (itemSelected)="editSchedule($event)"
         (newDateSelected)="newScheduleByDateSelect($event)"
         (eventDataChanged)="eventDateChanged($event)"
@@ -117,11 +117,11 @@ export class WorkCalendarComponent implements AfterViewInit {
   eventData: any[] = [];
 
   drawer: {
-    workGroup: { visible: boolean, formInitId: number },
-    schedule: { visible: boolean, formInitId: number }
+    workGroup: { visible: boolean, formDataId: number },
+    schedule: { visible: boolean, formDataId: number }
   } = {
-    workGroup: { visible: false, formInitId: -1 },
-    schedule: { visible: false, formInitId: -1 }
+    workGroup: { visible: false, formDataId: -1 },
+    schedule: { visible: false, formDataId: -1 }
   }
 
   ngAfterViewInit(): void {
@@ -137,7 +137,7 @@ export class WorkCalendarComponent implements AfterViewInit {
     this.closeWorkGroupDrawer();
     this.closeScheduleDrawer();
 
-    this.workCalendar().fkWorkCalendar = this.drawer.workGroup.formInitId;
+    this.workCalendar().fkWorkCalendar = this.drawer.workGroup.formDataId;
     this.workCalendar().getWorkScheduleList();
   }
 
@@ -148,7 +148,7 @@ export class WorkCalendarComponent implements AfterViewInit {
   closeScheduleDrawer() {
     this.drawer.schedule.visible = false;
 
-    this.workCalendar().fkWorkCalendar = this.drawer.workGroup.formInitId;
+    this.workCalendar().fkWorkCalendar = this.drawer.workGroup.formDataId;
     this.workCalendar().getWorkScheduleList();
   }
 
@@ -161,12 +161,12 @@ export class WorkCalendarComponent implements AfterViewInit {
   }
 
   newWorkGroup(): void {
-    this.drawer.workGroup.formInitId = -1;
+    this.drawer.workGroup.formDataId = -1;
     this.openWorkGroupDrawer();
   }
 
   modifyWorkGroup(workGroup: any): void {
-    this.drawer.workGroup.formInitId = workGroup;
+    this.drawer.workGroup.formDataId = workGroup;
     this.openWorkGroupDrawer();
   }
 
@@ -176,9 +176,9 @@ export class WorkCalendarComponent implements AfterViewInit {
     const today: Date = new Date();
     const from: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), 0);
     const to: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours() + 1, 0);
-    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formInitId, start: from, end: to, allDay: true};
+    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formDataId, start: from, end: to, allDay: true};
 
-    this.drawer.schedule.formInitId = -1;
+    this.drawer.schedule.formDataId = -1;
   }
 
   newScheduleByDateSelect(param: NewDateSelectedArgs) {
@@ -193,21 +193,21 @@ export class WorkCalendarComponent implements AfterViewInit {
     //const to: Date = param.end;
     //to.setDate(to.getDate() -1);
 
-    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formInitId, start: param.start, end: param.end, allDay: param.allDay};
-    this.drawer.schedule.formInitId = -1;
+    this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formDataId, start: param.start, end: param.end, allDay: param.allDay};
+    this.drawer.schedule.formDataId = -1;
 
     this.openScheduleDrawer();
   }
 
   editSchedule(id: any) {
-    this.drawer.schedule.formInitId = id;
+    this.drawer.schedule.formDataId = id;
     this.newScheduleArgs = undefined;
 
     this.openScheduleDrawer();
   }
 
   workGroupSelect(ids: any): void {
-    this.drawer.workGroup.formInitId = ids;
+    this.drawer.workGroup.formDataId = ids;
     this.getScheduleList();
   }
 

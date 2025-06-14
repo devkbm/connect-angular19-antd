@@ -180,7 +180,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
     workCalendarId  : new FormControl<number | null>(null, { validators: [Validators.required] })
   });
 
-  formInitId = input<number>(-1);
+  formDataId = input<number>(-1);
 
   isAllDay = signal<boolean>(false);
 
@@ -242,8 +242,8 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   ngOnInit(): void {
     this.getMyWorkGroupList();
 
-    if (this.formInitId() > 0) {
-      this.get(this.formInitId());
+    if (this.formDataId() > 0) {
+      this.get(this.formDataId());
     }
   }
 

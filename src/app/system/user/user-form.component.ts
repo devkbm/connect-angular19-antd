@@ -216,13 +216,13 @@ export class UserFormComponent implements OnInit {
     roleList: new FormControl<string[] | null>({ value: null, disabled: false }, { validators: Validators.required })
   });
 
-  formInitId = input<string>('');
+  formDataId = input<string>('');
 
   constructor() {
 
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId());
+      if (this.formDataId()) {
+        this.get(this.formDataId());
       }
     })
 

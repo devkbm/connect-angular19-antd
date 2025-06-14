@@ -127,22 +127,22 @@ export class UserComponent implements OnInit {
   }
 
   drawer: {
-    user: { visible: boolean, formInitId: any }
+    user: { visible: boolean, formDataId: any }
   } = {
-    user: { visible: false, formInitId: null }
+    user: { visible: false, formDataId: null }
   }
 
   ngOnInit() {
   }
 
   newForm() {
-    this.drawer.user.formInitId = null;
+    this.drawer.user.formDataId = null;
     this.drawer.user.visible = true;
 
   }
 
   editForm(item: User) {
-    this.drawer.user.formInitId = item.userId;
+    this.drawer.user.formDataId = item.userId;
     this.drawer.user.visible = true;
   }
 
@@ -159,7 +159,7 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser() {
-    const userId: string = this.drawer.user.formInitId;
+    const userId: string = this.drawer.user.formDataId;
     const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
     const options = getHttpOptions();
 
@@ -174,7 +174,7 @@ export class UserComponent implements OnInit {
   }
 
   userGridSelected(params: User) {
-    this.drawer.user.formInitId = params.userId;
+    this.drawer.user.formDataId = params.userId;
   }
 
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, model, Optional, Self, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
@@ -62,7 +62,6 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor {
   private http = inject(HttpClient);
   private ngControl = inject(NgControl, { self: true, optional: true });
 
-  //constructor(@Self()  @Optional() private ngControl: NgControl) {
   constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;

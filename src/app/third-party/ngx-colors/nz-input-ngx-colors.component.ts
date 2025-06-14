@@ -1,4 +1,4 @@
-import { Self, Optional, Component, ElementRef, Input, OnInit, viewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, viewChild, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, FormsModule } from '@angular/forms';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -39,7 +39,9 @@ export class NzInputNgxColorsComponent implements ControlValueAccessor, OnInit {
   onChange!: (value: any) => void;
   onTouched!: () => void;
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

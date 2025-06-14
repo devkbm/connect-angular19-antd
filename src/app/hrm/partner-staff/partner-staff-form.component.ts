@@ -99,12 +99,12 @@ export class PartnerStaffFormComponent {
     workDeptCode                : new FormControl<string | null>(null),
   });
 
-  formInitId = input<string>('');
+  formDataId = input<string>('');
 
   constructor() {
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId());
+      if (this.formDataId()) {
+        this.get(this.formDataId());
       }
     })
   }

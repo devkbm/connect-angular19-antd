@@ -107,7 +107,7 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
       nzTitle="롤 등록"
       (nzOnClose)="closeDrawer('role')">
         <app-role-form #form *nzDrawerContent
-          [formInitId]="drawer.role.formInitId"
+          [formDataId]="drawer.role.formDataId"
           (formSaved)="getRoleList()"
           (formDeleted)="getRoleList()"
           (formClosed)="closeDrawer('role')">
@@ -122,7 +122,7 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
       nzTitle="메뉴그룹 등록"
       (nzOnClose)="drawer.menuGroup.visible = false">
         <app-menu-group-form #menuGroupForm *nzDrawerContent
-          [formInitId]="drawer.menuGroup.formInitId"
+          [formDataId]="drawer.menuGroup.formDataId"
           (formSaved)="getMenuGroupList()"
           (formDeleted)="getMenuGroupList()"
           (formClosed)="drawer.menuGroup.visible = false">
@@ -137,7 +137,7 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
       nzTitle="메뉴 등록"
       (nzOnClose)="drawer.menu.visible = false">
         <app-menu-form #menuForm *nzDrawerContent
-          [formInitId]="drawer.menu.formInitId"
+          [formDataId]="drawer.menu.formDataId"
           (formSaved)="getMenuList()"
           (formDeleted)="getMenuList()"
           (formClosed)="drawer.menu.visible = false">
@@ -216,13 +216,13 @@ export class MenuRoleComponent {
   menuGrid = viewChild.required(MenuGridComponent);
 
   drawer: {
-    menuGroup: { visible: boolean, formInitId: any },
-    menu: { visible: boolean, formInitId: any },
-    role: { visible: boolean, formInitId: any }
+    menuGroup: { visible: boolean, formDataId: any },
+    menu: { visible: boolean, formDataId: any },
+    role: { visible: boolean, formDataId: any }
   } = {
-    menuGroup: { visible: false, formInitId: null },
-    menu: { visible: false, formInitId: null },
-    role: { visible: false, formInitId: null }
+    menuGroup: { visible: false, formDataId: null },
+    menu: { visible: false, formDataId: null },
+    role: { visible: false, formDataId: null }
   }
 
   constructor() {
@@ -295,7 +295,7 @@ export class MenuRoleComponent {
   //#region MenuGroup
   menuGroupClicked(args: any) {
     this.menuGroup.selectedItem = args.menuGroupCode;
-    this.drawer.menuGroup.formInitId = args.menuGroupCode;
+    this.drawer.menuGroup.formDataId = args.menuGroupCode;
     this.role.selectedItem = '';
     this.roleGrid().gridQuery.set({menuGroupCode: this.menuGroup.selectedItem});
 
@@ -303,7 +303,7 @@ export class MenuRoleComponent {
   }
 
   newMenuGroup() {
-    this.drawer.menuGroup.formInitId = null;
+    this.drawer.menuGroup.formDataId = null;
     this.openDrawer('menuGroup');
   }
 
@@ -318,16 +318,16 @@ export class MenuRoleComponent {
   }
 
   menuClicked(args: any) {
-    this.drawer.menu.formInitId = {menuGroupCode: args.menuGroupCode, menuCode: args.menuCode};
+    this.drawer.menu.formDataId = {menuGroupCode: args.menuGroupCode, menuCode: args.menuCode};
   }
 
   newMenu() {
-    this.drawer.role.formInitId = null;
+    this.drawer.role.formDataId = null;
     this.openDrawer('menu');
   }
 
   editMenu(args: any) {
-    this.drawer.menu.formInitId = {menuGroupCode: args.menuGroupCode, menuCode: args.menuCode};
+    this.drawer.menu.formDataId = {menuGroupCode: args.menuGroupCode, menuCode: args.menuCode};
     this.openDrawer('menu');
   }
   //#endregion
@@ -335,11 +335,11 @@ export class MenuRoleComponent {
   //#region Role
   roleClicked(args: any) {
     this.role.selectedItem = args.roleCode;
-    this.drawer.role.formInitId = args.roleCode;
+    this.drawer.role.formDataId = args.roleCode;
   }
 
   newRole() {
-    this.drawer.role.formInitId = null;
+    this.drawer.role.formDataId = null;
     this.openDrawer('role');
   }
 

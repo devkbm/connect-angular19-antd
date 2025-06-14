@@ -20,7 +20,6 @@ import { SessionManager } from 'src/app/core/session-manager';
 
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 
-
 @Component({
   selector: 'app-user-profile-form',
   imports: [
@@ -33,7 +32,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
     NzIconModule,
     NzButtonModule,
     NzFormItemCustomComponent,
-  ],
+],
   template: `
     <form nz-form [formGroup]="fg" nzLayout="vertical">
       <!-- 폼 오류 메시지 템플릿 -->
@@ -45,6 +44,8 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
           기존 코드가 존재합니다.
         }
       </ng-template>
+
+      {{this.fg.value |json}}
 
       <nz-form-item-custom for="userId" label="사용자ID" required="true">
         <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">

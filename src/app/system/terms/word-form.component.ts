@@ -28,7 +28,7 @@ import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-
     NzCrudButtonGroupComponent
   ],
   template: `
-    {{formInitId | json}} - {{fg.getRawValue() | json}} - {{fg.valid}}
+    {{formDataId | json}} - {{fg.getRawValue() | json}} - {{fg.valid}}
     <form nz-form [formGroup]="fg" nzLayout="vertical">
       <!-- 폼 오류 메시지 템플릿 -->
       <ng-template #errorTpl let-control>
@@ -114,11 +114,11 @@ export class WordFormComponent implements OnInit, AfterViewInit, OnChanges {
     comment         : new FormControl<string | null>(null)
   });
 
-  formInitId = input<string>('');
+  formDataId = input<string>('');
 
   ngOnInit() {
-    if (this.formInitId()) {
-      this.get(this.formInitId());
+    if (this.formDataId()) {
+      this.get(this.formDataId());
     } else {
       this.newForm();
     }

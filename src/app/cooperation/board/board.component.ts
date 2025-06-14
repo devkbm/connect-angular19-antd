@@ -81,7 +81,7 @@ export interface TabInfo {
 <nz-tabset [(nzSelectedIndex)]="tabIndex" nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)">
   <nz-tab [nzTitle]="tabTitle">
     <app-post-list
-      [boardId]="drawer.board.formInitId"
+      [boardId]="drawer.board.formDataId"
       (editClicked)="editPost($event)"
       (viewClicked)="viewPost($event)">
     </app-post-list>
@@ -103,7 +103,7 @@ export interface TabInfo {
     (nzOnClose)="drawer.postForm.visible = false">
     <app-post-form #articleForm *nzDrawerContent
       [boardId]="drawer.postForm.boardId"
-      [formInitId]="this.drawer.postForm.formInitId"
+      [formDataId]="this.drawer.postForm.formDataId"
       (formSaved)="getArticleGridData()"
       (formDeleted)="getArticleGridData()"
       (formClosed)="drawer.postForm.visible = false">
@@ -169,12 +169,12 @@ export class BoardComponent implements AfterViewInit {
   postList =  viewChild.required(PostListComponent);
 
   drawer: {
-    board: { visible: boolean, formInitId: any },
-    postForm: { visible: boolean, boardId: string, formInitId: any },
+    board: { visible: boolean, formDataId: any },
+    postForm: { visible: boolean, boardId: string, formDataId: any },
     postView: { visible: boolean, id: any, title: string }
   } = {
-    board: { visible: false, formInitId: null },
-    postForm: { visible: false, boardId: '', formInitId: null },
+    board: { visible: false, formDataId: null },
+    postForm: { visible: false, boardId: '', formDataId: null },
     postView: { visible: false, id: null, title: '' }
   }
 
@@ -204,7 +204,7 @@ export class BoardComponent implements AfterViewInit {
       //console.log(event);
 
       // BoardId가 저장한 게시글의 boardId가 일치하면 재조회
-      if (btoa(this.drawer.board.formInitId) === event.data) {
+      if (btoa(this.drawer.board.formDataId) === event.data) {
         this.getArticleGridData();
       }
     }, false);
@@ -216,7 +216,7 @@ export class BoardComponent implements AfterViewInit {
 
   setBoardSelect(item: any): void {
     this.tabTitle = item.title;
-    this.drawer.board.formInitId = item.key;
+    this.drawer.board.formDataId = item.key;
 
     this.getArticleGridData();
   }
@@ -226,7 +226,7 @@ export class BoardComponent implements AfterViewInit {
     this.drawer.postView.visible = false;
 
     //this.articleGrid().getArticleList(this.drawer.board.initLoadId);
-    this.postList().getList(this.drawer.board.formInitId);
+    this.postList().getList(this.drawer.board.formDataId);
   }
 
   getBoardTree(): void {
@@ -235,7 +235,7 @@ export class BoardComponent implements AfterViewInit {
   }
 
   newPost(): void {
-    if (this.drawer.board.formInitId === null || this.drawer.board.formInitId === undefined)  {
+    if (this.drawer.board.formDataId === null || this.drawer.board.formDataId === undefined)  {
       this.message.create('error', '게시판을 선택해주세요.');
       return;
     }
@@ -251,7 +251,7 @@ export class BoardComponent implements AfterViewInit {
 
   // 게시글 등록 폼 팝업으로 오픈
   newPostPopup() {
-    const boardId = btoa(this.drawer.board.formInitId);
+    const boardId = btoa(this.drawer.board.formDataId);
 
     const url = this.router.serializeUrl(
       this.router.createUrlTree([`/post-write`, boardId])  // /grw/boarda
@@ -262,8 +262,8 @@ export class BoardComponent implements AfterViewInit {
   }
 
   newPostTab() {
-    this.drawer.postForm.boardId = btoa(this.drawer.board.formInitId);
-    this.drawer.postForm.formInitId = null;
+    this.drawer.postForm.boardId = btoa(this.drawer.board.formDataId);
+    this.drawer.postForm.formDataId = null;
     this.drawer.postForm.visible = true;
   }
 
@@ -278,7 +278,7 @@ export class BoardComponent implements AfterViewInit {
   }
 
   editPostPopup(post: PostList) {
-    const boardId = btoa(this.drawer.board.formInitId);
+    const boardId = btoa(this.drawer.board.formDataId);
     const postId = btoa(post.postId);
 
     const url = this.router.serializeUrl(
@@ -291,9 +291,9 @@ export class BoardComponent implements AfterViewInit {
 
   editPostTab(boardId: string, postId: string) {
     this.drawer.postForm.boardId = btoa(boardId);
-    this.drawer.postForm.formInitId = btoa(postId);
+    this.drawer.postForm.formDataId = btoa(postId);
 
-    if (this.drawer.postForm.formInitId === null || this.drawer.postForm.formInitId === undefined) {
+    if (this.drawer.postForm.formDataId === null || this.drawer.postForm.formDataId === undefined) {
       this.message.create('error', '게시글을 선택해주세요.');
       return;
     }

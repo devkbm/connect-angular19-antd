@@ -159,15 +159,15 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
     */
   ];
 
-  formInitId = input<{typeId: string, code: string}>();
+  formDataId = input<{typeId: string, code: string}>();
 
   constructor() {
     effect(() => {
-      if (this.formInitId()) {
-        if (this.formInitId()?.typeId && this.formInitId()?.code) {
-          this.get(this.formInitId()?.typeId!, this.formInitId()?.code!);
-        } else if (this.formInitId()?.typeId) {
-          this.newForm(this.formInitId()?.typeId!);
+      if (this.formDataId()) {
+        if (this.formDataId()?.typeId && this.formDataId()?.code) {
+          this.get(this.formDataId()?.typeId!, this.formDataId()?.code!);
+        } else if (this.formDataId()?.typeId) {
+          this.newForm(this.formDataId()?.typeId!);
         }
       }
     });

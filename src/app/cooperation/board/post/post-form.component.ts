@@ -137,7 +137,7 @@ export class PostFormComponent implements AfterViewInit {
   uploaderParams = '';
 
   boardId = input<string>('');
-  formInitId = input<string>('');
+  formDataId = input<string>('');
 
   formSaved = output<any>();
   formDeleted = output<any>();
@@ -156,9 +156,9 @@ export class PostFormComponent implements AfterViewInit {
   constructor() {
 
     effect(() => {
-      console.log(this.boardId(), this.formInitId());
-      if (this.formInitId()) {
-        this.get(this.formInitId());
+      console.log(this.boardId(), this.formDataId());
+      if (this.formDataId()) {
+        this.get(this.formDataId());
       } else {
         this.newForm(this.boardId());
       }

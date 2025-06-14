@@ -48,7 +48,7 @@ import { NzButtonExcelUploadComponent } from "../../../third-party/ng-zorro/nz-b
       </app-board-tree>
 
       <app-board-form #boardForm
-        [formInitId]="this.drawerBoard.formInitId"
+        [formDataId]="this.drawerBoard.formDataId"
         (formSaved)="getBoardTree()"
         (formDeleted)="getBoardTree()"
         (formClosed)="drawerBoard.visible = false">
@@ -100,9 +100,9 @@ export class BoardManagementComponent implements AfterViewInit {
 
   boardTree = viewChild.required(BoardTreeComponent);
 
-  drawerBoard: { visible: boolean, formInitId: any } = {
+  drawerBoard: { visible: boolean, formDataId: any } = {
     visible: false,
-    formInitId: null
+    formDataId: null
   }
 
   /**
@@ -124,7 +124,7 @@ export class BoardManagementComponent implements AfterViewInit {
   }
 
   newBoard(): void {
-    this.drawerBoard.formInitId = null;
+    this.drawerBoard.formDataId = null;
     this.drawerBoard.visible = true;
   }
 
@@ -133,7 +133,7 @@ export class BoardManagementComponent implements AfterViewInit {
   }
 
   boardTreeItemClick(item: NzTreeNodeOptions) {
-    this.drawerBoard.formInitId = item.key;
+    this.drawerBoard.formDataId = item.key;
   }
 
 }

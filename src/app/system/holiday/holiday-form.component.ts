@@ -97,13 +97,13 @@ export class HolidayFormComponent implements AfterViewInit {
     comment       : new FormControl<string | null>(null)
   });
 
-  formInitId = input<Date>();
+  formDataId = input<Date>();
 
   constructor() {
 
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId()!);
+      if (this.formDataId()) {
+        this.get(this.formDataId()!);
       }
     })
   }

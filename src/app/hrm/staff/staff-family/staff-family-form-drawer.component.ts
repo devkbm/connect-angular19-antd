@@ -21,7 +21,7 @@ import { StaffFamilyFormComponent } from './staff-family-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-staff-family-form *nzDrawerContent
-          [formInitId]="drawer().formInitId"
+          [formDataId]="drawer().formDataId"
           [staff]="selectedStaff()"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
@@ -45,7 +45,7 @@ import { StaffFamilyFormComponent } from './staff-family-form.component';
 })
 export class StaffFamilyFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, formInitId: any}>();
+  drawer = input.required<{visible: boolean, formDataId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<StaffFamilyFormComponent>(StaffFamilyFormComponent);

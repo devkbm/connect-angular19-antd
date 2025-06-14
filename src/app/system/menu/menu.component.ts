@@ -221,11 +221,11 @@ export class MenuComponent {
   }
 
   drawer: {
-    menuGroup: { visible: boolean, formInitId: any },
-    menu: { visible: boolean, formInitId: any }
+    menuGroup: { visible: boolean, formDataId: any },
+    menu: { visible: boolean, formDataId: any }
   } = {
-    menuGroup: { visible: false, formInitId: null },
-    menu: { visible: false, formInitId: null }
+    menuGroup: { visible: false, formDataId: null },
+    menu: { visible: false, formDataId: null }
   }
 
   //#region 메뉴그룹
@@ -241,18 +241,18 @@ export class MenuComponent {
   }
 
   newMenuGroup(): void {
-    this.drawer.menuGroup.formInitId = null;
+    this.drawer.menuGroup.formDataId = null;
     this.drawer.menuGroup.visible = true;
   }
 
   editMenuGroup(item: any) {
-    this.drawer.menuGroup.formInitId = item.menuGroupCode;
+    this.drawer.menuGroup.formDataId = item.menuGroupCode;
     this.drawer.menuGroup.visible = true;
   }
 
   menuGroupGridRowClicked(row: any): void {
-    this.drawer.menuGroup.formInitId = row.menuGroupCode;
-    this.drawer.menu.formInitId = {menuGroupCode: row.menuGroupCode};
+    this.drawer.menuGroup.formDataId = row.menuGroupCode;
+    this.drawer.menu.formDataId = {menuGroupCode: row.menuGroupCode};
     this.getMenuList();
   }
   //#endregion 메뉴그룹
@@ -260,7 +260,7 @@ export class MenuComponent {
   //#region 메뉴
   getMenuList(): void {
     let params: any = new Object();
-    params['menuGroupCode'] = this.drawer.menuGroup.formInitId;
+    params['menuGroupCode'] = this.drawer.menuGroup.formDataId;
 
     if ( this.query.menu.value !== '') {
       params[this.query.menu.key] = this.query.menu.value;
@@ -275,12 +275,12 @@ export class MenuComponent {
   }
 
   editMenu(item: any) {
-    this.drawer.menu.formInitId = {menuGroupCode: item.menuGroupCode, menuCode: item.menuCode};
+    this.drawer.menu.formDataId = {menuGroupCode: item.menuGroupCode, menuCode: item.menuCode};
     this.drawer.menu.visible = true;
   }
 
   menuGridRowClicked(row: any): void {
-    this.drawer.menu.formInitId =  {menuGroupCode: row.menuGroupCode, menuCode: row.menuCode};
+    this.drawer.menu.formDataId =  {menuGroupCode: row.menuGroupCode, menuCode: row.menuCode};
   }
   //#endregion 메뉴
 

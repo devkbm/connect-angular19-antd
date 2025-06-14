@@ -150,7 +150,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
   });
 
   //@Input() staff?: {companyCode: string, staffNo: string, staffName: string};
-  formInitId = input<{staffId: string, seq: string}>();
+  formDataId = input<{staffId: string, seq: string}>();
   staff = input<{companyCode: string, staffNo: string, staffName: string}>();
 
   constructor() {

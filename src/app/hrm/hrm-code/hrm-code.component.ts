@@ -173,11 +173,11 @@ export class HrmCodeComponent implements OnInit {
   gridHrmCodeList: HrmCode[] = [];
 
   drawer: {
-    codeType: { visible: boolean, formInitId: any },
-    code: { visible: boolean, formInitId: {typeId: any, code: any} | null }
+    codeType: { visible: boolean, formDataId: any },
+    code: { visible: boolean, formDataId: {typeId: any, code: any} | null }
   } = {
-    codeType: { visible: false, formInitId: null },
-    code: { visible: false, formInitId: null }
+    codeType: { visible: false, formDataId: null },
+    code: { visible: false, formDataId: null }
   }
 
   ngOnInit() {
@@ -190,38 +190,38 @@ export class HrmCodeComponent implements OnInit {
   }
 
   rowClickHrmCodeType(row: any): void {
-    this.drawer.codeType.formInitId = row.typeId;
-    this.drawer.code.formInitId = {typeId: row.typeId, code: ''};
+    this.drawer.codeType.formDataId = row.typeId;
+    this.drawer.code.formDataId = {typeId: row.typeId, code: ''};
 
     this.gridHrmCodeGridList(row.typeId);
   }
 
   newHrmCodeType(): void {
-    this.drawer.codeType.formInitId = null;
+    this.drawer.codeType.formDataId = null;
     this.drawer.codeType.visible = true;
   }
 
   editHrmCodeType(row: any): void {
-    this.drawer.codeType.formInitId = row.typeId;
+    this.drawer.codeType.formDataId = row.typeId;
     this.drawer.codeType.visible = true;
   }
 
   rowClickHrmCode(row: any): void {
-    this.drawer.code.formInitId = {typeId: row.typeId, code: row.code};
+    this.drawer.code.formDataId = {typeId: row.typeId, code: row.code};
   }
 
   getGridHrmCode(): void {
     this.drawer.code.visible = false;
-    this.gridHrmCodeGridList(this.drawer.codeType.formInitId);
+    this.gridHrmCodeGridList(this.drawer.codeType.formDataId);
   }
 
   newHrmCode(): void {
-    this.drawer.code.formInitId = {typeId: this.drawer.codeType.formInitId, code: null};
+    this.drawer.code.formDataId = {typeId: this.drawer.codeType.formDataId, code: null};
     this.drawer.code.visible = true;
   }
 
   editHrmCode(row: any): void {
-    this.drawer.code.formInitId = {typeId: row.typeId, code: row.code};
+    this.drawer.code.formDataId = {typeId: row.typeId, code: row.code};
     this.drawer.code.visible = true;
   }
 

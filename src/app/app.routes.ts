@@ -22,7 +22,7 @@ export const routes: Routes = [
   {path: 'grw', loadChildren: () => import('src/app/cooperation/cooperation-routing.module').then(m => m.routes)},
   {path: 'profile', loadChildren: () => import('src/app/app-layout/app-layout.module').then(m => m.routes)},
   {path: 'post-write/:boardId', component: PostFormComponent},
-  {path: 'post-edit/:boardId/:formInitId', component: PostFormComponent},
+  {path: 'post-edit/:boardId/:formDataId', component: PostFormComponent},
   {path: 'post-view', component: PostViewComponent},
   {path: 'test', loadChildren: () => import('./pages/welcome/welcome-routing.module').then(m => m.routes)},
 ];

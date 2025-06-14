@@ -106,13 +106,13 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
     description     : new FormControl<string | null>(null)
   });
 
-  formInitId = input<string>();
+  formDataId = input<string>();
 
   constructor() {
 
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId()!);
+      if (this.formDataId()) {
+        this.get(this.formDataId()!);
       }
     });
   }

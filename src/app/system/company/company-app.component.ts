@@ -161,9 +161,9 @@ export class CompanyApp implements OnInit {
   }];
 
   drawer: {
-    company: { visible: boolean, formInitId: any }
+    company: { visible: boolean, formDataId: any }
   } = {
-    company: { visible: false, formInitId: null }
+    company: { visible: false, formDataId: null }
   }
 
   ngOnInit(): void {
@@ -181,12 +181,12 @@ export class CompanyApp implements OnInit {
   }
 
   newResource(): void {
-    this.drawer.company.formInitId = null;
+    this.drawer.company.formDataId = null;
     this.drawer.company.visible = true;
   }
 
   editResource(item: any): void {
-    this.drawer.company.formInitId = item.companyCode;
+    this.drawer.company.formDataId = item.companyCode;
     this.drawer.company.visible = true;
   }
 
@@ -208,7 +208,7 @@ export class CompanyApp implements OnInit {
   }
 
   resourceGridRowClicked(item: any): void {
-    this.drawer.company.formInitId = item.companyCode;
+    this.drawer.company.formDataId = item.companyCode;
   }
 
 }

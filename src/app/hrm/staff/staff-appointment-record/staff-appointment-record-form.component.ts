@@ -341,13 +341,13 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
       dutyResponsibilityCode  : new FormControl<string | null>(null)
   });
 
-  formInitId = input<{staffId: string, seq: string}>();
+  formDataId = input<{staffId: string, seq: string}>();
   staff = input<{companyCode: string, staffNo: string, staffName: string}>();
 
   constructor() {
     effect(() => {
-      if (this.formInitId()) {
-        this.get(this.formInitId()?.staffId!, this.formInitId()?.seq!);
+      if (this.formDataId()) {
+        this.get(this.formDataId()?.staffId!, this.formDataId()?.seq!);
       } else {
         this.newForm();
       }

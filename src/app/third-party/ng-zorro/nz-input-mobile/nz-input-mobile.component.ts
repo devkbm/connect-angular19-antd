@@ -1,4 +1,4 @@
-import { Self, Optional, Component, ElementRef, TemplateRef, viewChild, effect, input, model } from '@angular/core';
+import { Component, ElementRef, TemplateRef, viewChild, input, model, inject } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgModel, NgControl, FormsModule } from '@angular/forms';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -45,7 +45,8 @@ export class NzInputMobileComponent implements ControlValueAccessor {
   onChange!: (value: string) => void;
   onTouched!: () => void;
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

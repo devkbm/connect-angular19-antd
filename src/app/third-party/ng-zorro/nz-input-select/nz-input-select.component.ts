@@ -1,4 +1,4 @@
-import { Component, Input, input, model, Optional, Self } from '@angular/core';
+import { Component, inject, Input, input } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 
 import { NzSelectModeType, NzSelectModule } from 'ng-zorro-antd/select';
@@ -51,7 +51,8 @@ export class NzInputSelectComponent implements ControlValueAccessor {
   onChange!: (value: string) => void;
   onTouched!: () => void;
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

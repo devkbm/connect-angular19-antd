@@ -21,7 +21,7 @@ import { StaffContactFormComponent } from './staff-contact-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
       <app-staff-contact-form *nzDrawerContent
-          [formInitId]="drawer().formInitId"
+          [formDataId]="drawer().formDataId"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
           (formClosed)="drawer().visible = false">
@@ -44,7 +44,7 @@ import { StaffContactFormComponent } from './staff-contact-form.component';
 })
 export class StaffContactFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, formInitId: any}>();
+  drawer = input.required<{visible: boolean, formDataId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<StaffContactFormComponent>(StaffContactFormComponent);

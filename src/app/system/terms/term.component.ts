@@ -138,7 +138,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
   (nzOnClose)="this.drawer.term.visible = false">
     <app-term-form *nzDrawerContent
       #termForm
-      [formInitId]="drawer.term.formInitId"
+      [formDataId]="drawer.term.formDataId"
       (formSaved)="getTermList()"
       (formDeleted)="getTermList()"
       (formClosed)="this.drawer.term.visible = false">
@@ -153,7 +153,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
   nzTitle="단어 등록"
   (nzOnClose)="this.drawer.word.visible = false">
     <app-word-form *nzDrawerContent #wordForm
-      [formInitId]="drawer.word.formInitId"
+      [formDataId]="drawer.word.formDataId"
       (formSaved)="getWordList()"
       (formDeleted)="getWordList()"
       (formClosed)="drawer.word.visible = false">
@@ -168,7 +168,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
   nzTitle="도메인 등록"
   (nzOnClose)="drawer.domain.visible = false">
     <app-data-domain-form *nzDrawerContent #doaminForm
-      [formInitId]="drawer.domain.formInitId"
+      [formDataId]="drawer.domain.formDataId"
       (formSaved)="getDomainList()"
       (formDeleted)="getDomainList()"
       (formClosed)="drawer.domain.visible = false">
@@ -216,13 +216,13 @@ export class TermComponent implements OnInit {
   }
 
   drawer: {
-    term: { visible: boolean, formInitId: any },
-    word: { visible: boolean, formInitId: any },
-    domain: { visible: boolean, formInitId: any }
+    term: { visible: boolean, formDataId: any },
+    word: { visible: boolean, formDataId: any },
+    domain: { visible: boolean, formDataId: any }
   } = {
-    term: { visible: false, formInitId: null },
-    word: { visible: false, formInitId: null },
-    domain: { visible: false, formInitId: null },
+    term: { visible: false, formDataId: null },
+    word: { visible: false, formDataId: null },
+    domain: { visible: false, formDataId: null },
   }
 
   tabIndex: number = 0;
@@ -252,17 +252,17 @@ export class TermComponent implements OnInit {
   }
 
   newTerm() {
-    this.drawer.term.formInitId = null;
+    this.drawer.term.formDataId = null;
     this.drawer.term.visible = true;
   }
 
   editTerm(item: any) {
-    this.drawer.term.formInitId = item.termId;
+    this.drawer.term.formDataId = item.termId;
     this.drawer.term.visible = true;
   }
 
   termGridSelected(item: any) {
-    this.drawer.term.formInitId = item.termId;
+    this.drawer.term.formDataId = item.termId;
   }
   //#endregion 용어사전
 
@@ -273,17 +273,17 @@ export class TermComponent implements OnInit {
   }
 
   newWord() {
-    this.drawer.word.formInitId = null;
+    this.drawer.word.formDataId = null;
     this.drawer.word.visible = true;
   }
 
   editWord(item: any) {
-    this.drawer.word.formInitId = item.logicalName;
+    this.drawer.word.formDataId = item.logicalName;
     this.drawer.word.visible = true;
   }
 
   wordGridSelected(item: any) {
-    this.drawer.word.formInitId = item.logicalName;
+    this.drawer.word.formDataId = item.logicalName;
   }
   //#endregion 단어사전
 
@@ -294,12 +294,12 @@ export class TermComponent implements OnInit {
   }
 
   newDomain() {
-    this.drawer.domain.formInitId = null;
+    this.drawer.domain.formDataId = null;
     this.drawer.domain.visible = true;
   }
 
   domainGridSelected(item: any) {
-    this.drawer.domain.formInitId = item.domainId;
+    this.drawer.domain.formDataId = item.domainId;
   }
   //#endregion 도메인
 

@@ -1,4 +1,4 @@
-import { Self, Optional, Component, Input, TemplateRef, viewChild } from '@angular/core';
+import { Component, Input, TemplateRef, viewChild, inject } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgModel, NgControl, FormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDatePickerComponent, NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -65,7 +65,8 @@ export class NzInputDateTimeComponent implements ControlValueAccessor {
   onChange!: (value: string | null) => void;
   onTouched!: () => void;
 
-  constructor(@Self()  @Optional() private ngControl: NgControl) {
+  private ngControl = inject(NgControl, { self: true, optional: true });
+  constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

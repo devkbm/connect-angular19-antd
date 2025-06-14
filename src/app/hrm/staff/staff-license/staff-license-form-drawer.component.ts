@@ -19,7 +19,7 @@ import { StaffLicenseFormComponent } from './staff-license-form.component';
       [nzFooter]="footerTpl"
       (nzOnClose)="drawer().visible = false">
         <app-staff-license-form *nzDrawerContent
-          [formInitId]="drawer().formInitId"
+          [formDataId]="drawer().formDataId"
           [staff]="selectedStaff()"
           (formSaved)="closeDrawer($event)"
           (formDeleted)="closeDrawer($event)"
@@ -43,7 +43,7 @@ import { StaffLicenseFormComponent } from './staff-license-form.component';
 })
 export class StaffLicenseFormDrawerComponent {
 
-  drawer = input.required<{visible: boolean, formInitId: any}>();
+  drawer = input.required<{visible: boolean, formDataId: any}>();
   drawerClosed = output<any>();
 
   form = viewChild.required<StaffLicenseFormComponent>(StaffLicenseFormComponent);
