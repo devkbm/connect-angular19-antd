@@ -41,7 +41,7 @@ import { WebResourceSearchComponent } from './web-resource-search.component';
   template: `
 <ng-template #header>
   <nz-page-header-custom title="리소스 등록" subtitle="This is a subtitle"></nz-page-header-custom>
-</ng-template>>
+</ng-template>
 
 <ng-template #search>
   <app-nz-search-area>

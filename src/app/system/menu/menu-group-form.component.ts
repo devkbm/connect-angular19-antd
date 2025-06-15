@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { MenuGroupFormValidatorService } from './validator/menu-group-form-validator.service';
+import { sequence } from '@angular/animations';
 
 @Component({
   selector: 'app-menu-group-form',
@@ -42,7 +43,7 @@ import { MenuGroupFormValidatorService } from './validator/menu-group-form-valid
       <!-- 1 row -->
       <div nz-row nzGutter="8">
 
-        <div nz-col nzSpan="8">
+        <div nz-col nzSpan="6">
           <nz-form-item-custom for="menuGroupCode" label="메뉴그룹코드" required="true">
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <input nz-input id="menuGroupCode" formControlName="menuGroupCode" placeholder="메뉴그룹코드를 입력해주세요." />
@@ -50,7 +51,7 @@ import { MenuGroupFormValidatorService } from './validator/menu-group-form-valid
           </nz-form-item-custom>
         </div>
 
-        <div nz-col nzSpan="8">
+        <div nz-col nzSpan="6">
           <nz-form-item-custom for="menuGroupName" label="메뉴그룹명" required="true">
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <input nz-input id="menuGroupName" formControlName="menuGroupName" placeholder="메뉴그룹명을 입력해주세요." />
@@ -58,10 +59,18 @@ import { MenuGroupFormValidatorService } from './validator/menu-group-form-valid
           </nz-form-item-custom>
         </div>
 
-        <div nz-col nzSpan="8">
+        <div nz-col nzSpan="6">
           <nz-form-item-custom for="menuGroupUrl" label="메뉴그룹URL" required="true">
             <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
               <input nz-input id="menuGroupUrl" formControlName="menuGroupUrl" placeholder="메뉴그룹URL을 입력해주세요." />
+            </nz-form-control>
+          </nz-form-item-custom>
+        </div>
+
+        <div nz-col nzSpan="6">
+          <nz-form-item-custom for="sequence" label="순번" >
+            <nz-form-control nzHasFeedback [nzErrorTip]="errorTpl">
+              <input nz-input id="sequence" formControlName="sequence" placeholder="순번을 입력해주세요." />
             </nz-form-control>
           </nz-form-item-custom>
         </div>
@@ -103,7 +112,8 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
     }),
     menuGroupName   : new FormControl<string | null>(null, { validators: Validators.required }),
     menuGroupUrl    : new FormControl<string | null>(null, { validators: Validators.required }),
-    description     : new FormControl<string | null>(null)
+    description     : new FormControl<string | null>(null),
+    sequence        : new FormControl<number | null>(null),
   });
 
   formDataId = input<string>();
@@ -155,7 +165,6 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<MenuGroup>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.notifyService.changeMessage(model.message);
           }
         )
   }

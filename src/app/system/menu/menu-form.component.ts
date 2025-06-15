@@ -278,7 +278,6 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
             } else {
               this.newForm(menuGroupCode);
             }
-            this.notifyService.changeMessage(model.message);
           }
         )
   }

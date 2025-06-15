@@ -3,4 +3,5 @@ export interface MenuGroup {
   menuGroupName: string | null;
   menuGroupUrl: string | null;
   description: string | null;
+  sequence: number | null;
 }

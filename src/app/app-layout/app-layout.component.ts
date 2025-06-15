@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, TemplateRef, inject, input } from '@angular/core';
+import { Component, OnInit, TemplateRef, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { UserSessionService } from 'src/app/core/service/user-session.service';
 import { NotifyService } from 'src/app/core/service/notify.service';
-
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -14,15 +14,15 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { UserProfileComponent } from 'src/app/app-layout/user-profile/user-profile.component';
 import { SideMenuComponent } from 'src/app/app-layout/side-menu/side-menu.component';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from '../core/global-property';
-import { getHttpOptions } from '../core/http/http-utils';
-import { ResponseList } from '../core/model/response-list';
+
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+import { ResponseList } from 'src/app/core/model/response-list';
 import { catchError, combineLatest, of, switchMap } from 'rxjs';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-  selector: 'app-app-layout',
+  selector: 'app-layout',
   imports: [
     RouterModule,
     FormsModule,
@@ -46,16 +46,22 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     [nzCollapsedWidth]="0"
     [nzWidth]="200"
     [nzTrigger]="triggerTemplate">
-      <app-side-menu class="sidebar" [menuGroupCode]="sideMenu.menuGroupCode">
+      <app-side-menu
+        [menuGroupCode]="sideMenu.menuGroupCode">
       </app-side-menu>
   </nz-sider>
 
   <nz-layout>
     <nz-header class="header">
-      <span nz-icon class="collapse-icon" [nzType]="sideMenu.isCollapsed ? 'menu-unfold' : 'menu-fold'" (click)="sideMenu.isCollapsed=!sideMenu.isCollapsed"></span>
+      <span
+        nz-icon
+        class="collapse-icon"
+        [nzType]="sideMenu.isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        (click)="sideMenu.isCollapsed=!sideMenu.isCollapsed">
+      </span>
 
       <nz-select
-        class="sidemenugroup"
+        class="menu-group"
         nzShowSearch
         [(ngModel)]="menuGroupInfo.selectedId"
         (ngModelChange)="moveToMenuGroupUrl($event)">
@@ -67,7 +73,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
           }
       </nz-select>
 
-      <button nz-button (click)="test()">ddd</button>
+      <button nz-button (click)="test()">test</button>
       <button nz-button (click)="test2()">이동</button>
 
       <nz-avatar class="avatar" nzShape="square" [nzSize]='48' [nzSrc]="profileAvatarSrc" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
@@ -77,7 +83,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
         </nz-dropdown-menu>
       </nz-avatar>
     </nz-header>
-
 
     <nz-content class="main-content">
       <router-outlet></router-outlet>
@@ -92,25 +97,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 </nz-layout>
   `,
   styles: `
-.logo {
-  display: flex;
-  /*위에서 아래로 수직 배치*/
-  flex-direction: column;
-  /*중앙정렬*/
-  justify-content: center;
-  text-align: center;
-  width: 200px;
-  height: 64px;
 
-  background-color: darkslategray;
-  color: white;
-  font-weight: 300;
-  font-size: 30px;
-  line-height: 0.6;
-  font-family: 'Bangers', cursive;
-  letter-spacing: 5px;
-  text-shadow: 5px 2px #222324, 2px 4px #222324, 3px 5px #222324;
-}
 
 .sidebar {
   background: black;
@@ -140,7 +127,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   vertical-align: top;
 }
 
-.sidemenugroup {
+.menu-group {
   width: 150px;
   //padding-top: 12px;
   margin-right: 10px;
@@ -175,11 +162,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   vertical-align: middle;
   background-color: black;
 }
-
-.menu {
-  height: 100%;
-}
-
   `
 })
 export class AppLayoutComponent implements OnInit  {
@@ -203,7 +185,6 @@ export class AppLayoutComponent implements OnInit  {
   private notifyService = inject(NotifyService);
   private sessionService = inject(UserSessionService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
 
   ngOnInit(): void {
@@ -213,11 +194,13 @@ export class AppLayoutComponent implements OnInit  {
 
     this.setInitMenuGroup();
 
+    /*
     console.log(this.menuGroupInfo.list);
     console.log(this.isForwarding());
     console.log(this.router.url);
     console.log(this.router.url.split(';')[0].split('/')[1]);
     console.log(this.getMenuGroupCode(this.router.url.split(';')[0].split('/')[1]));
+    */
 
     if (this.isForwarding()) {
       const sessionMenuGroup  = sessionStorage.getItem('selectedMenuGroup');
