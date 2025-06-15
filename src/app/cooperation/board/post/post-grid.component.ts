@@ -15,11 +15,27 @@ import { ButtonRendererComponent } from 'src/app/third-party/ag-grid/renderer/bu
 import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { Post } from './post.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
+export interface Post {
+  postId: string;
+  boardId: string;
+  postParentId: string;
+  userId: string;
+  title: string;
+  contents: string;
+  pwd: string;
+  hitCnt: string;
+  fromDate: string;
+  toDate: string;
+  seq: number;
+  depth: number;
+  fileList: string[];
+  file: File;
+  editable: boolean
+}
 
 @Component({
   selector: 'app-post-grid',

@@ -22,7 +22,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
 import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
 
 @Component({
-  selector: 'app-duty-application',
+  selector: 'duty-application-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -119,7 +119,7 @@ import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
 
   `
 })
-export class AttendanceApplicationComponent implements OnInit, AfterViewInit {
+export class AttendanceApplicationApp implements OnInit, AfterViewInit {
 
   private http = inject(HttpClient);
 

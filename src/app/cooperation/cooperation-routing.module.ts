@@ -9,11 +9,11 @@ export const routes: Routes = [
   {
     path: '', component: AppLayoutComponent/*, canActivateChild: [AuthGuardService]*/,
     children: [
-      {path: 'team',          loadComponent: () => import('./team/team.component').then(m => m.TeamComponent)},
-      {path: 'board',         loadComponent: () => import('./board/board.component').then(m => m.BoardComponent)},
-      {path: 'boardm',        loadComponent: () => import('./board/board-management/board-management.component').then(m => m.BoardManagementComponent)},
-      {path: 'todo',          loadComponent: () => import('./todo/todos.component').then(m => m.TodosComponent)},
-      {path: 'workcalendar',  loadComponent: () => import('./work-calendar/work-calendar.component').then(m => m.WorkCalendarComponent)}
+      {path: 'team',          loadComponent: () => import('./team/team-app').then(m => m.TeamApp)},
+      {path: 'board',         loadComponent: () => import('./board/board-app').then(m => m.BoardApp)},
+      {path: 'boardm',        loadComponent: () => import('./board/board-management/board-management-app').then(m => m.BoardManagementApp)},
+      {path: 'todo',          loadComponent: () => import('./todo/todo-app').then(m => m.TodoApp)},
+      {path: 'workcalendar',  loadComponent: () => import('./work-calendar/work-calendar-app').then(m => m.WorkCalendarApp)}
     ]
   }
 ];

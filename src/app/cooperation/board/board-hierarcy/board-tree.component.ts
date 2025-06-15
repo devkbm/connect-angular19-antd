@@ -4,11 +4,31 @@ import { Component, inject, viewChild, output, input } from '@angular/core';
 import { NzFormatEmitEvent, NzTreeComponent, NzTreeModule } from 'ng-zorro-antd/tree';
 
 import { ResponseList } from 'src/app/core/model/response-list';
-import { BoardHierarchy } from './board-hierarchy.model';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
+export interface BoardHierarchy {
+  createdDt: Date;
+  createdBy: string;
+  modifiedDt: Date;
+  modifiedBy: string;
+  boardId: string;
+  boardParentId: string;
+  boardName: string;
+  boardDescription: string;
+  fromDate: Date;
+  toDate: Date;
+  articleCount: number;
+  sequence: number;
+  selected: boolean;
+  expanded: boolean;
+  isLeaf: boolean;
+  active: boolean;
+  children: BoardHierarchy[];
+  title: string;
+  key: string;
+}
 
 @Component({
   selector: 'app-board-tree',

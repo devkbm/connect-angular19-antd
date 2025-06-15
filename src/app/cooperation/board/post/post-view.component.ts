@@ -4,13 +4,30 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { TrustHtmlPipe } from "src/app/core/pipe/trust-html.pipe";
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { Post } from './post.model';
 import { SessionManager } from 'src/app/core/session-manager';
 import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-download/nz-file-download.component';
 import { PostFileUploadComponent } from './post-file-upload.component';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface Post {
+  postId: string;
+  boardId: string;
+  postParentId: string;
+  userId: string;
+  title: string;
+  contents: string;
+  pwd: string;
+  hitCnt: string;
+  fromDate: string;
+  toDate: string;
+  seq: number;
+  depth: number;
+  fileList: string[];
+  file: File;
+  editable: boolean
+}
 
 @Component({
   selector: 'app-post-view',
@@ -54,7 +71,6 @@ export class PostViewComponent {
 
   constructor() {
     effect(() => {
-      console.log(this.postId());
       if (this.postId()) {
         this.get(this.postId());
       }
@@ -66,20 +82,20 @@ export class PostViewComponent {
     const options = getHttpOptions();
 
     this.http
-      .get<ResponseObject<Post>>(url, options)
-      .pipe(
-          // catchError((err) => Observable.throw(err))
-      )
-      .subscribe(
-        (model: ResponseObject<Post>) => {
-          if (model.data) {
-            this.post = model.data;
-            this.fileList = model.data.fileList;
+        .get<ResponseObject<Post>>(url, options)
+        .pipe(
+            // catchError((err) => Observable.throw(err))
+        )
+        .subscribe(
+          (model: ResponseObject<Post>) => {
+            if (model.data) {
+              this.post = model.data;
+              this.fileList = model.data.fileList;
 
-            this.updateHitCount(this.postId(), SessionManager.getUserId());
+              this.updateHitCount(this.postId(), SessionManager.getUserId());
+            }
           }
-        }
-      )
+        )
   }
 
   updateHitCount(id: any, userId: any) {

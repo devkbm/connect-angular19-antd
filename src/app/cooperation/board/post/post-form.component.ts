@@ -19,11 +19,23 @@ import { GlobalProperty } from 'src/app/core/global-property';
 
 //import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import { ChangeEvent, CKEditorComponent } from '@ckeditor/ckeditor5-angular';
-import { Post } from './post.model';
 import { PostFileUploadComponent } from './post-file-upload.component';
 import { SessionManager } from 'src/app/core/session-manager';
 import { HttpClient } from '@angular/common/http';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface Post {
+  postId: string;
+  boardId: string;
+  postParentId: string;
+  userId: string;
+  title: string;
+  contents: string;
+  fileList: string[];
+  file: File;
+  editable: boolean
+}
+
 
 
 @Component({

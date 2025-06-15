@@ -37,7 +37,7 @@ import { StaffLicenseFormDrawerComponent } from './staff-license/staff-license-f
 import { StaffSchoolCareerFormDrawerComponent } from './staff-school-career/staff-school-career-form-drawer.component';
 
 @Component({
-  selector: 'app-staff-management',
+  selector: 'staff-management-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -284,7 +284,7 @@ import { StaffSchoolCareerFormDrawerComponent } from './staff-school-career/staf
 }
   `
 })
-export class StaffManagementComponent implements OnInit {
+export class StaffManagementApp implements OnInit {
 
   gridStaff = viewChild.required(StaffGridComponent);
   formStaff = viewChild.required(StaffRegistFormComponent);

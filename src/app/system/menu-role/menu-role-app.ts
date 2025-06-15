@@ -26,7 +26,7 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 
 @Component({
-  selector: 'app-menu-role',
+  selector: 'menu-role-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -204,7 +204,7 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
 
   `
 })
-export class MenuRoleComponent {
+export class MenuRoleApp {
 
   menuGroup: {list: any, selectedItem: string} = {list: [], selectedItem: ''};
   role: {list: any, selectedItem: string} = {list: [], selectedItem: ''};

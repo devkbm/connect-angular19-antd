@@ -24,10 +24,10 @@ import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/ca
 import { DateSelectArg } from '@fullcalendar/core/index.js';
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 @Component({
-  selector: 'app-holiday',
+  selector: 'holiday-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -143,7 +143,7 @@ import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http
 
   `
 })
-export class HolidayComponent implements AfterViewInit {
+export class HolidayApp implements AfterViewInit {
 
   private notifyService = inject(NotifyService);
   private http = inject(HttpClient);

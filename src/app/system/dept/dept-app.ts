@@ -17,7 +17,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 import { DeptSearchComponent } from "./dept-search.component";
 
 @Component({
-  selector: 'app-dept',
+  selector: 'dept-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -165,7 +165,7 @@ import { DeptSearchComponent } from "./dept-search.component";
 
   `
 })
-export class DeptComponent implements OnInit, AfterViewInit {
+export class DeptApp implements OnInit, AfterViewInit {
 
   tree = viewChild.required(DeptTreeComponent);
   form = viewChild.required(DeptFormComponent);

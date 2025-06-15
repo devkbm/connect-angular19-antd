@@ -1,19 +1,34 @@
+import { Component, inject, OnInit, output, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
 import { ContextMenuComponent, ContextMenuModule, ContextMenuService } from '@perfectmemory/ngx-contextmenu';
 
-import { Component, OnInit, output, viewChild } from '@angular/core';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { TodoGroupModel } from './todo-group.model';
-import { TodoService } from './todo.service';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { FormsModule } from '@angular/forms';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface TodoGroupModel {
+  pkTodoGroup: string;
+  todoGroupName: string;
+  isSelected: boolean;
+}
+
 
 @Component({
   selector: 'app-todo-group-list',
-  imports: [ CommonModule, FormsModule, ContextMenuModule, NzButtonModule, NzCheckboxModule ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ContextMenuModule,
+    NzButtonModule,
+    NzCheckboxModule
+  ],
   template: `
     <button nz-button (click)="addTodoGroup()" style="width:100%">그룹 추가</button>
 
@@ -113,15 +128,22 @@ export class TodoGroupListComponent implements OnInit {
   // https://perfectmemory.github.io/ngx-contextmenu/?path=/docs/context-menu-introduction--docs
   basicMenu = viewChild.required<ContextMenuComponent<any>>(ContextMenuComponent);
 
-  constructor(private service: TodoService,  private _contextMenuService: ContextMenuService<any>) { }
+  private http = inject(HttpClient);
+  private _contextMenuService = inject(ContextMenuService<any>);
+
+  //constructor(private service: TodoService,  private _contextMenuService: ContextMenuService<any>) { }
 
   ngOnInit() {
     this.getTodoGroupList();
   }
 
   addTodoGroup(): void {
-    this.service
-        .newTodoGroup()
+    const url = GlobalProperty.serverUrl + `/api/todo/group/new`;
+    const options = getHttpOptions();
+
+    this.http.post<ResponseObject<TodoGroupModel>>(url, null, options).pipe(
+        //  catchError(this.handleError<ResponseObject<TodoGroupModel>>('newTodoGroup', undefined))
+        )
         .subscribe(
           (model: ResponseObject<TodoGroupModel>) => {
             if (model === null || model === undefined) return;
@@ -132,9 +154,13 @@ export class TodoGroupListComponent implements OnInit {
         );
   }
 
-  getTodoGroupList(): void {
-    this.service
-        .getMyTodoGroupList()
+  getTodoGroupList(params?: any): void {
+    const url = GlobalProperty.serverUrl + `/api/todo/group/mylist`;
+    const options = getHttpOptions(params);
+
+    this.http.get<ResponseList<TodoGroupModel>>(url, options).pipe(
+        //  catchError(this.handleError<ResponseList<TodoGroupModel>>('getMyTodogroupList', undefined))
+        )
         .subscribe(
           (model: ResponseList<TodoGroupModel>) => {
             if (model === null || model === undefined) return;
@@ -195,14 +221,19 @@ export class TodoGroupListComponent implements OnInit {
 
   renameTodoGroup(item: TodoGroupModel, name: string) {
     item.todoGroupName = name;
-    console.log(item);
-    this.service
-        .saveTodoGroup({pkTodoGroup: item.pkTodoGroup, todoGroupName: name, isSelected: false})
+
+    const url = GlobalProperty.serverUrl + `/api/todo/group`;
+    const options = getHttpOptions();
+
+    const obj = {pkTodoGroup: item.pkTodoGroup, todoGroupName: name, isSelected: false};
+    this.http.post<ResponseObject<TodoGroupModel>>(url, obj, options).pipe(
+          //catchError(this.handleError<ResponseObject<TodoGroupModel>>('saveTodoGroup', undefined))
+        )
         .subscribe(
           (model: ResponseObject<TodoGroupModel>) => {
 
           }
-        );
+        )
 
     this._contextMenuService.closeAll();
   }

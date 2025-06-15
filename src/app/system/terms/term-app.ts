@@ -22,7 +22,7 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
 import { ShapeComponent } from "src/app/core/app/shape.component";
 
 @Component({
-  selector: 'app-term',
+  selector: 'term-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -196,7 +196,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 }
   `
 })
-export class TermComponent implements OnInit {
+export class TermApp implements OnInit {
 
   termGrid = viewChild.required(TermGridComponent);
   wordGrid = viewChild.required(WordGridComponent);

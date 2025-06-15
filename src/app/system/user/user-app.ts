@@ -25,7 +25,7 @@ import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-pag
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 
 @Component({
-  selector: 'app-user',
+  selector: 'user-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -107,7 +107,7 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
 }
   `
 })
-export class UserComponent implements OnInit {
+export class UserApp implements OnInit {
 
   private http = inject(HttpClient);
 

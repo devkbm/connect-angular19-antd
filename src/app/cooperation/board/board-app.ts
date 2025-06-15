@@ -27,7 +27,7 @@ export interface TabInfo {
 }
 
 @Component({
-  selector: 'app-board',
+  selector: 'board-app',
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -162,7 +162,7 @@ export interface TabInfo {
 
   `
 })
-export class BoardComponent implements AfterViewInit {
+export class BoardApp implements AfterViewInit {
 
   boardTree = viewChild.required(BoardTreeComponent);
   postGrid = viewChild.required(PostGridComponent);
@@ -198,7 +198,7 @@ export class BoardComponent implements AfterViewInit {
   constructor() {
     window.addEventListener('message', (event) => {
       // 팝업에서 온 메시지가 아니라면 아무 작업도 하지 않는다.
-      if (event.origin !== 'http://localhost:4200') {
+      if (event.origin !== 'http://localhost:4200' && event.origin !== 'https://localhost:4200') {
         return;
       }
       //console.log(event);

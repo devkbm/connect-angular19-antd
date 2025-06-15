@@ -13,9 +13,9 @@ export const routes: Routes = [
   {
     path: '', component: AppLayoutComponent/*, canActivateChild: [AuthGuardService]*/,
     children: [
-      {path: 'hrmtype',           loadComponent: () => import('./hrm-code/hrm-code.component').then(m => m.HrmCodeComponent), providers: [provideFormlyConfig({})]},
-      {path: 'dutyapplication',   loadComponent: () => import('./attendance-application/attendance-application.component').then(m => m.AttendanceApplicationComponent)},
-      {path: 'staff',             loadComponent: () => import('./staff/staff-management.component').then(m => m.StaffManagementComponent)}
+      {path: 'hrmtype',           loadComponent: () => import('./hrm-code/hrm-code-app').then(m => m.HrmCodeApp), providers: [provideFormlyConfig({})]},
+      {path: 'dutyapplication',   loadComponent: () => import('./attendance-application/attendance-application-app').then(m => m.AttendanceApplicationApp)},
+      {path: 'staff',             loadComponent: () => import('./staff/staff-management-app').then(m => m.StaffManagementApp)}
     ]
   }
 ];

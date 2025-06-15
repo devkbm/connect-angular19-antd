@@ -16,7 +16,7 @@ import { TeamFormComponent } from './team-form.component';
 
 
 @Component({
-  selector: 'app-team',
+  selector: 'team-app',
   imports: [
     CommonModule,
     NzButtonModule,
@@ -111,7 +111,7 @@ import { TeamFormComponent } from './team-form.component';
 
   `
 })
-export class TeamComponent implements OnInit {
+export class TeamApp implements OnInit {
 
   private notifyService = inject(NotifyService);
   private service = inject(TeamService);

@@ -17,7 +17,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
 
 @Component({
-  selector: 'app-biz-code',
+  selector: 'biz-code-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -140,7 +140,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 }
   `
 })
-export class BizCodeComponent {
+export class BizCodeApp {
 
   gridCodeType = viewChild.required(BizCodeTypeGridComponent);
   gridCode = viewChild.required(BizCodeGridComponent);

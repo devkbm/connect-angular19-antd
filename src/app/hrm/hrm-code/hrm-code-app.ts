@@ -26,7 +26,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
 
 @Component({
-  selector: 'app-hrm-code',
+  selector: 'hrm-code-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -160,7 +160,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
   `
 })
-export class HrmCodeComponent implements OnInit {
+export class HrmCodeApp implements OnInit {
 
   private notifyService = inject(NotifyService);
   private hrmCodeService = inject(HrmCodeService);

@@ -2,13 +2,25 @@ import { CommonModule } from '@angular/common';
 import { Component, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { TodoModel } from './todo.model';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
+export interface TodoModel {
+  pkTodoGroup: string;
+  pkTodo: string;
+  isCompleted: boolean;
+  todo: string;
+}
+
+
 @Component({
   selector: 'app-todo-add-input',
-  imports: [ CommonModule, FormsModule, NzButtonModule, NzInputModule ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NzButtonModule,
+    NzInputModule
+  ],
   template: `
     <button nz-button (click)="addTodo(newText())">add</button>
     <input nz-input placeholder="입력해주세요." [(ngModel)]="newText" (keyup.enter)="addTodo(newText())">

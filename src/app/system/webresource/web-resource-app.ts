@@ -22,7 +22,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { WebResourceSearchComponent } from './web-resource-search.component';
 
 @Component({
-  selector: 'app-web-resource',
+  selector: 'web-resource-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -99,7 +99,7 @@ import { WebResourceSearchComponent } from './web-resource-search.component';
 }
 `
 })
-export class WebResourceComponent implements OnInit {
+export class WebResourceApp implements OnInit {
 
   private http = inject(HttpClient);
 

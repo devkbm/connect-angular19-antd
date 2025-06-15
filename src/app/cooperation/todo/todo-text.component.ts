@@ -5,8 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
-import { TodoModel } from './todo.model';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+
+export interface TodoModel {
+  pkTodoGroup: string;
+  pkTodo: string;
+  isCompleted: boolean;
+  todo: string;
+}
 
 @Component({
   selector: 'app-todo-text',

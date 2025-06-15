@@ -121,7 +121,7 @@ import { HttpClient } from '@angular/common/http';
 }
   `
 })
-export class RoleComponent implements AfterViewInit {
+export class RoleApp implements AfterViewInit {
 
   private http = inject(HttpClient);
 

@@ -12,7 +12,7 @@ import { NzButtonExcelUploadComponent } from "../../../third-party/ng-zorro/nz-b
 
 
 @Component({
-  selector: 'app-board-management',
+  selector: 'board-management-app',
   imports: [
     CommonModule,
     NzButtonModule,
@@ -96,7 +96,7 @@ import { NzButtonExcelUploadComponent } from "../../../third-party/ng-zorro/nz-b
   `]
 
 })
-export class BoardManagementComponent implements AfterViewInit {
+export class BoardManagementApp implements AfterViewInit {
 
   boardTree = viewChild.required(BoardTreeComponent);
 

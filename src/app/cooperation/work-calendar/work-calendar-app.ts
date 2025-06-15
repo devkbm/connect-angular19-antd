@@ -15,7 +15,7 @@ import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.
 import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.component";
 
 @Component({
-  selector: 'app-work-calendar',
+  selector: 'work-calendar-app',
   imports: [
     CommonModule,
     NzButtonModule,
@@ -102,7 +102,7 @@ import { MyWorkCalendarListComponent } from "./calendar/my-work-calendar-list.co
     }
   `
 })
-export class WorkCalendarComponent implements AfterViewInit {
+export class WorkCalendarApp implements AfterViewInit {
 
   myWorkGroupList = viewChild.required(MyWorkCalendarListComponent);
   workGroupForm = viewChild.required(WorkCalendarFormComponent);

@@ -18,7 +18,7 @@ import { CommonCodeGridComponent } from './common-code-grid.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
 
 @Component({
-  selector: 'app-common-code',
+  selector: 'common-code-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -132,7 +132,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 
   `
 })
-export class CommonCodeComponent implements OnInit, AfterViewInit {
+export class CommonCodeApp implements OnInit, AfterViewInit {
 
   tree = viewChild.required(CommonCodeTreeComponent);
   form = viewChild.required(CommonCodeFormComponent);

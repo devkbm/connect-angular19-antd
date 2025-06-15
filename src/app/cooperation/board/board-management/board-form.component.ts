@@ -4,8 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ResponseObject } from 'src/app/core/model/response-object';
-import { BoardManagement } from './board-management.model';
-import { BoardHierarchy } from '../board-hierarcy/board-hierarchy.model';
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -20,6 +18,36 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface BoardManagement {
+  boardId: string | null;
+  boardParentId: string | null;
+  boardName: string | null;
+  boardType: string | null;
+  boardDescription: string | null;
+}
+
+export interface BoardHierarchy {
+  createdDt: Date;
+  createdBy: string;
+  modifiedDt: Date;
+  modifiedBy: string;
+  boardId: string;
+  boardParentId: string;
+  boardName: string;
+  boardDescription: string;
+  fromDate: Date;
+  toDate: Date;
+  articleCount: number;
+  sequence: number;
+  selected: boolean;
+  expanded: boolean;
+  isLeaf: boolean;
+  active: boolean;
+  children: BoardHierarchy[];
+  title: string;
+  key: string;
+}
 
 
 @Component({

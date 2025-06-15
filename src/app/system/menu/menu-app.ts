@@ -18,7 +18,7 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
 import { ShapeComponent } from "src/app/core/app/shape.component";
 
 @Component({
-  selector: 'app-menu',
+  selector: 'menu-app',
   imports: [
     CommonModule,
     FormsModule,
@@ -193,7 +193,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
 }
   `
 })
-export class MenuComponent {
+export class MenuApp {
 
   gridMenuGroup = viewChild.required(MenuGroupGridComponent);
   gridMenu = viewChild.required(MenuGridComponent);

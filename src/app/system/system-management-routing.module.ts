@@ -8,17 +8,17 @@ export const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, //canActivateChild: [AuthGuardService],
     children: [
-      {path: 'company',       loadComponent: () => import('./company/company-app.component').then(m => m.CompanyApp)},
-      {path: 'user',          loadComponent: () => import('./user/user.component').then(m => m.UserComponent), data: {breadcrumb: 'user'}},
-      {path: 'role',          loadComponent: () => import('./role/role.component').then(m => m.RoleComponent)},
-      {path: 'menu',          loadComponent: () => import('./menu/menu.component').then(m => m.MenuComponent)},
-      {path: 'menu-role',     loadComponent: () => import('./menu-role/menu-role.component').then(m => m.MenuRoleComponent)},
-      {path: 'webresource',   loadComponent: () => import('./webresource/web-resource.component').then(m => m.WebResourceComponent)},
-      {path: 'commoncode',    loadComponent: () => import('./commoncode/common-code.component').then(m => m.CommonCodeComponent)},
-      {path: 'dept',          loadComponent: () => import('./dept/dept.component').then(m => m.DeptComponent)},
-      {path: 'term',          loadComponent: () => import('./terms/term.component').then(m => m.TermComponent)},
-      {path: 'holiday',       loadComponent: () => import('./holiday/holiday.component').then(m => m.HolidayComponent)},
-      {path: 'bizcode',       loadComponent: () => import('./biz-code/biz-code.component').then(m => m.BizCodeComponent)}
+      {path: 'company',       loadComponent: () => import('./company/company-app').then(m => m.CompanyApp)},
+      {path: 'user',          loadComponent: () => import('./user/user-app').then(m => m.UserApp), data: {breadcrumb: 'user'}},
+      {path: 'role',          loadComponent: () => import('./role/role-app').then(m => m.RoleApp)},
+      {path: 'menu',          loadComponent: () => import('./menu/menu-app').then(m => m.MenuApp)},
+      {path: 'menu-role',     loadComponent: () => import('./menu-role/menu-role-app').then(m => m.MenuRoleApp)},
+      {path: 'webresource',   loadComponent: () => import('./webresource/web-resource-app').then(m => m.WebResourceApp)},
+      {path: 'commoncode',    loadComponent: () => import('./commoncode/common-code-app').then(m => m.CommonCodeApp)},
+      {path: 'dept',          loadComponent: () => import('./dept/dept-app').then(m => m.DeptApp)},
+      {path: 'term',          loadComponent: () => import('./terms/term-app').then(m => m.TermApp)},
+      {path: 'holiday',       loadComponent: () => import('./holiday/holiday-app').then(m => m.HolidayApp)},
+      {path: 'bizcode',       loadComponent: () => import('./biz-code/biz-code-app').then(m => m.BizCodeApp)}
     ]
   }
 ];
