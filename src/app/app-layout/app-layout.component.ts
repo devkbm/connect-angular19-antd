@@ -74,7 +74,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
       </nz-select>
 
       <button nz-button (click)="test()">test</button>
-      <button nz-button (click)="test2()">이동</button>
 
       <nz-avatar class="avatar" nzShape="square" [nzSize]='48' [nzSrc]="profileAvatarSrc" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -342,13 +341,6 @@ export class AppLayoutComponent implements OnInit  {
         console.log(model);
       }
     );
-  }
-
-  test2(): void {
-    sessionStorage.setItem('selectedMenuGroup', 'ENV');
-    sessionStorage.setItem('lastVisitUrl', '/profile/edit');
-
-    this.router.navigate(['/profile/edit']);
   }
 
 }

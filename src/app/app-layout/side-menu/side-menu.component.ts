@@ -38,7 +38,7 @@ import { filter } from 'rxjs';
                 [nzPaddingLeft]="menu.level * 24"
                 [nzDisabled]="menu.disabled"
                 routerLinkActive="active" [routerLink]="menu.url"
-                (click)="saveSessionUrl()"
+                (click)="saveSessionUrl($event)"
               >
 
             <!--(click)="moveToUrl(menu.url)" -->
@@ -130,23 +130,27 @@ export class SideMenuComponent {
     })
   }
 
-  saveSessionUrl() {
-
+  saveSessionUrl(ev: any) {
+    //ev.preventDefault();
     // 최초 접속한 url 저장되지 않은 오류가 있음, 해결방법 확인 필요
+    /*
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.previousUrl = this.currentUrl;
       this.currentUrl = event.url;
 
-      //sessionStorage.setItem('lastVisitUrl', this.router.url);
-
       if (this.previousUrl && this.previousUrl !== '/login' && this.previousUrl !== '/home;isForwarding=true') {
         sessionStorage.setItem('lastVisitUrl', this.previousUrl);
       }
-
     });
+    */
 
+    //const lastNav = this.router.lastSuccessfulNavigation;
+    //sessionStorage.setItem('lastVisitUrl', lastNav?.finalUrl?.toString()!);
+    //const lastNav = this.router.getCurrentNavigation();
+    //console.log(lastNav?.initialUrl.toString());
+    sessionStorage.setItem('lastVisitUrl', this.router.getCurrentNavigation()?.initialUrl.toString()!);
 
   }
 

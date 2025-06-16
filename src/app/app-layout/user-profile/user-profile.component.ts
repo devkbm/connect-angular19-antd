@@ -58,7 +58,7 @@ import { ResponseList } from 'src/app/core/model/response-list';
         <nz-icon nzType="setting" />
       </ng-template>
       <ng-template #actionEdit>
-        <nz-icon nzType="edit" />
+        <nz-icon nzType="edit" (click)="test2()" />
       </ng-template>
       <ng-template #actionEllipsis>
         <!--
@@ -158,5 +158,13 @@ export class UserProfileComponent {
     .subscribe(logout => {
       this.router.navigate(['/login']);
     });
-    }
+  }
+
+  test2(): void {
+    sessionStorage.setItem('selectedMenuGroup', 'ENV');
+    sessionStorage.setItem('lastVisitUrl', '/profile/edit');
+
+    this.router.navigate(['/profile/edit']);
+  }
+
 }
