@@ -1,25 +1,26 @@
 import { Component, OnInit, AfterViewInit, viewChild, inject } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+
+import { ShapeComponent } from "src/app/core/app/shape.component";
+import { SessionManager } from 'src/app/core/session-manager';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
+import { CalendarFullcalendarComponent } from "src/app/third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
+
+import { ResponseList } from 'src/app/core/model/response-list';
+import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
 
 import { AttendanceApplicationFormComponent } from './attendance-application-form.component';
 import { AttendanceApplicationGridComponent } from './attendance-application-grid.component';
-
-
-import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
-import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { ShapeComponent } from "src/app/core/app/shape.component";
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { SessionManager } from 'src/app/core/session-manager';
 import { AttendanceApplicationGrid } from './attendance-application-grid.model';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { CalendarFullcalendarComponent } from "../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
-import { HttpClient } from '@angular/common/http';
-import { ResponseList } from 'src/app/core/model/response-list';
-import { DateSelectArg, EventClickArg } from '@fullcalendar/core/index.js';
 
 @Component({
   selector: 'duty-application-app',

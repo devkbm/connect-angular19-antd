@@ -5,11 +5,11 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { WorkCalendarEvent } from '../event/work-calendar-event.model';
 
-import { CalendarDaypilotComponent, ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.component';
+import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.component';
 import { CalendarFullcalendarComponent } from "../../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 export interface NewDateSelectedArgs {
   workCalendarId: number;

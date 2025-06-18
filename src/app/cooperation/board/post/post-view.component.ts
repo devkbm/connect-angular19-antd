@@ -1,15 +1,17 @@
 import { Component, inject, effect, input } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { TrustHtmlPipe } from "src/app/core/pipe/trust-html.pipe";
 
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { SessionManager } from 'src/app/core/session-manager';
-import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-download/nz-file-download.component';
-import { PostFileUploadComponent } from './post-file-upload.component';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+import { NzFileDownloadComponent } from 'src/app/third-party/ng-zorro/nz-file-download/nz-file-download.component';
+
+import { PostFileUploadComponent } from './post-file-upload.component';
+
 
 export interface Post {
   postId: string;

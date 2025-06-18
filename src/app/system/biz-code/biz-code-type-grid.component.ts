@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -15,12 +16,10 @@ ModuleRegistry.registerModules([
 
 import { NotifyService } from 'src/app/core/service/notify.service';
 import { ResponseList } from 'src/app/core/model/response-list';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { BizCodeType } from './biz-code-type.model';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
-
 
 @Component({
   selector: 'app-biz-type-grid',

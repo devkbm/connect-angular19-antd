@@ -15,7 +15,7 @@ ModuleRegistry.registerModules([
 ]);
 
 import { NotifyService } from 'src/app/core/service/notify.service';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { ResponseList } from 'src/app/core/model/response-list';
 

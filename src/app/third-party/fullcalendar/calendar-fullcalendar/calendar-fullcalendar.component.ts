@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, output, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, DateRangeInput } from '@fullcalendar/core';
@@ -14,10 +15,10 @@ import { createEventId, INITIAL_EVENTS } from './event-util';
 import { HolidayService } from 'src/app/system/holiday/holiday.service';
 import { ResponseList } from 'src/app/core/model/response-list';
 import { DateInfo } from 'src/app/system/holiday/holiday.model';
-import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-calendar-event.model';
-import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-calendar-event.model';
 
 @Component({
   selector: 'app-calendar-fullcalendar',

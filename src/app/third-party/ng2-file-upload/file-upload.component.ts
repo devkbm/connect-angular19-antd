@@ -1,9 +1,11 @@
 import { Component, ChangeDetectionStrategy, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FileUploader, FileUploadModule } from 'ng2-file-upload';
+//import { FileUploader, FileUploadModule } from 'ng2-file-upload';
 
 import { GlobalProperty } from 'src/app/core/global-property';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { FileUploader } from './file-upload/file-uploader.class';
 
 export interface UploadedFile {
   uid: string;

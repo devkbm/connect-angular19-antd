@@ -1,5 +1,6 @@
 import { Component, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { AgGridAngular } from 'ag-grid-angular';
 import type { ColDef, RowClickedEvent, RowDoubleClickedEvent } from 'ag-grid-community';
@@ -12,13 +13,13 @@ ModuleRegistry.registerModules([
   RowSelectionModule,
 ]);
 
-import { NotifyService } from 'src/app/core/service/notify.service';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
+
 import { ResponseList } from 'src/app/core/model/response-list';
 
 import { BizCode } from './biz-code.model';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http-utils';
+
 
 
 @Component({
@@ -45,7 +46,6 @@ import { getAuthorizedHttpHeaders, getHttpOptions } from 'src/app/core/http/http
 })
 export class BizCodeGridComponent extends AgGridCommon {
 
-  private notifyService = inject(NotifyService);
   private http = inject(HttpClient);
 
   _list: BizCode[] = [];
@@ -93,8 +93,6 @@ export class BizCodeGridComponent extends AgGridCommon {
     ).subscribe(
       (model: ResponseList<BizCode>) => {
         this._list = model.data;
-
-        this.notifyService.changeMessage(model.message);
       }
     );
   }
