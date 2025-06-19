@@ -3,13 +3,21 @@ import { CommonModule, formatDate } from '@angular/common';
 
 import { ResponseList } from 'src/app/core/model/response-list';
 
-import { WorkCalendarEvent } from '../event/work-calendar-event.model';
-
 import { ModeChangedArgs } from 'src/app/third-party/daypilot/calendar-daypilot.component';
 import { CalendarFullcalendarComponent } from "../../../third-party/fullcalendar/calendar-fullcalendar/calendar-fullcalendar.component";
 import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface WorkCalendarEvent {
+  id: string | null;
+  text: string | null;
+  start: string | Date | null;
+  end: string | Date | null;
+  allDay: boolean | null;
+  workCalendarId: number | null;
+  color?: string;
+}
 
 export interface NewDateSelectedArgs {
   workCalendarId: number;

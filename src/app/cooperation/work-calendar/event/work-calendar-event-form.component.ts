@@ -11,9 +11,6 @@ import { ResponseList } from 'src/app/core/model/response-list';
 
 import { pairwise } from 'rxjs';
 
-import { WorkCalendarEvent } from './work-calendar-event.model';
-import { WorkCalendar } from '../calendar/work-calendar.model';
-
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -23,6 +20,26 @@ import { NzInputDateTimeComponent, TimeFormat } from 'src/app/third-party/ng-zor
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+
+//import { WorkCalendarEvent } from './work-calendar-event.model';
+
+
+export interface WorkCalendar {
+  workCalendarId: number | null;
+  workCalendarName: string | null;
+  color: string | null;
+  memberList: string[];
+}
+
+export interface WorkCalendarEvent {
+  id: string | null;
+  text: string | null;
+  start: string | Date | null;
+  end: string | Date | null;
+  allDay: boolean | null;
+  workCalendarId: number | null;
+  color?: string;
+}
 
 
 export interface NewFormValue {

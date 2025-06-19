@@ -18,7 +18,15 @@ import { DateInfo } from 'src/app/system/holiday/holiday.model';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
-import { WorkCalendarEvent } from 'src/app/cooperation/work-calendar/event/work-calendar-event.model';
+export interface WorkCalendarEvent {
+  id: string | null;
+  text: string | null;
+  start: string | Date | null;
+  end: string | Date | null;
+  allDay: boolean | null;
+  workCalendarId: number | null;
+  color?: string;
+}
 
 @Component({
   selector: 'app-calendar-fullcalendar',

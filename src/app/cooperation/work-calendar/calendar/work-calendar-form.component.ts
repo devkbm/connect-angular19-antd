@@ -1,22 +1,32 @@
 import { Component, OnInit, AfterViewInit, inject, input, effect, Renderer2, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 import { SessionManager } from 'src/app/core/session-manager';
 import { ResponseObject } from 'src/app/core/model/response-object';
 import { ResponseList } from 'src/app/core/model/response-list';
-
-import { WorkCalendar } from './work-calendar.model';
-import { WorkCalendarMember } from './work-calendar-member.model';
+import { GlobalProperty } from 'src/app/core/global-property';
+import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+
 import { NzFormItemCustomComponent } from 'src/app/third-party/ng-zorro/nz-form-item-custom/nz-form-item-custom.component';
 import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-select/nz-input-select.component';
 import { NzInputNgxColorsComponent } from 'src/app/third-party/ngx-colors/nz-input-ngx-colors.component';
-import { HttpClient } from '@angular/common/http';
-import { GlobalProperty } from 'src/app/core/global-property';
-import { getHttpOptions } from 'src/app/core/http/http-utils';
+
+export interface WorkCalendarMember {
+  workGroupId: number;
+  userId: string;
+}
+
+export interface WorkCalendar {
+  workCalendarId: number | null;
+  workCalendarName: string | null;
+  color: string | null;
+  memberList: string[];
+}
 
 
 @Component({
@@ -92,7 +102,7 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
   `,
   styles: []
 })
-export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
+export class WorkCalendarFormComponent implements OnInit {
 
   workGroupList: any;
   memberList: any;
@@ -130,12 +140,7 @@ export class WorkCalendarFormComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-
     this.newForm();
-  }
-
-  ngAfterViewInit(): void {
-    //this.workCalendarName().focus();
   }
 
   focusInput() {
