@@ -33,7 +33,7 @@ export class MenuGroupFormValidatorService {
 
           return this.http.get<ResponseObject<boolean>>(url, options).pipe(
                     // catchError(this.handleError<ResponseObject<boolean>>('checkUser', undefined))
-                   map( (response) => (response.data === false ? {exists: true} : null)),
+                   map( (response) => (response.data === true ? {exists: true} : null)),
                    catchError(() => of(null))
           )
           }

@@ -28,12 +28,12 @@ export class DeptFormValidatorService {
         debounceTime(1000),
         switchMap((val) => {
 
-          const url = GlobalProperty.serverUrl + `/api/system/dept/${control.value}/valid`;
+          const url = GlobalProperty.serverUrl + `/api/system/dept/${control.value}/check`;
           const options = getHttpOptions();
 
           return this.http.get<ResponseObject<boolean>>(url, options).pipe(
                     // catchError(this.handleError<ResponseObject<boolean>>('checkUser', undefined))
-                   map( (response) => (response.data === false ? {exists: true} : null)),
+                   map( (response) => (response.data === true ? {exists: true} : null)),
                    catchError(() => of(null))
           )
           }

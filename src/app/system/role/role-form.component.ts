@@ -259,7 +259,6 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
         .subscribe(
           (model: ResponseObject<Role>) => {
             model.data ? this.modifyForm(model.data) : this.newForm()
-            this.notifyService.changeMessage(model.message);
           }
         )
   }
