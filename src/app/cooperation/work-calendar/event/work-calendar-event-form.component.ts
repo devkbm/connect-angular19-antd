@@ -25,7 +25,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 
 export interface WorkCalendar {
-  workCalendarId: number | null;
+  workCalendarId: string | null;
   workCalendarName: string | null;
   color: string | null;
   memberList: string[];
@@ -37,13 +37,13 @@ export interface WorkCalendarEvent {
   start: string | Date | null;
   end: string | Date | null;
   allDay: boolean | null;
-  workCalendarId: number | null;
+  workCalendarId: string | null;
   color?: string;
 }
 
 
 export interface NewFormValue {
-  workCalendarId: number;
+  workCalendarId: string;
   start: Date;
   end: Date;
   allDay: boolean;
@@ -194,10 +194,10 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
     start           : new FormControl<string | Date | null>(null),
     end             : new FormControl<string | Date | null>(null),
     allDay          : new FormControl<boolean | null>(null),
-    workCalendarId  : new FormControl<number | null>(null, { validators: [Validators.required] })
+    workCalendarId  : new FormControl<string | null>(null, { validators: [Validators.required] })
   });
 
-  formDataId = input<number>(-1);
+  formDataId = input<string>('');
 
   isAllDay = signal<boolean>(false);
 
@@ -259,7 +259,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   ngOnInit(): void {
     this.getMyWorkGroupList();
 
-    if (this.formDataId() > 0) {
+    if (this.formDataId()) {
       this.get(this.formDataId());
     }
   }
@@ -285,7 +285,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
     params.end.setSeconds(0);
     params.end.setMilliseconds(0);
 
-    this.fg.controls.workCalendarId.setValue(Number.parseInt(params.workCalendarId.toString(),10));
+    this.fg.controls.workCalendarId.setValue(params.workCalendarId);
 
     this.fg.controls.start.setValue(formatDate(params.start,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
     this.fg.controls.end.setValue(formatDate(params.end,'YYYY-MM-ddTHH:mm:ss.SSS','ko-kr'));
@@ -305,7 +305,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
     this.formClosed.emit(this.fg.getRawValue());
   }
 
-  get(id: number): void {
+  get(id: string): void {
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
     const options = getHttpOptions();
 

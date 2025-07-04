@@ -17,12 +17,12 @@ import { NzInputSelectComponent } from 'src/app/third-party/ng-zorro/nz-input-se
 import { NzInputNgxColorsComponent } from 'src/app/third-party/ngx-colors/nz-input-ngx-colors.component';
 
 export interface WorkCalendarMember {
-  workGroupId: number;
+  workGroupId: string;
   userId: string;
 }
 
 export interface WorkCalendar {
-  workCalendarId: number | null;
+  workCalendarId: string | null;
   workCalendarName: string | null;
   color: string | null;
   memberList: string[];
@@ -121,7 +121,7 @@ export class WorkCalendarFormComponent implements OnInit {
   formClosed = output<any>();
 
   fg = inject(FormBuilder).group({
-    workCalendarId    : new FormControl<number | null>({value: null, disabled: true}, { validators: [Validators.required] }),
+    workCalendarId    : new FormControl<string | null>({value: null, disabled: true}, { validators: [Validators.required] }),
     workCalendarName  : new FormControl<string | null>(null, { validators: [Validators.required] }),
     color             : new FormControl<string | null>(null),
     memberList        : new FormControl<any | null>(null)
@@ -194,7 +194,7 @@ export class WorkCalendarFormComponent implements OnInit {
   }
 
   remove(): void {
-    const id: number = this.fg.controls.workCalendarId.value!;
+    const id: string = this.fg.controls.workCalendarId.value!;
 
     const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
     const options = getHttpOptions();

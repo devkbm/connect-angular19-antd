@@ -117,11 +117,11 @@ export class WorkCalendarApp implements AfterViewInit {
   eventData: any[] = [];
 
   drawer: {
-    workGroup: { visible: boolean, formDataId: number },
-    schedule: { visible: boolean, formDataId: number }
+    workGroup: { visible: boolean, formDataId: string },
+    schedule: { visible: boolean, formDataId: string }
   } = {
-    workGroup: { visible: false, formDataId: -1 },
-    schedule: { visible: false, formDataId: -1 }
+    workGroup: { visible: false, formDataId: '-1' },
+    schedule: { visible: false, formDataId: '-1' }
   }
 
   ngAfterViewInit(): void {
@@ -161,7 +161,7 @@ export class WorkCalendarApp implements AfterViewInit {
   }
 
   newWorkGroup(): void {
-    this.drawer.workGroup.formDataId = -1;
+    this.drawer.workGroup.formDataId = '';
     this.openWorkGroupDrawer();
   }
 
@@ -178,11 +178,11 @@ export class WorkCalendarApp implements AfterViewInit {
     const to: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours() + 1, 0);
     this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formDataId, start: from, end: to, allDay: true};
 
-    this.drawer.schedule.formDataId = -1;
+    this.drawer.schedule.formDataId = '';
   }
 
   newScheduleByDateSelect(param: NewDateSelectedArgs) {
-    if (param.workCalendarId === -1) {
+    if (param.workCalendarId === '') {
       alert('CALENDAR를 선택해주세요.');
       return;
     }
@@ -194,7 +194,7 @@ export class WorkCalendarApp implements AfterViewInit {
     //to.setDate(to.getDate() -1);
 
     this.newScheduleArgs = {workCalendarId: this.drawer.workGroup.formDataId, start: param.start, end: param.end, allDay: param.allDay};
-    this.drawer.schedule.formDataId = -1;
+    this.drawer.schedule.formDataId = '';
 
     this.openScheduleDrawer();
   }

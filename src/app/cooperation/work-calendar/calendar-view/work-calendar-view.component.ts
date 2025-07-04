@@ -15,12 +15,12 @@ export interface WorkCalendarEvent {
   start: string | Date | null;
   end: string | Date | null;
   allDay: boolean | null;
-  workCalendarId: number | null;
+  workCalendarId: string | null;
   color?: string;
 }
 
 export interface NewDateSelectedArgs {
-  workCalendarId: number;
+  workCalendarId: string;
   start: Date;
   end: Date;
   allDay: boolean;
@@ -52,7 +52,7 @@ export class WorkCalendarViewComponent implements AfterViewInit {
 
   calendar2 = viewChild.required(CalendarFullcalendarComponent);
 
-  @Input() fkWorkCalendar: number = 0;
+  @Input() fkWorkCalendar: string = '';
 
   itemSelected = output<any>();
   newDateSelected = output<NewDateSelectedArgs>();
