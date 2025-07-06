@@ -178,8 +178,8 @@ export class BoardApp implements AfterViewInit {
     postView: { visible: false, id: null, title: '' }
   }
 
-  editMethod: 'tab' | 'popup' = 'popup';
-  viewMethod: 'tab' | 'popup' = 'popup';
+  editMethod: 'tab' | 'popup' = 'tab';
+  viewMethod: 'tab' | 'popup' = 'tab';
 
   tabIndex: number = 0;
   tabs: TabInfo[] = [];
