@@ -190,15 +190,15 @@ export class LoginComponent implements OnInit {
   }
 
   socialLoginGoogle(): void {
-    window.location.href = GlobalProperty.serverUrl + '/oauth2/authorization/google?companyCode=001';
+    window.location.href = GlobalProperty.serverUrl() + '/oauth2/authorization/google?companyCode=001';
   }
 
   socialLoginKakao(): void {
-    window.location.href = GlobalProperty.serverUrl + '/oauth2/authorization/kakao?companyCode=001';
+    window.location.href = GlobalProperty.serverUrl() + '/oauth2/authorization/kakao?companyCode=001';
   }
 
   socialLoginNaver(): void {
-    window.location.href = GlobalProperty.serverUrl + '/oauth2/authorization/naver?companyCode=001';
+    window.location.href = GlobalProperty.serverUrl() + '/oauth2/authorization/naver?companyCode=001';
   }
 
 

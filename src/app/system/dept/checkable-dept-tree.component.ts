@@ -44,7 +44,7 @@ export class CheckableDeptTreeComponent {
   itemChecked = output<any>();
 
   public getDeptHierarchy(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const url = GlobalProperty.serverUrl() + `/api/system/depttree`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(

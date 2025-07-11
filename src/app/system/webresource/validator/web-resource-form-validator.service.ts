@@ -26,7 +26,7 @@ export class WebResourceFormValidatorService {
           debounceTime(1000),
           switchMap((val) => {
 
-            const url = GlobalProperty.serverUrl + `/api/system/webresource/${control.value}/check`;
+            const url = GlobalProperty.serverUrl() + `/api/system/webresource/${control.value}/check`;
             const options = getHttpOptions();
 
             return this.http.get<ResponseObject<boolean>>(url, options).pipe(

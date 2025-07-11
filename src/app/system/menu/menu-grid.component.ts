@@ -87,7 +87,7 @@ export class MenuGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Menu>>(
-      GlobalProperty.serverUrl + `/api/system/menu`,
+      GlobalProperty.serverUrl() + `/api/system/menu`,
       getHttpOptions(request)
     )
   })

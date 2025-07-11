@@ -86,7 +86,7 @@ export class WordGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Word>>(
-      GlobalProperty.serverUrl + `/api/system/word`,
+      GlobalProperty.serverUrl() + `/api/system/word`,
       getHttpOptions(request)
     )
   })

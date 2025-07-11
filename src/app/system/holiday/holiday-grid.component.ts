@@ -96,7 +96,7 @@ export class HolidayGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<DateInfo>>(
-      GlobalProperty.serverUrl + `/api/system/holiday`,
+      GlobalProperty.serverUrl() + `/api/system/holiday`,
       getHttpOptions(request)
     )
   })

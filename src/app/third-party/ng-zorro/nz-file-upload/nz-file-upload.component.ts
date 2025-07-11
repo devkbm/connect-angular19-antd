@@ -35,7 +35,7 @@ import { GlobalProperty } from 'src/app/core/global-property';
 export class NzFileUploadComponent implements OnInit {
 
   uploadParam = { pgmId: 'board', appUrl:'asd' };
-  uploadUrl: string = GlobalProperty.serverUrl + '/api/system/file';
+  uploadUrl: string = GlobalProperty.serverUrl() + '/api/system/file';
   fileUploadHeader: any;
 
   /*{

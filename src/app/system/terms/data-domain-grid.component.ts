@@ -85,7 +85,7 @@ export class DataDomainGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<DataDomain>>(
-      GlobalProperty.serverUrl + `/api/system/datadomin`,
+      GlobalProperty.serverUrl() + `/api/system/datadomin`,
       getHttpOptions(request)
     )
   })

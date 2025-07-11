@@ -205,7 +205,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
   }
 
   get(staffId: string, seq: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/family`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffId}/family`;
     const options = getHttpOptions();
 
     this.http
@@ -220,7 +220,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
   }
 
   save() {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family`;
     const options = getHttpOptions();
 
     this.http
@@ -236,7 +236,7 @@ export class StaffFamilyFormComponent implements OnInit, AfterViewInit, OnChange
   }
 
   remove(): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family/${this.fg.controls.seq.value}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${this.fg.controls.staffNo.value}/family/${this.fg.controls.seq.value}`;
     const options = getHttpOptions();
 
     this.http

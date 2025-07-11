@@ -85,7 +85,7 @@ export class StaffLicenseGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffLicense>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/license`,
+      GlobalProperty.serverUrl() + `/api/hrm/staff/${request}/license`,
       getHttpOptions(request)
     )
   })

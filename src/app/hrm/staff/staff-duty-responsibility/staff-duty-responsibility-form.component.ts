@@ -194,7 +194,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
 
   get(staffId: string, seq: string): void {
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/dutyresponsibility/${seq}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffId}/dutyresponsibility/${seq}`;
     const options = getHttpOptions();
 
     this.http
@@ -219,7 +219,7 @@ export class StaffDutyResponsibilityFormComponent implements OnInit, AfterViewIn
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo}/dutyresponsibility`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${this.fg.controls.staffNo}/dutyresponsibility`;
     const options = getHttpOptions();
 
     this.http

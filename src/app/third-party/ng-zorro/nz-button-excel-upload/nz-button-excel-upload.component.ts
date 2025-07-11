@@ -36,8 +36,8 @@ export class NzButtonExcelUploadComponent  implements OnInit {
   //@Input() urn: string = '';
 
   uploadParam = { pgmId: 'board', appUrl:'asd' };
-  //uploadUrl: string = GlobalProperty.serverUrl + '/api/system/file';
-  uploadUrl = computed(() => GlobalProperty.serverUrl + this.urn()); //'/api/system/user-excel';
+  //uploadUrl: string = GlobalProperty.serverUrl() + '/api/system/file';
+  uploadUrl = computed(() => GlobalProperty.serverUrl() + this.urn()); //'/api/system/user-excel';
 
   fileUploadHeader: any;
 
@@ -46,7 +46,7 @@ export class NzButtonExcelUploadComponent  implements OnInit {
   constructor() {
     /*
     effect(() => {
-      this.uploadUrl = GlobalProperty.serverUrl + this.urn();
+      this.uploadUrl = GlobalProperty.serverUrl() + this.urn();
       console.log(this.uploadUrl);
     });
     */

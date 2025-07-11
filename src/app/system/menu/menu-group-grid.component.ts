@@ -100,7 +100,7 @@ export class MenuGroupGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<MenuGroup>>(
-      GlobalProperty.serverUrl + `/api/system/menugroup`,
+      GlobalProperty.serverUrl() + `/api/system/menugroup`,
       getHttpOptions(request)
     )
   })

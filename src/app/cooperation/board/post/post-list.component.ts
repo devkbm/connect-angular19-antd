@@ -83,7 +83,7 @@ export class PostListComponent {
   }
 
   getList(boardId: any, page: number = 0, size: number = 20): void {
-    let url = GlobalProperty.serverUrl + `/api/grw/board/post_slice?boardId=${boardId}`;
+    let url = GlobalProperty.serverUrl() + `/api/grw/board/post_slice?boardId=${boardId}`;
     const options = getHttpOptions();
 
     url = url + '&page='+ page + '&size='+ size;

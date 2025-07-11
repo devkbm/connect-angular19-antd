@@ -170,7 +170,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/webresource/${id}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<WebResource>>(url, options).pipe(
@@ -193,7 +193,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const url = GlobalProperty.serverUrl() + `/api/system/webresource`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<WebResource>>(url, this.fg.getRawValue(), options).pipe(
@@ -208,7 +208,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
 
   remove() {
     const id = this.fg.controls.resourceId.value!;
-    const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/webresource/${id}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<WebResource>>(url, options).pipe(
@@ -222,7 +222,7 @@ export class WebResourceFormComponent implements OnInit, AfterViewInit {
   }
 
   getCommonCodeList() {
-    const url = GlobalProperty.serverUrl + `/api/system/webresource/resourcetype`;
+    const url = GlobalProperty.serverUrl() + `/api/system/webresource/resourcetype`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<ResouceTypeEnum>>(url, options).pipe(

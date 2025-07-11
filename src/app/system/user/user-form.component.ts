@@ -180,7 +180,7 @@ export class UserFormComponent implements OnInit {
 
   previewImage: string | undefined = '';
   previewVisible = false;
-  uploadUrl: string = GlobalProperty.serverUrl + '/api/system/user/image/';
+  uploadUrl: string = GlobalProperty.serverUrl() + '/api/system/user/image/';
   imageUploadHeader: any = {
     Authorization: sessionStorage.getItem('token')
     //'x-auth-token': sessionStorage.getItem('token')
@@ -279,7 +279,7 @@ export class UserFormComponent implements OnInit {
   }
 
   get(userId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user/${userId}`;
     const options = getHttpOptions();
 
     this.http
@@ -322,7 +322,7 @@ export class UserFormComponent implements OnInit {
         );
     */
 
-    const url = GlobalProperty.serverUrl + `/api/system/user`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user`;
     const options = getHttpOptions();
 
     this.http
@@ -338,7 +338,7 @@ export class UserFormComponent implements OnInit {
   }
 
   remove(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/user/${this.fg.controls.userId.value}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user/${this.fg.controls.userId.value}`;
     const options = getHttpOptions()
 
     this.http
@@ -354,7 +354,7 @@ export class UserFormComponent implements OnInit {
   }
 
   getRoleList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role`;
     const options = getHttpOptions()
 
     this.http
@@ -369,7 +369,7 @@ export class UserFormComponent implements OnInit {
   }
 
   getDeptHierarchy(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role`;
     const options = getHttpOptions()
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(

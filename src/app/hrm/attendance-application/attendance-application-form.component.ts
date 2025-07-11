@@ -219,7 +219,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
   }
 
   get(id: string) {
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication/${id}`;
     const options = getHttpOptions();
 
     this.http
@@ -234,7 +234,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
   }
 
   save() {
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication`;
     const options = getHttpOptions();
 
     this.http
@@ -250,7 +250,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
   }
 
   remove() {
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/${this.fg.controls.dutyId.value}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication/${this.fg.controls.dutyId.value}`;
     const options = getHttpOptions();
 
     this.http
@@ -280,7 +280,7 @@ export class AttendanceApplicationFormComponent implements OnInit {
   }
 
   getDutyDateList(fromDate: string, toDate: string) {
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication/period/${fromDate}/${toDate}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication/period/${fromDate}/${toDate}`;
     const options = getHttpOptions();
 
     this.http

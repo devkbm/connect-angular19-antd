@@ -140,8 +140,8 @@ export class UserProfileComponent {
   }
 
   logout() {
-    const url1 = GlobalProperty.serverUrl + `/api/system/user/auth1`;
-    const url2 = GlobalProperty.serverUrl + `/api/system/user/logout`;
+    const url1 = GlobalProperty.serverUrl() + `/api/system/user/auth1`;
+    const url2 = GlobalProperty.serverUrl() + `/api/system/user/logout`;
     const options = getHttpOptions();
 
     this.http.get<any>(url1, options).pipe(

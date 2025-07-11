@@ -85,7 +85,7 @@ export class BizCodeGridComponent extends AgGridCommon {
   };
 
   getList(typeId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${typeId}/bizcode`;
+    const url = GlobalProperty.serverUrl() + `/api/system/bizcodetype/${typeId}/bizcode`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<BizCode>>(url, options).pipe(

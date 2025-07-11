@@ -80,7 +80,7 @@ export class PostViewComponent {
   }
 
   get(id: any): void {
-    const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/grw/board/post/${id}`;
     const options = getHttpOptions();
 
     this.http
@@ -101,7 +101,7 @@ export class PostViewComponent {
   }
 
   updateHitCount(id: any, userId: any) {
-    const url = GlobalProperty.serverUrl + `/api/grw/board/post/hitcnt`;
+    const url = GlobalProperty.serverUrl() + `/api/grw/board/post/hitcnt`;
     const params = {id: id, userId: userId};
 
     const options = getHttpOptions(params);

@@ -87,7 +87,7 @@ export class BizCodeTypeGridComponent extends AgGridCommon implements OnInit {
   }
 
   getList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype`;
+    const url = GlobalProperty.serverUrl() + `/api/system/bizcodetype`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<BizCodeType>>(url, options).pipe(

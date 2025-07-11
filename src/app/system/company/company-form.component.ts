@@ -181,7 +181,7 @@ export class CompanyFormComponent  {
   }
 
   get(id: string) {
-    const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/company/${id}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<Company>>(url, options).pipe(
@@ -206,7 +206,7 @@ export class CompanyFormComponent  {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/system/company`;
+    const url = GlobalProperty.serverUrl() + `/api/system/company`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<Company>>(url, this.fg.getRawValue(), options).pipe(
@@ -221,7 +221,7 @@ export class CompanyFormComponent  {
   }
 
   remove() {
-    const url = GlobalProperty.serverUrl + `/api/system/company/${this.fg.controls.companyCode.value!}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/company/${this.fg.controls.companyCode.value!}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<Company>>(url, options).pipe(

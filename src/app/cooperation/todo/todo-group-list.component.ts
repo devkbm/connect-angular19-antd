@@ -138,7 +138,7 @@ export class TodoGroupListComponent implements OnInit {
   }
 
   addTodoGroup(): void {
-    const url = GlobalProperty.serverUrl + `/api/todo/group/new`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/new`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<TodoGroupModel>>(url, null, options).pipe(
@@ -155,7 +155,7 @@ export class TodoGroupListComponent implements OnInit {
   }
 
   getTodoGroupList(params?: any): void {
-    const url = GlobalProperty.serverUrl + `/api/todo/group/mylist`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/mylist`;
     const options = getHttpOptions(params);
 
     this.http.get<ResponseList<TodoGroupModel>>(url, options).pipe(
@@ -222,7 +222,7 @@ export class TodoGroupListComponent implements OnInit {
   renameTodoGroup(item: TodoGroupModel, name: string) {
     item.todoGroupName = name;
 
-    const url = GlobalProperty.serverUrl + `/api/todo/group`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group`;
     const options = getHttpOptions();
 
     const obj = {pkTodoGroup: item.pkTodoGroup, todoGroupName: name, isSelected: false};

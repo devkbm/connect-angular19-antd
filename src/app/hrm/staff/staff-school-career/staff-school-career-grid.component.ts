@@ -89,7 +89,7 @@ export class StaffSchoolCareerGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffSchoolCareer>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/schoolcareer`,
+      GlobalProperty.serverUrl() + `/api/hrm/staff/${request}/schoolcareer`,
       getHttpOptions(request)
     )
   })

@@ -163,7 +163,7 @@ export class AttendanceApplicationApp implements OnInit, AfterViewInit {
       staffId : staffNo
     };
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication`;
     const options = getHttpOptions(params);
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(

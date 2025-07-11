@@ -131,7 +131,7 @@ export class UserGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<User>>(
-      GlobalProperty.serverUrl + `/api/system/user`,
+      GlobalProperty.serverUrl() + `/api/system/user`,
       getHttpOptions(request)
     )
   })

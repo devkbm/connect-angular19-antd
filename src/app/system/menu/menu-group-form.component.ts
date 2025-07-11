@@ -155,7 +155,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
   }
 
   get(menuGroupCode: string) {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup/${menuGroupCode}`;
     const options = getHttpOptions();
 
     this.http
@@ -180,7 +180,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${this.fg.controls.menuGroupCode}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup/${this.fg.controls.menuGroupCode}`;
     const options = getHttpOptions();
 
     this.http
@@ -196,7 +196,7 @@ export class MenuGroupFormComponent implements OnInit, AfterViewInit {
   }
 
   remove() {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${this.fg.controls.menuGroupCode.value}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup/${this.fg.controls.menuGroupCode.value}`;
     const options = getHttpOptions();
 
     this.http

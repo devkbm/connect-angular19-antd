@@ -93,7 +93,7 @@ export class StaffAppointmentRecordGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffAppointmentRecord>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/record`,
+      GlobalProperty.serverUrl() + `/api/hrm/staff/${request}/record`,
       getHttpOptions()
     )
   })

@@ -223,7 +223,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   get(typeId: string, code: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}/code/${code}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype/${typeId}/code/${code}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<HrmCode>>(url, options).pipe(
@@ -246,7 +246,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   save(): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/type/code`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype/type/code`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<HrmCode>>(url, this.fg.getRawValue(), options).pipe(
@@ -261,7 +261,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   remove(): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${this.fg.controls.typeId.value}/code/${this.fg.controls.code.value}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype/${this.fg.controls.typeId.value}/code/${this.fg.controls.code.value}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<HrmCode>>(url, options).pipe(
@@ -276,7 +276,7 @@ export class HrmTypeCodeFormComponent implements OnInit, AfterViewInit {
   }
 
   getExtraFieldConfig(typeId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${typeId}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype/${typeId}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<any>>(url, options).pipe(

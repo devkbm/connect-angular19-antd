@@ -116,7 +116,7 @@ export class UserProfileFormComponent {
       afterPassword: this.fg.controls.afterPassword.value
     }
 
-    const url =  GlobalProperty.serverUrl + `/api/system/user/${this.fg.controls.userId.value}/changepassword`;
+    const url =  GlobalProperty.serverUrl() + `/api/system/user/${this.fg.controls.userId.value}/changepassword`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<boolean>>(url, val, options).pipe(

@@ -28,7 +28,7 @@ export class DeptFormValidatorService {
         debounceTime(1000),
         switchMap((val) => {
 
-          const url = GlobalProperty.serverUrl + `/api/system/dept/${control.value}/check`;
+          const url = GlobalProperty.serverUrl() + `/api/system/dept/${control.value}/check`;
           const options = getHttpOptions();
 
           return this.http.get<ResponseObject<boolean>>(url, options).pipe(

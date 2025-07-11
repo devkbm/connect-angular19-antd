@@ -105,7 +105,7 @@ export class NzInputSelectStaffComponent implements ControlValueAccessor, OnInit
   getStaffList(): void {
     const params = {isEnabled: true};
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff`;
     const options = getHttpOptions({isEnabled: true});
 
     this.http.get<ResponseList<Staff>>(url, options).pipe(

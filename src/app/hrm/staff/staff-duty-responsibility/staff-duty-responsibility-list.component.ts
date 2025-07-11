@@ -39,7 +39,7 @@ export class StaffDutyResponsibilityListComponent {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffDutyResponsibility>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/dutyresponsibility`,
+      GlobalProperty.serverUrl() + `/api/hrm/staff/${request}/dutyresponsibility`,
       getHttpOptions()
     )
   })

@@ -220,7 +220,7 @@ export class PostFormComponent implements AfterViewInit {
   }
 
   get(id: any): void {
-    const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/grw/board/post/${id}`;
     const options = getHttpOptions();
 
     this.http
@@ -244,7 +244,7 @@ export class PostFormComponent implements AfterViewInit {
   }
 
   save(): void {
-    const url = GlobalProperty.serverUrl + `/api/grw/board/post`;
+    const url = GlobalProperty.serverUrl() + `/api/grw/board/post`;
     const options = getHttpOptions();
 
     this.http
@@ -269,7 +269,7 @@ export class PostFormComponent implements AfterViewInit {
   }
 
   remove(id: any): void {
-    const url = GlobalProperty.serverUrl + `/api/grw/board/post/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/grw/board/post/${id}`;
     const options = getHttpOptions();
     this.http
         .delete<ResponseObject<Post>>(url, options).pipe(

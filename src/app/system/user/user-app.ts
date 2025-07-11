@@ -160,7 +160,7 @@ export class UserApp implements OnInit {
 
   deleteUser() {
     const userId: string = this.drawer.user.formDataId;
-    const url = GlobalProperty.serverUrl + `/api/system/user/${userId}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user/${userId}`;
     const options = getHttpOptions();
 
     this.http

@@ -174,7 +174,7 @@ export class StaffRegistFormComponent implements OnInit {
   imageUrl: string = '';
 
   upload: {url: string, headers:any, data: any} = {
-    url: GlobalProperty.serverUrl + '/api/hrm/staff/changeimage',
+    url: GlobalProperty.serverUrl() + '/api/hrm/staff/changeimage',
     headers: { Authorization: sessionStorage.getItem('token') },
     data: null
   }
@@ -227,12 +227,12 @@ export class StaffRegistFormComponent implements OnInit {
     urlParams.set("companyCode", sessionStorage.getItem("companyCode")!);
     urlParams.set("staffNo", this.staffNo!);
 
-    return GlobalProperty.serverUrl + '/api/hrm/staff/downloadimage' + '?' + urlParams;
+    return GlobalProperty.serverUrl() + '/api/hrm/staff/downloadimage' + '?' + urlParams;
   }
 
   get(staffId: string): void {
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffId}`;
     const options = getHttpOptions();
 
     this.http
@@ -246,7 +246,7 @@ export class StaffRegistFormComponent implements OnInit {
               this.upload.data = { companyCode: model.data.companyCode, staffNo: model.data.staffNo };
 
               if (model.data.imagePath) {
-                this.imageUrl = GlobalProperty.serverUrl + '/api/hrm/staff/downloadimage';
+                this.imageUrl = GlobalProperty.serverUrl() + '/api/hrm/staff/downloadimage';
               } else {
                 this.imageUrl = '';
               }
@@ -258,7 +258,7 @@ export class StaffRegistFormComponent implements OnInit {
   }
 
   save(): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff`;
     const options = getHttpOptions();
 
     this.http
@@ -292,8 +292,8 @@ export class StaffRegistFormComponent implements OnInit {
     console.log(param);
     if (param.type === 'success') {
       const serverFilePath = param.file.response.data;
-      //this.imageUrl = GlobalProperty.serverUrl + '/api/system/fileimage/' + this.findFileName(serverFilePath);
-      this.imageUrl = GlobalProperty.serverUrl + '/api/hrm/staff/downloadimage';
+      //this.imageUrl = GlobalProperty.serverUrl() + '/api/system/fileimage/' + this.findFileName(serverFilePath);
+      this.imageUrl = GlobalProperty.serverUrl() + '/api/hrm/staff/downloadimage';
     }
   }
 
@@ -303,7 +303,7 @@ export class StaffRegistFormComponent implements OnInit {
   }
 
   downloadImage(params: any): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/downloadimage`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/downloadimage`;
     const obj:any = {staffNo: this.fg.controls.staffNo.value!};
     const token = sessionStorage.getItem('token') as string;
 

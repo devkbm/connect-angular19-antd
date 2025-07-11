@@ -313,7 +313,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/dept/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/dept/${id}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<Dept>>(url, options).pipe(
@@ -342,7 +342,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/system/dept`;
+    const url = GlobalProperty.serverUrl() + `/api/system/dept`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<Dept>>(url, this.fg.getRawValue(), options).pipe(
@@ -357,7 +357,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
   }
 
   remove(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/dept/${this.fg.controls.deptCode.value!}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/dept/${this.fg.controls.deptCode.value!}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<Dept>>(url, options).pipe(
@@ -372,7 +372,7 @@ export class DeptFormComponent implements OnInit, AfterViewInit {
   }
 
   getDeptHierarchy(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const url = GlobalProperty.serverUrl() + `/api/system/depttree`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(

@@ -230,7 +230,7 @@ export class HolidayApp implements AfterViewInit {
     const id = formatDate(date, 'yyyyMMdd','ko-kr') as string;
     if (id === null) return;
 
-    const url = GlobalProperty.serverUrl + `/holiday/${id}`;
+    const url = GlobalProperty.serverUrl() + `/holiday/${id}`;
     const options = getHttpOptions();
 
     this.http

@@ -117,7 +117,7 @@ export class RoleGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Role>>(
-      GlobalProperty.serverUrl + `/api/system/role`,
+      GlobalProperty.serverUrl() + `/api/system/role`,
       getHttpOptions(request)
     )
   })

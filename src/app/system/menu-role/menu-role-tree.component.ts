@@ -101,7 +101,7 @@ export class MenuRoleTreeComponent {
   }
 
   public getHierarchy(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/menurolehierarchy/${this.menuGroupCode()}/${this.roleCode()}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menurolehierarchy/${this.menuGroupCode()}/${this.roleCode()}`;
     const options = getHttpOptions();
 
     this.http
@@ -142,7 +142,7 @@ export class MenuRoleTreeComponent {
   save() {
     this.setSaveNodes();
 
-    const url = GlobalProperty.serverUrl + `/api/system/menurole`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menurole`;
     const options = getHttpOptions();
 
     this.http

@@ -112,7 +112,7 @@ export class CompanyGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Company>>(
-      GlobalProperty.serverUrl + `/api/system/company`,
+      GlobalProperty.serverUrl() + `/api/system/company`,
       getHttpOptions(request)
     )
   })

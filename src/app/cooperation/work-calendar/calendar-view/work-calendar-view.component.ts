@@ -105,7 +105,7 @@ export class WorkCalendarViewComponent implements AfterViewInit {
       return;
     }
 
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendarevent`;
     const options = getHttpOptions({
         fkWorkCalendar : this.fkWorkCalendar,
         fromDate: this.from,

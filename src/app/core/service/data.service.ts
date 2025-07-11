@@ -14,7 +14,7 @@ export class DataService {
   protected tokenExtractor = inject(HttpXsrfTokenExtractor);
 
   constructor(protected API_URI: string) {
-    this.serverUrl = GlobalProperty.serverUrl;
+    this.serverUrl = GlobalProperty.serverUrl();
     this.API_URL = this.serverUrl + API_URI;
   }
 

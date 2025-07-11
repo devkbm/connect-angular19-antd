@@ -164,7 +164,7 @@ export class BizCodeFormComponent implements AfterViewInit {
   }
 
   get(typeId: string, code: string): void {
-    const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/${typeId}/bizcode/${code}`;
+    const url =  GlobalProperty.serverUrl() + `/api/system/bizcodetype/${typeId}/bizcode/${code}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<BizCode>>(url, options).pipe(
@@ -189,7 +189,7 @@ export class BizCodeFormComponent implements AfterViewInit {
       return;
     }
 
-    const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/bizcode`;
+    const url =  GlobalProperty.serverUrl() + `/api/system/bizcodetype/bizcode`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<BizCode>>(url, this.fg.getRawValue(), options).pipe(
@@ -204,7 +204,7 @@ export class BizCodeFormComponent implements AfterViewInit {
   }
 
   remove(): void {
-    const url =  GlobalProperty.serverUrl + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}/bizcode/${this.fg.controls.code.value!}`;
+    const url =  GlobalProperty.serverUrl() + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}/bizcode/${this.fg.controls.code.value!}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<BizCode>>(url, options).pipe(

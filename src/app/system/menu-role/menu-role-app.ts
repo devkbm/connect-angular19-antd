@@ -231,7 +231,7 @@ export class MenuRoleApp {
   }
 
   getMenuGroupList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup`;
     const options = getHttpOptions();
 
     this.http
@@ -248,7 +248,7 @@ export class MenuRoleApp {
   }
 
   getRoleList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role`;
     const options = getHttpOptions();
 
     this.http

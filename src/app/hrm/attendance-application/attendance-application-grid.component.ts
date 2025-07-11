@@ -94,7 +94,7 @@ export class AttendanceApplicationGridComponent extends AgGridCommon implements 
   }
 
   public getGridList(staffNo: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication`;
     const options = getHttpOptions({staffId : staffNo});
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(
@@ -127,12 +127,12 @@ export class AttendanceApplicationGridComponent extends AgGridCommon implements 
     this.editButtonClicked.emit(e.rowData);
   }
 
-  // GlobalProperty.serverUrl
+  // GlobalProperty.serverUrl()
 
 
 
   getList(params: any) {
-    const url = GlobalProperty.serverUrl + `/api/hrm/dutyapplication`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/dutyapplication`;
     const options = getHttpOptions(params);
 
     this.http.get<ResponseList<AttendanceApplicationGrid>>(url, options).pipe(

@@ -194,7 +194,7 @@ export class CompanyApp implements OnInit {
 
     const id = this.grid().getSelectedRows()[0].companyCode;
 
-    const url = GlobalProperty.serverUrl + `/api/system/company/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/company/${id}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<void>>(url, options).pipe(

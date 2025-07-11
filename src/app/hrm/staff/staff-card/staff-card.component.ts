@@ -49,7 +49,7 @@ export class StaffCardComponent implements OnInit {
 
   getProfilePicture() {
     if (this.data?.profilePicture) {
-      return GlobalProperty.serverUrl + '/static/' + this.data?.profilePicture;
+      return GlobalProperty.serverUrl() + '/static/' + this.data?.profilePicture;
     }
     return undefined;
   }

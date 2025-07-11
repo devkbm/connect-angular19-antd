@@ -144,7 +144,7 @@ export class CalendarFullcalendarComponent {
       toDate: '20250131'
     };
 
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendarevent`;
     const options = getHttpOptions({
         fkWorkCalendar : 1,
         fromDate: '20250101',

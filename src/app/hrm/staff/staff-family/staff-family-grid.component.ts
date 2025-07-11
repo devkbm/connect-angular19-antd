@@ -87,7 +87,7 @@ export class StaffFamilyGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.staffNo(),
     loader: ({request}) => this.http.get<ResponseList<StaffFamily>>(
-      GlobalProperty.serverUrl + `/api/hrm/staff/${request}/family`,
+      GlobalProperty.serverUrl() + `/api/hrm/staff/${request}/family`,
       getHttpOptions(request)
     )
   })

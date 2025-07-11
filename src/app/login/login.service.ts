@@ -71,7 +71,7 @@ export class LoginService extends DataService {
   }
 
   getAuthToken(companyCode: string): Observable<UserToken> {
-    const url = GlobalProperty.serverUrl + '/api/system/user/auth?companyCode='+companyCode;
+    const url = GlobalProperty.serverUrl() + '/api/system/user/auth?companyCode='+companyCode;
 
     const options = getHttpOptions();
 
@@ -81,7 +81,7 @@ export class LoginService extends DataService {
   }
 
   getOAuth2Token(companyCode: string): Observable<UserToken> {
-    const url = GlobalProperty.serverUrl + '/api/system/user/oauth2?companyCode='+companyCode;
+    const url = GlobalProperty.serverUrl() + '/api/system/user/oauth2?companyCode='+companyCode;
 
     const options = getHttpOptions();
 

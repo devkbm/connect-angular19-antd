@@ -394,7 +394,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
   }
 
   get(staffId: string, id: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
     const options = getHttpOptions();
 
     this.http
@@ -409,7 +409,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
   }
 
   save(): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/appointmentrecord`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${this.fg.controls.staffNo.value}/appointmentrecord`;
     const options = getHttpOptions();
 
     this.http
@@ -425,7 +425,7 @@ export class StaffAppointmentRecordFormComponent implements OnInit {
   }
 
   remove(staffId: string, id: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffId}/appointmentrecord/${id}`;
     const options = getHttpOptions();
 
     this.http

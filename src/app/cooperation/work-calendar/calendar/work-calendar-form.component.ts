@@ -161,7 +161,7 @@ export class WorkCalendarFormComponent implements OnInit {
   }
 
   get(id: number): void {
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendar/${id}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<WorkCalendar>>(url, options).pipe(
@@ -180,7 +180,7 @@ export class WorkCalendarFormComponent implements OnInit {
   }
 
   save(): void {
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendar`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<WorkCalendar>>(url, this.fg.getRawValue(), options).pipe(
@@ -196,7 +196,7 @@ export class WorkCalendarFormComponent implements OnInit {
   remove(): void {
     const id: string = this.fg.controls.workCalendarId.value!;
 
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendar/${id}`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendar/${id}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<WorkCalendar>>(url, options).pipe(
@@ -210,7 +210,7 @@ export class WorkCalendarFormComponent implements OnInit {
   }
 
   getAllMember(): void {
-    const url =  GlobalProperty.serverUrl + `/api/system/user`;
+    const url =  GlobalProperty.serverUrl() + `/api/system/user`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<WorkCalendarMember>>(url, options).pipe(

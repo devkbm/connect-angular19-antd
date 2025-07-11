@@ -31,7 +31,7 @@ export class UserSessionService extends DataService {
 
   constructor() {
     super('/api/system/user');
-    this.IMAGE_URI = GlobalProperty.serverUrl + '/api/system/user/image';
+    this.IMAGE_URI = GlobalProperty.serverUrl() + '/api/system/user/image';
   }
 
   getAvartarImageString(): string | null {

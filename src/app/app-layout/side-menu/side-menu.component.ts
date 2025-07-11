@@ -157,7 +157,7 @@ export class SideMenuComponent {
   getMenuList(menuGroupCode: string): void {
 
     const userId = SessionManager.getUserId() as string;
-    const url =  GlobalProperty.serverUrl + `/api/system/menuhierarchy/${userId}/${menuGroupCode}`;
+    const url =  GlobalProperty.serverUrl() + `/api/system/menuhierarchy/${userId}/${menuGroupCode}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<MenuHierarchy>>(url, options).pipe(

@@ -43,7 +43,7 @@ export class DeptTreeComponent {
   private http = inject(HttpClient);
 
   public getDeptHierarchy(companyCode: string) {
-    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const url = GlobalProperty.serverUrl() + `/api/system/depttree`;
     const options = getHttpOptions({company: companyCode});
 
     this.http.get<ResponseList<DeptHierarchy>>(url, options).pipe(

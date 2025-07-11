@@ -211,7 +211,7 @@ export class RoleApp implements AfterViewInit {
 
   delete() {
     const id = this.grid().getSelectedRows()[0].roleCode;
-    const url = GlobalProperty.serverUrl + `/api/system/role/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role/${id}`;
     const options = getHttpOptions();
 
     this.http

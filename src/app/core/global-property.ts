@@ -5,10 +5,14 @@ import { Injectable } from '@angular/core';
 })
 export class GlobalProperty {
 
-    //static serverUrl: string = "https://localhost:8090";          // 로컬 테스트용
-    //static serverUrl: string = "https://158.180.86.87:8090";        // 오라클 클라우드
-    static serverUrl: string = "https://connect-one.zapto.org";
+    //static _serverUrl: string = "https://localhost:8090";          // 로컬 테스트용
+    //static _serverUrl: string = "https://158.180.86.87:8090";        // 오라클 클라우드
+    static _serverUrl: string = "https://connect-one.zapto.org";    // 오라클 클라우드
 
-    //public static serverUrl: string = "http://kbm0417.gonetis.com:8090";
+    static serverUrl() {
+      const url  = sessionStorage.getItem('serverUrl');
+      if (url) return url;
 
+      return this._serverUrl;
+    }
 }

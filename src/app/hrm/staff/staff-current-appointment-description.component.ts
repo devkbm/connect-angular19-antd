@@ -65,7 +65,7 @@ export class StaffCurrentAppointmentDescriptionComponent {
 
   get(staffNo: string): void {
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffNo}/currentappointment`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffNo}/currentappointment`;
     const options = getHttpOptions();
 
     this.http

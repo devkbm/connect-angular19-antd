@@ -83,7 +83,7 @@ export interface UploadedFile {
 export class FileUploadComponent {
 
   uploader: FileUploader = new FileUploader({
-    url: GlobalProperty.serverUrl + '/api/system/file',
+    url: GlobalProperty.serverUrl() + '/api/system/file',
     authToken: sessionStorage.getItem('token')!,
   });
 

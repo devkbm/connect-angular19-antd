@@ -275,8 +275,8 @@ export class AppLayoutComponent implements OnInit  {
   }
 
   logout() {
-    const url1 = GlobalProperty.serverUrl + `/api/system/user/auth1`;
-    const url2 = GlobalProperty.serverUrl + `/api/system/user/logout`;
+    const url1 = GlobalProperty.serverUrl() + `/api/system/user/auth1`;
+    const url2 = GlobalProperty.serverUrl() + `/api/system/user/logout`;
     const options = getHttpOptions();
 
     this.http.get<any>(url1, options).pipe(
@@ -297,7 +297,7 @@ export class AppLayoutComponent implements OnInit  {
 
   logout2() {
     /*
-    const url = GlobalProperty.serverUrl + `/api/system/user/logout`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user/logout`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<any>>(url, options).pipe(
@@ -310,8 +310,8 @@ export class AppLayoutComponent implements OnInit  {
     );
     */
 
-    const url1 = GlobalProperty.serverUrl + `/api/system/user/auth1`;
-    const url2 = GlobalProperty.serverUrl + `/api/system/user/logout`;
+    const url1 = GlobalProperty.serverUrl() + `/api/system/user/auth1`;
+    const url2 = GlobalProperty.serverUrl() + `/api/system/user/logout`;
     const options = getHttpOptions();
 
     const auth = this.http.get<ResponseList<any>>(url1, options).pipe(
@@ -331,7 +331,7 @@ export class AppLayoutComponent implements OnInit  {
 
 
   test(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/user/auth1`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user/auth1`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<any>>(url, options).pipe(

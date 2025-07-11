@@ -101,7 +101,7 @@ export class NzInputSelectCompanyComponent implements ControlValueAccessor {
   getCompanyList(): void {
     const params = {isEnabled: true};
 
-    const url = GlobalProperty.serverUrl + `/api/system/company`;
+    const url = GlobalProperty.serverUrl() + `/api/system/company`;
     const options = getHttpOptions(params);
 
     this.http.get<ResponseList<CompanyModel>>(url, options).pipe(

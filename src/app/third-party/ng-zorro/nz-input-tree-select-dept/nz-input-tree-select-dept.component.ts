@@ -86,7 +86,7 @@ export class NzInputTreeSelectDeptComponent implements ControlValueAccessor {
   compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.value === o2.value : o1 === o2);
 
   getDeptHierarchy(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/depttree`;
+    const url = GlobalProperty.serverUrl() + `/api/system/depttree`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<NzInputTreeSelectDept>>(url, options).pipe(

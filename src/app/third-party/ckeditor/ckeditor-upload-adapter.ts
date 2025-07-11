@@ -5,7 +5,7 @@ import { GlobalProperty } from "src/app/core/global-property";
 export class CkeditorUploadAdapter {
   xhr: any;
   loader: any;
-  UPLOAD_URL: string = GlobalProperty.serverUrl + '/common/file/';
+  UPLOAD_URL: string = GlobalProperty.serverUrl() + '/common/file/';
 
   constructor( loader: any) {
     // The file loader instance to use during the upload.

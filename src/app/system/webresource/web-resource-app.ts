@@ -139,7 +139,7 @@ export class WebResourceApp implements OnInit {
   delete(): void {
     const id = this.grid().getSelectedRows()[0].resourceId;
 
-    const url = GlobalProperty.serverUrl + `/api/system/webresource/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/webresource/${id}`;
     const options = getHttpOptions();
     this.http.delete<ResponseObject<WebResource>>(url, options).pipe(
       //catchError((err) => Observable.throw(err))

@@ -130,7 +130,7 @@ export class TodoApp implements OnInit {
   }
 
   toggleTodo(todo: TodoModel) {
-    const url = GlobalProperty.serverUrl + `/api/todo/group/todo`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/todo`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<TodoModel>>(url, todo, options).pipe(
@@ -144,7 +144,7 @@ export class TodoApp implements OnInit {
   }
 
   addTodo(todo: TodoModel) {
-    const url = GlobalProperty.serverUrl + `/api/todo/group/todo`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/todo`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<TodoModel>>(url, todo, options).pipe(
@@ -164,7 +164,7 @@ export class TodoApp implements OnInit {
   }
 
   deleteTodo(todo: TodoModel) {
-    const url = GlobalProperty.serverUrl + `/api/todo/group/${todo.pkTodoGroup}/todo/${todo.pkTodo}`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/${todo.pkTodoGroup}/todo/${todo.pkTodo}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<TodoModel>>(url, options).pipe(
@@ -194,7 +194,7 @@ export class TodoApp implements OnInit {
   getTodoList(pkTodoGroup: string): void {
     this.selectedPkTodoGroup = pkTodoGroup;
 
-    const url = GlobalProperty.serverUrl + `/api/todo/group/${pkTodoGroup}/list`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/${pkTodoGroup}/list`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<TodoModel>>(url, options).pipe(
@@ -209,7 +209,7 @@ export class TodoApp implements OnInit {
   }
 
   deleteTodoGroup(pkTodoGroup: string) {
-    const url = GlobalProperty.serverUrl + `/api/todo/group${pkTodoGroup}`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group${pkTodoGroup}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<TodoGroupModel>>(url, options).pipe(

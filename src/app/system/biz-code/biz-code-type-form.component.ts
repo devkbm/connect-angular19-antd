@@ -204,7 +204,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/bizcodetype/${id}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<BizCodeType>>(url, options).pipe(
@@ -229,7 +229,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype`;
+    const url = GlobalProperty.serverUrl() + `/api/system/bizcodetype`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<BizCodeType>>(url, this.fg.getRawValue(), options).pipe(
@@ -244,7 +244,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   remove(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/bizcodetype/${this.fg.controls.typeId.value!}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<BizCodeType>>(url, options).pipe(
@@ -259,7 +259,7 @@ export class BizCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   getSystemList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/bizcodetype/system`;
+    const url = GlobalProperty.serverUrl() + `/api/system/bizcodetype/system`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<SelectControlModel>>(url, options).pipe(

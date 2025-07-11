@@ -172,7 +172,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
   }
 
   get(code: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${code}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype/${code}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<HrmType>>(url, options).pipe(
@@ -199,7 +199,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype`;
     const options = getHttpOptions();
 
     this.http.post<ResponseObject<HrmType>>(url, this.fg.getRawValue(), options).pipe(
@@ -215,7 +215,7 @@ export class HrmCodeTypeFormComponent implements OnInit, AfterViewInit {
 
   remove(): void {
     const id = this.fg.controls.typeId.value!;
-    const url = GlobalProperty.serverUrl + `/api/hrm/hrmtype/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/hrmtype/${id}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<HrmType>>(url, options).pipe(

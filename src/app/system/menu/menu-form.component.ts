@@ -264,7 +264,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   }
 
   get(menuGroupCode: string, menuCode: string) {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
     const options = getHttpOptions();
 
     this.http
@@ -295,7 +295,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
 
     const menuGroupCode = this.fg.controls.menuGroupCode.value;
     const menuCode = this.fg.controls.menuCode.value;
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
     const options = getHttpOptions();
 
     this.http
@@ -314,7 +314,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   remove(): void {
     const menuGroupCode = this.fg.controls.menuGroupCode.value;
     const menuCode = this.fg.controls.menuCode.value;
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup/${menuGroupCode}/menu/${menuCode}`;
     const options = getHttpOptions();
 
     this.http
@@ -333,7 +333,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   getMenuHierarchy(menuGroupId: string): void {
     if (!menuGroupId) return;
 
-    const url = GlobalProperty.serverUrl + `/api/system/menuhierarchy/${menuGroupId}}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menuhierarchy/${menuGroupId}}`;
     const options = getHttpOptions();
 
     this.http
@@ -348,7 +348,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   }
 
   getMenuGroupList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup`;
     const options = getHttpOptions();
 
     this.http
@@ -364,7 +364,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   }
 
   getMenuTypeList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/menu/menutype`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menu/menutype`;
     const options = getHttpOptions();
 
     this.http
@@ -380,7 +380,7 @@ export class MenuFormComponent implements OnInit, AfterViewInit {
   }
 
   getResourceList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/webresource`;
+    const url = GlobalProperty.serverUrl() + `/api/system/webresource`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<any>>(url, options).pipe(

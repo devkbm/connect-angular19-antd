@@ -91,14 +91,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class UserImageUploadComponent implements OnInit, OnChanges {
 
   upload: {url: string, headers: any, data: any} = {
-    url: GlobalProperty.serverUrl + '/api/system/user/image',
+    url: GlobalProperty.serverUrl() + '/api/system/user/image',
     headers: { Authorization: sessionStorage.getItem('token') },
     data: null
   }
 
   previewImage: string | undefined = '';
 
-  imageSrc: string = GlobalProperty.serverUrl + '/api/system/user/image'; //'/static/';
+  imageSrc: string = GlobalProperty.serverUrl() + '/api/system/user/image'; //'/static/';
 
   /*
   @Input() imageWidth: string = '150px';
@@ -167,7 +167,7 @@ export class UserImageUploadComponent implements OnInit, OnChanges {
   }
 
   downloadImage(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/user/image`;
+    const url = GlobalProperty.serverUrl() + `/api/system/user/image`;
     const obj:any = {companyCode: sessionStorage.getItem('companyCode'),  userId: this.userId()};
     const token = sessionStorage.getItem('token') as string;
 

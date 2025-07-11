@@ -205,7 +205,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
   }
 
   get(staffId: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${staffId}/contact`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${staffId}/contact`;
     const options = getHttpOptions();
 
     this.http
@@ -220,7 +220,7 @@ export class StaffContactFormComponent implements OnInit, AfterViewInit, OnChang
   }
 
   save() {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/${this.fg.controls.staffNo.value}/contact`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/${this.fg.controls.staffNo.value}/contact`;
     const options = getHttpOptions();
 
     this.http

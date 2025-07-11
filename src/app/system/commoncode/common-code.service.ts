@@ -50,7 +50,7 @@ export class CommonCodeService extends DataService {
   }
 
   getCodeHierarchy(params?: any): Observable<ResponseList<CommonCodeHierarchy>> {
-    const url = GlobalProperty.serverUrl + `/api/system/codetree`;
+    const url = GlobalProperty.serverUrl() + `/api/system/codetree`;
     const options = getHttpOptions(params);
 
     return this.http.get<ResponseList<CommonCodeHierarchy>>(url, options).pipe(

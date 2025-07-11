@@ -61,7 +61,7 @@ export class MyWorkCalendarListComponent implements OnInit {
   }
 
   getMyWorkGroupList(): void {
-    const url =  GlobalProperty.serverUrl + `/api/grw/myworkcalendar`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/myworkcalendar`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<any>>(url, options).pipe(

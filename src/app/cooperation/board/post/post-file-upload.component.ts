@@ -173,7 +173,7 @@ export class PostFileUploadComponent {
   postId = signal<string>('');
 
   uploader: FileUploader =  new FileUploader({
-    url: GlobalProperty.serverUrl + `/api/grw/board/post/file`,
+    url: GlobalProperty.serverUrl() + `/api/grw/board/post/file`,
     authToken: sessionStorage.getItem('token')!
   });
 
@@ -202,7 +202,7 @@ export class PostFileUploadComponent {
   upload() {
     console.log(this.postId());
     this.uploader.setOptions({
-      url: GlobalProperty.serverUrl + `/api/grw/board/post/file`,
+      url: GlobalProperty.serverUrl() + `/api/grw/board/post/file`,
       authToken: sessionStorage.getItem('token')!,
       additionalParameter: {postId: this.postId()}
     });
@@ -214,7 +214,7 @@ export class PostFileUploadComponent {
   }
 
   deleteFile(postId: string, fileId: string) {
-    let url = GlobalProperty.serverUrl + `/api/grw/board/post/${postId}/file/${fileId}`;
+    let url = GlobalProperty.serverUrl() + `/api/grw/board/post/${postId}/file/${fileId}`;
     const options = getHttpOptions();
 
     this.http.delete<boolean>(url, options).pipe(

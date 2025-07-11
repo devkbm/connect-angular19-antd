@@ -248,7 +248,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   }
 
   get(id: string): void {
-    const url = GlobalProperty.serverUrl + `/api/system/role/${id}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role/${id}`;
     const options = getHttpOptions();
 
     this.http
@@ -274,7 +274,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const url = GlobalProperty.serverUrl + `/api/system/role`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role`;
     const options = getHttpOptions();
 
     this.http
@@ -290,7 +290,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   }
 
   remove(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/role/${this.fg.controls.roleCode.value}`;
+    const url = GlobalProperty.serverUrl() + `/api/system/role/${this.fg.controls.roleCode.value}`;
     const options = getHttpOptions();
 
     this.http
@@ -306,7 +306,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   }
 
   getMenuGroupList(): void {
-    const url = GlobalProperty.serverUrl + `/api/system/menugroup`;
+    const url = GlobalProperty.serverUrl() + `/api/system/menugroup`;
     const options = getHttpOptions();
 
     this.http

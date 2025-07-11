@@ -118,7 +118,7 @@ export class NewStaffFormComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   save() {
-    const url = GlobalProperty.serverUrl + `/api/hrm/staff/create`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/staff/create`;
     const options = getHttpOptions();
 
     this.http

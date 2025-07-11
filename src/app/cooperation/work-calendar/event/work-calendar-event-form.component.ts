@@ -306,7 +306,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   }
 
   get(id: string): void {
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendarevent/${id}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseObject<WorkCalendarEvent>>(url, options).pipe(
@@ -332,7 +332,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
       return;
     }
 
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendarevent`;
     const options = getHttpOptions();
 
     this.http
@@ -349,7 +349,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   remove(): void {
     const id = this.fg.controls.id.value!;
 
-    const url =  GlobalProperty.serverUrl + `/api/grw/workcalendarevent/${id}`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/workcalendarevent/${id}`;
     const options = getHttpOptions();
 
     this.http
@@ -364,7 +364,7 @@ export class WorkCalendarEventFormComponent implements OnInit, AfterViewInit, On
   }
 
   getMyWorkGroupList(): void {
-    const url =  GlobalProperty.serverUrl + `/api/grw/myworkcalendar`;
+    const url =  GlobalProperty.serverUrl() + `/api/grw/myworkcalendar`;
     const options = getHttpOptions();
 
     this.http

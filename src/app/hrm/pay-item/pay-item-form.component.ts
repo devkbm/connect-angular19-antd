@@ -132,7 +132,7 @@ export class PayItemFormComponent {
     }
 
     get(id: string): void {
-      const url = GlobalProperty.serverUrl + `/api/hrm/payitem/${id}`;
+      const url = GlobalProperty.serverUrl() + `/api/hrm/payitem/${id}`;
       const options = getHttpOptions();
 
       this.http
@@ -147,7 +147,7 @@ export class PayItemFormComponent {
       }
 
       save(): void {
-        const url = GlobalProperty.serverUrl + `/api/hrm/payitem`;
+        const url = GlobalProperty.serverUrl() + `/api/hrm/payitem`;
         const options = getHttpOptions();
 
         this.http

@@ -102,7 +102,7 @@ export class CommonCodeGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<CommonCode>>(
-      GlobalProperty.serverUrl + `/api/system/code`,
+      GlobalProperty.serverUrl() + `/api/system/code`,
       getHttpOptions(request)
     )
   })

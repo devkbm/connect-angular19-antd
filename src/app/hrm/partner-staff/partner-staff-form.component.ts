@@ -122,7 +122,7 @@ export class PartnerStaffFormComponent {
   }
 
   get(staffNo: string): void {
-    const url = GlobalProperty.serverUrl + `/api/hrm/partnerstaff/${staffNo}`;
+    const url = GlobalProperty.serverUrl() + `/api/hrm/partnerstaff/${staffNo}`;
     const options = getHttpOptions();
 
     this.http
@@ -137,7 +137,7 @@ export class PartnerStaffFormComponent {
     }
 
     save(): void {
-      const url = GlobalProperty.serverUrl + `/api/hrm/partnerstaff`;
+      const url = GlobalProperty.serverUrl() + `/api/hrm/partnerstaff`;
       const options = getHttpOptions();
 
       this.http

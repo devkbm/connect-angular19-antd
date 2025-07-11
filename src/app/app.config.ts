@@ -23,9 +23,9 @@ import { ko_KR, provideNzI18n } from 'ng-zorro-antd/i18n';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes,
-    withComponentInputBinding(),
-    //withDebugTracing()
-  ),
+      withComponentInputBinding(),
+      //withDebugTracing()
+    ),
     provideHttpClient(withXsrfConfiguration({cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN'}), withInterceptorsFromDi()),
     //importProvidersFrom(FormsModule),
     { provide: HTTP_INTERCEPTORS, useClass: CustomHttpInterceptor, multi: true },

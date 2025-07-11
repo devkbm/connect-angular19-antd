@@ -66,7 +66,7 @@ export class BoardTreeComponent {
   itemDbClicked = output<any>();
 
   getboardHierarchy(): void {
-    let url = GlobalProperty.serverUrl + `/api/grw/boardHierarchy`;
+    let url = GlobalProperty.serverUrl() + `/api/grw/boardHierarchy`;
     const options = getHttpOptions();
     this.http
         .get<ResponseList<BoardHierarchy>>(url, options)

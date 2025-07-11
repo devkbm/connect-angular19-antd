@@ -98,7 +98,7 @@ export class NzInputSelectDeptComponent implements ControlValueAccessor {
   getDeptList(): void {
     const params = {isEnabled: true};
 
-    const url = GlobalProperty.serverUrl + `/api/system/dept`;
+    const url = GlobalProperty.serverUrl() + `/api/system/dept`;
     const options = getHttpOptions(params);
 
     this.http.get<ResponseList<NzInputSelectDeptModel>>(url, options).pipe(

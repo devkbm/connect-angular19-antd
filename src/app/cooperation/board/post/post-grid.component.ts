@@ -138,7 +138,7 @@ export class PostGridComponent extends AgGridCommon implements OnInit {
         );
     */
 
-    let url = GlobalProperty.serverUrl + `/api/grw/board/post?boardId=${boardId}`;
+    let url = GlobalProperty.serverUrl() + `/api/grw/board/post?boardId=${boardId}`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<Post>>(url, options).pipe(

@@ -87,7 +87,7 @@ export class TermGridComponent extends AgGridCommon {
   gridResource = rxResource({
     request: () => this.gridQuery(),
     loader: ({request}) => this.http.get<ResponseList<Term>>(
-      GlobalProperty.serverUrl + `/api/system/terms`,
+      GlobalProperty.serverUrl() + `/api/system/terms`,
       getHttpOptions(request)
     )
   })
