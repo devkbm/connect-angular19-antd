@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { CommonCodeGridComponent } from './common-code-grid.component';
@@ -26,6 +27,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
     NzFormModule,
     NzSelectModule,
     NzInputModule,
+    NzDividerModule,
     NzButtonsComponent,
     NzPageHeaderCustomComponent,
     NzSearchAreaComponent,
@@ -57,8 +59,8 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
         </ng-template>
       </div>
       <div nz-col [nzSpan]="12" style="text-align: right;">
-        <app-nz-buttons [buttons]="buttons"></app-nz-buttons>
-        <!--
+        <!--<app-nz-buttons [buttons]="buttons"></app-nz-buttons>-->
+
         <button nz-button nzType="primary" (click)="getCommonCodeTree()">
           <span nz-icon nzType="search"></span>조회
         </button>
@@ -78,7 +80,7 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
           (nzOnConfirm)="deleteCommonCode()" (nzOnCancel)="false">
           <span nz-icon nzType="delete" nzTheme="outline"></span>삭제
         </button>
-        -->
+
       </div>
     </div>
   </app-nz-search-area>
