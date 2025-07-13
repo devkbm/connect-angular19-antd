@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,19 +9,25 @@ import { GlobalProperty } from 'src/app/core/global-property';
 
 import { LoginService } from './login.service';
 import { UserToken } from './user-token.model';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'app-login',
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NzSelectModule
   ],
   template: `
 <div class="body">
   <div class="login">
     <h1>Login</h1>
 
+    <nz-select [(ngModel)]="serverType">
+      <nz-option nzValue="LOCAL" nzLabel="로컬"></nz-option>
+      <nz-option nzValue="PROD" nzLabel="운영기"></nz-option>
+    </nz-select> {{serverType()}}
     <form nz-form [formGroup]="form">
       <input type="text" formControlName="staffNo" placeholder="Username" required="required" />
       <input type="password" formControlName="password" placeholder="Password" required="required" />
@@ -127,7 +133,7 @@ export class LoginComponent implements OnInit {
   private winRef = inject(WindowRef);
 
   form = inject(FormBuilder).group({
-    companyCode  : new FormControl<string | null>('001', { validators: Validators.required }),
+    companyCode       : new FormControl<string | null>('001', { validators: Validators.required }),
     staffNo           : new FormControl<string | null>(null, { validators: Validators.required }),
     password          : new FormControl<string | null>(null, { validators: Validators.required }),
     remember          : new FormControl<boolean>(false, { validators: Validators.required })
@@ -135,18 +141,19 @@ export class LoginComponent implements OnInit {
 
   private FIRST_PAGE_URL = '/home';
 
-  /*
-  constructor(
-    private fb: FormBuilder,
-    private loginService: LoginService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private winRef: WindowRef
-    ) {
-      console.log(winRef);
-  }
-  */
+  serverType = signal<'LOCAL' | 'PROD'>('PROD');
 
+  constructor() {
+    effect(() => {
+      if (this.serverType()) {
+        if (this.serverType() === 'LOCAL') {
+          sessionStorage.setItem('serverUrl', 'https://localhost:8090');
+        } else if (this.serverType() === 'PROD') {
+          sessionStorage.setItem('serverUrl', 'https://connect-one.zapto.org');
+        }
+      }
+    })
+  }
 
   ngOnInit(): void {
     const token = this.route.snapshot.params['id'];
@@ -164,6 +171,8 @@ export class LoginComponent implements OnInit {
           );
     }
   }
+
+
 
   submitForm(): void {
     // tslint:disable-next-line:forin

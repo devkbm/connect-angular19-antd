@@ -8,9 +8,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 export interface TodoModel {
-  pkTodoGroup: string;
-  pkTodo: string;
-  isCompleted: boolean;
+  groupId: string;
+  todoId: string;
+  completed: boolean;
   todo: string;
 }
 
@@ -18,8 +18,8 @@ export interface TodoModel {
   selector: 'app-todo-text',
   imports: [CommonModule, FormsModule, NzCheckboxModule, NzButtonModule, NzIconModule],
   template: `
-    <label nz-checkbox [(ngModel)]="todo().isCompleted" (change)="changeState()"></label>
-    <label (click)="toggleState()" [class.line-break]="todo().isCompleted"> {{ todo().todo }} </label>
+    <label nz-checkbox [(ngModel)]="todo().completed" (change)="changeState()"></label>
+    <label (click)="toggleState()" [class.line-break]="todo().completed"> {{ todo().todo }} </label>
     <button nz-button nzType="primary" nzDanger (click)="deleteTodo()"><span nz-icon nzType="delete" nzTheme="outline"></span></button>
   `,
   styles: `

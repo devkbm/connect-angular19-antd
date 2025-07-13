@@ -14,7 +14,7 @@ import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
 export interface TodoGroupModel {
-  pkTodoGroup: string;
+  groupId: string;
   todoGroupName: string;
   isSelected: boolean;
 }
@@ -32,17 +32,17 @@ export interface TodoGroupModel {
   template: `
     <button nz-button (click)="addTodoGroup()" style="width:100%">그룹 추가</button>
 
-    @for (todoGroup of todoGroupList; track todoGroup.pkTodoGroup) {
+    @for (todoGroup of todoGroupList; track todoGroup.groupId) {
       <div
         [contextMenu]="basicMenu()" [contextMenuValue]="todoGroup"
-        (click)="selectTodoGroup(todoGroup.pkTodoGroup)">
+        (click)="selectTodoGroup(todoGroup.groupId)">
         {{todoGroup.todoGroupName}}
-        <label nz-checkbox [(ngModel)]="todoGroup.isSelected" (ngModelChange)="selectTodoGroup(todoGroup.pkTodoGroup)" ></label>
+        <label nz-checkbox [(ngModel)]="todoGroup.isSelected" (ngModelChange)="selectTodoGroup(todoGroup.groupId)" ></label>
       </div>
 
       <context-menu menuClass="custom-style">
         <ng-template contextMenuItem let-value [passive]="true"
-          (execute)="showMessage('Hi, someone', $event.value.pkTodoGroup)">
+          (execute)="showMessage('Hi, someone', $event.value.groupId)">
 
           <input #rename value="{{value.todoGroupName}}" (keydown.enter)="renameTodoGroup(value, rename.value)"/>
           <button (click)="renameTodoGroup(value, rename.value)">변경</button>
@@ -149,7 +149,7 @@ export class TodoGroupListComponent implements OnInit {
             if (model === null || model === undefined) return;
 
             this.todoGroupList.push(model.data);
-            this.onSelectedTodoGroup.emit(model.data.pkTodoGroup);
+            this.onSelectedTodoGroup.emit(model.data.groupId);
           }
         );
   }
@@ -181,7 +181,7 @@ export class TodoGroupListComponent implements OnInit {
       }
       */
      // 선택되지 않은 TodoGroup 속성 변경
-      todoGroup.pkTodoGroup === pkTodoGroup ? todoGroup.isSelected = true : todoGroup.isSelected = false;
+      todoGroup.groupId === pkTodoGroup ? todoGroup.isSelected = true : todoGroup.isSelected = false;
     }
 
     this.onSelectedTodoGroup.emit(pkTodoGroup);
@@ -204,14 +204,14 @@ export class TodoGroupListComponent implements OnInit {
   }
 
   onContextMenuAction1(item: TodoGroupModel) {
-    alert(`Click on Action 1 for ${item.pkTodoGroup}`);
+    alert(`Click on Action 1 for ${item.groupId}`);
   }
 
   onContextMenuAction2(item: TodoGroupModel) {
-    let index = this.todoGroupList.findIndex((e) => e.pkTodoGroup === item.pkTodoGroup);
+    let index = this.todoGroupList.findIndex((e) => e.groupId === item.groupId);
     this.todoGroupList.splice(index, 1);
 
-    this.deleteTodoGroup(item.pkTodoGroup);
+    this.deleteTodoGroup(item.groupId);
     //alert(`Click on Action 2 for ${item.pkTodoGroup}`);
   }
 
@@ -225,7 +225,7 @@ export class TodoGroupListComponent implements OnInit {
     const url = GlobalProperty.serverUrl() + `/api/todo/group`;
     const options = getHttpOptions();
 
-    const obj = {pkTodoGroup: item.pkTodoGroup, todoGroupName: name, isSelected: false};
+    const obj = {pkTodoGroup: item.groupId, todoGroupName: name, isSelected: false};
     this.http.post<ResponseObject<TodoGroupModel>>(url, obj, options).pipe(
           //catchError(this.handleError<ResponseObject<TodoGroupModel>>('saveTodoGroup', undefined))
         )

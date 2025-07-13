@@ -6,9 +6,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
 export interface TodoModel {
-  pkTodoGroup: string;
-  pkTodo: string;
-  isCompleted: boolean;
+  groupId: string;
+  todoId: string;
+  completed: boolean;
   todo: string;
 }
 
@@ -48,7 +48,7 @@ export class TodoAddInputComponent {
   }
 
   addTodo(newText: string) {
-    const obj: TodoModel = {pkTodoGroup: this.pkTodoGroup(), pkTodo: '', isCompleted: false, todo: newText};
+    const obj: TodoModel = {groupId: this.pkTodoGroup(), todoId: '', completed: false, todo: newText};
     this.onTodoAdded.emit(obj);
     this.newText.set('');
   }

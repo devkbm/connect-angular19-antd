@@ -13,15 +13,15 @@ import { TodoAddInputComponent } from './todo-add-input.component';
 import { TodoGroupListComponent } from './todo-group-list.component';
 
 export interface TodoGroupModel {
-  pkTodoGroup: string;
+  groupId: string;
   todoGroupName: string;
   isSelected: boolean;
 }
 
 export interface TodoModel {
-  pkTodoGroup: string;
-  pkTodo: string;
-  isCompleted: boolean;
+  groupId: string;
+  todoId: string;
+  completed: boolean;
   todo: string;
 }
 
@@ -55,7 +55,7 @@ export interface TodoModel {
       (onTodoAdded)="addTodo($event)">
     </app-todo-add-input>
 
-    @for (todo of todos; track todo.pkTodo) {
+    @for (todo of todos; track todo.todoId) {
       <app-todo-text [todo]="todo" (stateChanged)="toggleTodo($event)" (deleteClicked)="deleteTodo($event)"></app-todo-text>
     }
   </div>
@@ -154,9 +154,9 @@ export class TodoApp implements OnInit {
           (model: ResponseObject<TodoModel>) => {
             console.log(model);
             this.todos.push({
-              pkTodoGroup : model.data.pkTodoGroup,
-              pkTodo : model.data.pkTodo,
-              isCompleted : model.data.isCompleted,
+              groupId : model.data.groupId,
+              todoId : model.data.todoId,
+              completed : model.data.completed,
               todo : model.data.todo
             });
           }
@@ -164,7 +164,7 @@ export class TodoApp implements OnInit {
   }
 
   deleteTodo(todo: TodoModel) {
-    const url = GlobalProperty.serverUrl() + `/api/todo/group/${todo.pkTodoGroup}/todo/${todo.pkTodo}`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/${todo.groupId}/todo/${todo.todoId}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<TodoModel>>(url, options).pipe(
@@ -172,29 +172,17 @@ export class TodoApp implements OnInit {
         )
         .subscribe(
           (model: ResponseObject<TodoModel>) => {
-            let index = this.todos.findIndex((e) => e.pkTodoGroup === todo.pkTodoGroup && e.pkTodo === todo.pkTodo);
+            let index = this.todos.findIndex((e) => e.groupId === todo.groupId && e.todoId === todo.todoId);
             console.log(index);
             this.todos.splice(index, 1);
           }
         );
-
-        /*
-    this.service
-        .deleteTodo(todo.pkTodoGroup, todo.pkTodo)
-        .subscribe(
-          (model: ResponseObject<TodoModel>) => {
-            let index = this.todos.findIndex((e) => e.pkTodoGroup === todo.pkTodoGroup && e.pkTodo === todo.pkTodo);
-            console.log(index);
-            this.todos.splice(index, 1);
-          }
-        );
-        */
   }
 
-  getTodoList(pkTodoGroup: string): void {
-    this.selectedPkTodoGroup = pkTodoGroup;
+  getTodoList(groupId: string): void {
+    this.selectedPkTodoGroup = groupId;
 
-    const url = GlobalProperty.serverUrl() + `/api/todo/group/${pkTodoGroup}/list`;
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/${groupId}/list`;
     const options = getHttpOptions();
 
     this.http.get<ResponseList<TodoModel>>(url, options).pipe(
@@ -208,8 +196,8 @@ export class TodoApp implements OnInit {
         );
   }
 
-  deleteTodoGroup(pkTodoGroup: string) {
-    const url = GlobalProperty.serverUrl() + `/api/todo/group${pkTodoGroup}`;
+  deleteTodoGroup(groupId: string) {
+    const url = GlobalProperty.serverUrl() + `/api/todo/group/${groupId}`;
     const options = getHttpOptions();
 
     this.http.delete<ResponseObject<TodoGroupModel>>(url, options).pipe(
