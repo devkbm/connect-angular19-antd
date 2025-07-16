@@ -26,6 +26,8 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 
+import { XCalendarComponent } from "src/app/third-party/schedule-x/x-calendar.component"; // can alternatively be added in your angular.json
+
 @Component({
   selector: 'holiday-app',
   imports: [
@@ -44,7 +46,9 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
     HolidayFormDrawerComponent,
     CalendarDaypilotNavigatorComponent,
     ShapeComponent,
-    CalendarFullcalendarComponent
+    CalendarFullcalendarComponent,
+
+    XCalendarComponent
 ],
   template: `
 <ng-template #header>
@@ -82,9 +86,12 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
     <nz-tab nzTitle="달력">
     <ng-template nz-tab>
       <div [style]="'height: calc(100vh - 272px)'">
+
         <app-calendar-fullcalendar
           (dayClicked)="newHoliday2($event)"
         ></app-calendar-fullcalendar>
+
+        <!--<app-x-calendar></app-x-calendar>-->
       </div>
     </ng-template>
     </nz-tab>
