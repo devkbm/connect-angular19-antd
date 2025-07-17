@@ -23,6 +23,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
+import { UserListComponent } from "./user-list.component";
 
 @Component({
   selector: 'user-app',
@@ -42,7 +43,8 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
     UserGridComponent,
     UserFormDrawerComponent,
     ShapeComponent,
-    UesrSearchComponent
+    UesrSearchComponent,
+    UserListComponent
 ],
   template: `
 <ng-template #header>
@@ -73,6 +75,9 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
         (editButtonClicked)="editForm($event)"
         (rowDoubleClicked)="editForm($event)">
       </app-user-grid>
+      <app-user-list>
+
+      </app-user-list>
       }
     </div>
   </div>
