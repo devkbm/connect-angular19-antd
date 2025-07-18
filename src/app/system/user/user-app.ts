@@ -70,14 +70,17 @@ import { UserListComponent } from "./user-list.component";
 
     <div style="flex: 1">
       @defer {
-      <app-user-grid #userGrid
-        (rowClicked)="userGridSelected($event)"
-        (editButtonClicked)="editForm($event)"
-        (rowDoubleClicked)="editForm($event)">
-      </app-user-grid>
-      <app-user-list>
-
-      </app-user-list>
+        @if (view === 'grid') {
+          <app-user-grid #userGrid
+            (rowClicked)="userGridSelected($event)"
+            (editButtonClicked)="editForm($event)"
+            (rowDoubleClicked)="editForm($event)">
+          </app-user-grid>
+        }
+        @else if (view === 'list') {
+          <app-user-list (editButtonClicked)="editForm($event)">
+          </app-user-list>
+        }
       }
     </div>
   </div>
@@ -117,6 +120,9 @@ export class UserApp implements OnInit {
   private http = inject(HttpClient);
 
   grid = viewChild.required(UserGridComponent);
+  list = viewChild.required(UserListComponent);
+
+  view: 'grid' | 'list' = 'list';
 
   query: {
     user : { key: string, value: string, list: {label: string, value: string}[] }
