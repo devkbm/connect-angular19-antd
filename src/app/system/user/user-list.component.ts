@@ -96,7 +96,13 @@ export class UserListComponent {
   }
 
   imageUrl(rowData: User) {
-    return GlobalProperty.serverUrl() + rowData.imageBase64;
+    if (rowData.imageBase64 === null) return;
+
+    let urlParams = new URLSearchParams();
+    urlParams.set("companyCode", rowData.companyCode!);
+    urlParams.set("userId", rowData.userId!);
+
+    return GlobalProperty.serverUrl() + '/api/system/user/image' + '?' + urlParams;
   }
 
 }
