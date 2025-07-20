@@ -152,7 +152,7 @@ export class UserApp implements OnInit {
 
   }
 
-  editForm(item: User) {
+  editForm(item: any) {
     this.drawer.user.formDataId = item.userId;
     this.drawer.user.visible = true;
   }
@@ -166,7 +166,12 @@ export class UserApp implements OnInit {
 */
     this.drawer.user.visible = false;
 
-    this.grid().gridQuery.set(params);
+    if (this.view === 'grid') {
+      this.grid().gridQuery.set(params);
+    } else if (this.view === 'list') {
+      this.list().gridQuery.set(params);
+    }
+
   }
 
   deleteUser() {

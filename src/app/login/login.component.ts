@@ -9,7 +9,9 @@ import { GlobalProperty } from 'src/app/core/global-property';
 
 import { LoginService } from './login.service';
 import { UserToken } from './user-token.model';
-import { NzSelectModule } from 'ng-zorro-antd/select';
+import { HttpClient } from '@angular/common/http';
+import { getHttpHeaders } from '../core/http/http-utils';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 
 @Component({
   selector: 'app-login',
@@ -17,17 +19,18 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NzSelectModule
+    NzRadioModule
   ],
   template: `
 <div class="body">
   <div class="login">
     <h1>Login</h1>
 
-    <nz-select [(ngModel)]="serverType">
-      <nz-option nzValue="LOCAL" nzLabel="로컬"></nz-option>
-      <nz-option nzValue="PROD" nzLabel="운영기"></nz-option>
-    </nz-select> {{serverType()}}
+    <nz-radio-group [(ngModel)]="serverType" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="LOCAL">로컬</label>
+      <label nz-radio-button nzValue="PROD">운영기</label>
+    </nz-radio-group>{{serverType()}}
+
     <form nz-form [formGroup]="form">
       <input type="text" formControlName="staffNo" placeholder="Username" required="required" />
       <input type="password" formControlName="password" placeholder="Password" required="required" />
@@ -127,7 +130,8 @@ input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgb
 })
 export class LoginComponent implements OnInit {
 
-  private loginService = inject(LoginService);
+  private http = inject(HttpClient);
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private winRef = inject(WindowRef);
@@ -163,7 +167,16 @@ export class LoginComponent implements OnInit {
     if (token != null) {
       sessionStorage.setItem('token', token);
 
-      this.loginService.getAuthToken('001')
+      const companyCode = '001';
+      const url = GlobalProperty.serverUrl() + '/api/system/user/auth?companyCode='+companyCode;
+      const options = {
+        headers: getHttpHeaders(),
+        withCredentials: true
+      };
+
+      this.http.get<UserToken>(url, options).pipe(
+           // catchError(this.handleError<UserToken>('getAuthToken', undefined))
+          )
           .subscribe(
             (model: UserToken) => {
               this.setItemSessionStorage(model);
@@ -171,6 +184,8 @@ export class LoginComponent implements OnInit {
               this.router.navigate([this.FIRST_PAGE_URL]);
             }
           );
+
+
     }
   }
 
@@ -185,13 +200,22 @@ export class LoginComponent implements OnInit {
     }
     */
 
-    this.loginService
-        .doLogin('001', this.form.value.staffNo!, this.form.value.password!)
+    const url = GlobalProperty.serverUrl() + '/api/system/user/login';
+    const body = {companyCode: '001', staffNo: this.form.value.staffNo!, password: this.form.value.password!};
+    const options = {
+      headers: getHttpHeaders(),
+      withCredentials: true
+    };
+
+    this.http
+        .post<UserToken>(url, body, options).pipe(
+          // tap((userToken: UserToken) => console.log(userToken.token) ),
+          // catchError((err) => Observable.throw(err))
+        )
         .subscribe(
           (model: UserToken) => {
-          this.setItemSessionStorage(model);
-
-          this.router.navigate([this.FIRST_PAGE_URL, {isForwarding: true}]);
+            this.setItemSessionStorage(model);
+            this.router.navigate([this.FIRST_PAGE_URL, {isForwarding: true}]);
           }
         );
   }

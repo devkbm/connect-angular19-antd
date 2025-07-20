@@ -22,7 +22,8 @@ export interface User {
   email: string | null;
   imageBase64: string | null;
   enabled: boolean | null;
-  roleList: string[] | null;
+  roleList: string | null;
+  menuGroupList: string | null;
 }
 
 @Component({
@@ -32,7 +33,10 @@ export interface User {
     NzListModule
   ],
   template: `
-     <nz-list nzItemLayout="vertical" nzHeader="Header" nzFooter="Footer" >
+     <nz-list nzItemLayout="vertical" [nzHeader]="header" [nzFooter]="footer" >
+      <ng-template #header>
+        사용자 목록
+      </ng-template>
       @for (item of gridResource.value()?.data; track item) {
         <nz-list-item>
           <ng-container>
@@ -56,11 +60,16 @@ export interface User {
             </ul>
           </ng-container>
 
-           <nz-list-item-extra style="width: 400px">
-            {{item.roleList}}
+           <nz-list-item-extra style="width: 500px">
+            롤 : {{item.roleList}} <br/>
+            메뉴그룹 : {{item.menuGroupList}}
           </nz-list-item-extra>
         </nz-list-item>
       }
+
+      <ng-template #footer>
+        사용자 : {{gridResource.value()?.data?.length}} 건
+      </ng-template>
     </nz-list>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

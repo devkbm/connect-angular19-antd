@@ -1,5 +1,13 @@
 import { HttpHeaders } from "@angular/common/http";
 
+
+export function getHttpHeaders(): HttpHeaders {
+  return new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        //.set('Authorization', sessionStorage.getItem('token') as string)
+        ;
+}
+
 export function getAuthorizedHttpHeaders(): HttpHeaders {
   return new HttpHeaders()
         .set('Content-Type', 'application/json')
