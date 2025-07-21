@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { ResponseObject } from 'src/app/core/model/response-object';
+import { CompanyListComponent } from "./company-list.component";
 
 @Component({
   selector: 'app-company',
@@ -35,7 +36,8 @@ import { ResponseObject } from 'src/app/core/model/response-object';
     NzSearchAreaComponent,
     CompanyGridComponent,
     CompanyFormDrawerComponent,
-    ShapeComponent
+    ShapeComponent,
+    CompanyListComponent
 ],
   template: `
 
@@ -77,11 +79,17 @@ import { ResponseObject } from 'src/app/core/model/response-object';
     </div>
     <div style="flex: 1">
     @defer {
-      <app-company-grid #grid
-        (rowClicked)="resourceGridRowClicked($event)"
-        (editButtonClicked)="editResource($event)"
-        (rowDoubleClicked)="editResource($event)">
-      </app-company-grid>
+      @if (view === 'grid') {
+        <app-company-grid #grid
+          (rowClicked)="resourceGridRowClicked($event)"
+          (editButtonClicked)="editResource($event)"
+          (rowDoubleClicked)="editResource($event)">
+        </app-company-grid>
+      }
+      @else if (view === 'list') {
+        <app-company-list (editButtonClicked)="editResource($event)">
+        </app-company-list>
+      }
     }
     </div>
   </div>
@@ -120,6 +128,9 @@ export class CompanyApp implements OnInit {
   private http = inject(HttpClient);
 
   grid = viewChild.required(CompanyGridComponent);
+  list = viewChild.required(CompanyListComponent);
+
+  view: 'grid' | 'list' = 'list';
 
   query: {
     company : { key: string, value: string, list: {label: string, value: string}[] }

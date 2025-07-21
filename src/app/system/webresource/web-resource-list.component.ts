@@ -13,23 +13,17 @@ import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 
-export interface User {
-  userId: string | null;
-  companyCode: string | null;
-  staffNo: string | null;
-  name: string | null;
-  deptCode: string | null;
-  deptName: string | null;
-  mobileNum: string | null;
-  email: string | null;
-  imageBase64: string | null;
-  enabled: boolean | null;
-  roleList: string | null;
-  menuGroupList: string | null;
+export interface WebResource {
+  resourceId: string | null;
+  resourceName: string | null;
+  resourceType: string | null;
+  url: string | null;
+  description: string | null;
 }
 
+
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-web-resource-list',
   imports: [
     CommonModule,
     NzListModule,
@@ -39,11 +33,11 @@ export interface User {
   template: `
     <ng-template #header>
       <nz-icon nzType="database" nzTheme="outline" />
-      사용자 목록
+      웹 리소스 목록
     </ng-template>
 
     <ng-template #footer>
-      사용자 : {{gridResource.value()?.data?.length}} 건
+      웹 리소스 : {{gridResource.value()?.data?.length}} 건
     </ng-template>
 
     <nz-list nzItemLayout="vertical" [nzHeader]="header" [nzFooter]="footer" >
@@ -52,27 +46,16 @@ export interface User {
           <ng-container>
 
             <nz-list-item-meta>
-              @if (item.imageBase64) {
-                <nz-list-item-meta-avatar [nzSrc]="imageUrl(item)">
-                </nz-list-item-meta-avatar>
-              } @else {
-                <nz-list-item-meta-avatar>
-                  <nz-avatar nzIcon="user"></nz-avatar>
-                </nz-list-item-meta-avatar>
-              }
-
               <nz-list-item-meta-title>
-                {{item.name}} [ {{item.staffNo}} ] - 부서 : {{item.deptName}}
+                {{item.resourceName}} [ {{item.resourceId}} ]
               </nz-list-item-meta-title>
-              <!--
+
               <nz-list-item-meta-description>
-                부서 : {{item.deptName}}
+                타입 : {{item.resourceType}}
               </nz-list-item-meta-description>
-            -->
             </nz-list-item-meta>
 
-            핸드폰 번호 : {{item.mobileNum}} <br/>
-            이메일 : {{item.email}}
+            {{item.description}}
 
             <ul nz-list-item-actions>
               <nz-list-item-action>
@@ -81,47 +64,38 @@ export interface User {
             </ul>
           </ng-container>
 
-           <nz-list-item-extra style="width: 30%">
-            &#10003; 롤 <br/>
-            {{item.roleList}} <br/>
-            &#10003; 메뉴그룹 <br/>
-            {{item.menuGroupList}}
+
+          <nz-list-item-extra>
+            @if (item.resourceType === 'IMAGE') {
+              <img width="148" [src]="item.url" />
+            } @else {
+              {{item.resourceType}}
+            }
           </nz-list-item-extra>
+
         </nz-list-item>
       }
     </nz-list>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserListComponent {
+export class WebResourceListComponent {
 
-  editButtonClicked = output<User>();
+  editButtonClicked = output<WebResource>();
 
   private http = inject(HttpClient);
-
-  msg = inject(NzMessageService);
 
   gridQuery = signal<any>('');
   gridResource = rxResource({
     request: () => this.gridQuery(),
-    loader: ({request}) => this.http.get<ResponseList<User>>(
-      GlobalProperty.serverUrl() + `/api/system/user`,
+    loader: ({request}) => this.http.get<ResponseList<WebResource>>(
+      GlobalProperty.serverUrl() + `/api/system/webresource`,
       getHttpOptions(request)
     )
   })
 
-  onEditButtonClick(rowData: User) {
+  onEditButtonClick(rowData: WebResource) {
     this.editButtonClicked.emit(rowData);
-  }
-
-  imageUrl(rowData: User) {
-    if (rowData.imageBase64 === null) return '';
-
-    let urlParams = new URLSearchParams();
-    urlParams.set("companyCode", rowData.companyCode!);
-    urlParams.set("userId", rowData.userId!);
-
-    return GlobalProperty.serverUrl() + '/api/system/user/image' + '?' + urlParams;
   }
 
 }

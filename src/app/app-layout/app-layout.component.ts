@@ -142,15 +142,19 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 }
 
 .main-content {
+  /* 헤더, 본문 margin, 푸터를 제외한 높이로 설정 */
+  height: calc(100vh - (var(--app-header-height) + var(--app-content-margin-height) + var(--app-footer-height)));
+  width: auto;
+  overflow: auto;
+
+  background-color: black;
+
   margin-top: var(--app-content-margin-height);
   margin-right: 12px;
   margin-bottom: 0px;
   margin-left: 12px;
-  background-color: black;
-  /* 헤더, 본문 margin, 푸터를 제외한 높이로 설정 */
-  height: calc(100vh - (var(--app-header-height) + var(--app-content-margin-height) + var(--app-footer-height)));
-  width: auto;
-  /*overflow-y: hidden;*/
+
+
 }
 
 .footer {

@@ -20,6 +20,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { WebResourceSearchComponent } from './web-resource-search.component';
+import { WebResourceListComponent } from "./web-resource-list.component";
 
 @Component({
   selector: 'web-resource-app',
@@ -36,7 +37,8 @@ import { WebResourceSearchComponent } from './web-resource-search.component';
     WebResourceGridComponent,
     WebResourceFormDrawerComponent,
     WebResourceSearchComponent,
-    ShapeComponent
+    ShapeComponent,
+    WebResourceListComponent
 ],
   template: `
 <ng-template #header>
@@ -61,11 +63,17 @@ import { WebResourceSearchComponent } from './web-resource-search.component';
 
     <div style="flex: 1">
     @defer {
+      @if (view === 'grid') {
       <app-web-resource-grid #grid
         (rowClicked)="resourceGridRowClicked($event)"
         (editButtonClicked)="editResource($event)"
         (rowDoubleClicked)="editResource($event)">
       </app-web-resource-grid>
+      }
+      @else if (view === 'list') {
+      <app-web-resource-list (editButtonClicked)="editResource($event)">
+      </app-web-resource-list>
+      }
     }
     </div>
   </div>
@@ -104,6 +112,9 @@ export class WebResourceApp implements OnInit {
   private http = inject(HttpClient);
 
   grid = viewChild.required(WebResourceGridComponent);
+  list = viewChild.required(WebResourceListComponent);
+
+  view: 'grid' | 'list' = 'list';
 
   drawer: {
     resource: { visible: boolean, formDataId: any }
