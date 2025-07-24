@@ -21,6 +21,7 @@ import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-ar
 import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { HttpClient } from '@angular/common/http';
+import { RoleListComponent } from './role-list.component';
 
 @Component({
   selector: 'app-role',
@@ -39,7 +40,8 @@ import { HttpClient } from '@angular/common/http';
     NzSearchAreaComponent,
     RoleGridComponent,
     RoleFormDrawerComponent,
-    ShapeComponent
+    ShapeComponent,
+    RoleListComponent
 ],
   template: `
 <ng-template #header>
@@ -80,11 +82,17 @@ import { HttpClient } from '@angular/common/http';
 
     <div style="flex: 1">
       @defer {
-      <app-role-grid #authGrid
-        (rowClicked)="selectedItem($event)"
-        (editButtonClicked)="editDrawOpen($event)"
-        (rowDoubleClicked)="editDrawOpen($event)">
-      </app-role-grid>
+        @if (view === 'grid') {
+        <app-role-grid #authGrid
+          (rowClicked)="selectedItem($event)"
+          (editButtonClicked)="editDrawOpen($event)"
+          (rowDoubleClicked)="editDrawOpen($event)">
+        </app-role-grid>
+        }
+        @else if (view === 'list') {
+          <app-role-list (editButtonClicked)="editDrawOpen($event)">
+          </app-role-list>
+        }
       }
     </div>
   </div>
@@ -126,6 +134,9 @@ export class RoleApp implements AfterViewInit {
   private http = inject(HttpClient);
 
   grid = viewChild.required(RoleGridComponent);
+  list = viewChild.required(RoleListComponent);
+
+  view: 'grid' | 'list' = 'list';
 
   query: {
     role : { key: string, value: string, list: {label: string, value: string}[] }
@@ -196,6 +207,8 @@ export class RoleApp implements AfterViewInit {
   }
 
   editDrawOpen(item: any) {
+    this.drawer.role.formDataId = item.roleCode;
+
     this.openDrawer();
   }
 

@@ -9,35 +9,18 @@ import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
-export interface Company {
-  /**
-   * 회사코드
-   */
-  companyCode: string | null;
-  /**
-   * 회사명
-   */
-  companyName: string | null;
-  /**
-   * 사업자등록번호
-   */
-  businessRegistrationNumber: string | null;
-  /**
-   * 법인번호
-   */
-  coporationNumber: string | null;
-  /**
-   * 대표자
-   */
-  nameOfRepresentative: string | null;
-  /**
-   * 설립일
-   */
-  establishmentDate: Date | null;
+
+export interface MenuGroup {
+  menuGroupCode: string | null;
+  menuGroupName: string | null;
+  menuGroupUrl: string | null;
+  description: string | null;
+  sequence: number | null;
 }
 
+
 @Component({
-  selector: 'app-company-list',
+  selector: 'app-menu-group-list',
   imports: [
     CommonModule,
     NzListModule,
@@ -46,11 +29,11 @@ export interface Company {
   template: `
     <ng-template #header>
       <nz-icon nzType="database" nzTheme="outline" />
-      회사 목록
+      메뉴그룹 목록
     </ng-template>
 
     <ng-template #footer>
-        회사 : {{gridResource.value()?.data?.length}} 건
+        메뉴그룹 : {{gridResource.value()?.data?.length}} 건
       </ng-template>
 
     <nz-list nzItemLayout="vertical" [nzHeader]="header" [nzFooter]="footer" >
@@ -59,17 +42,16 @@ export interface Company {
           <ng-container>
             <nz-list-item-meta>
               <nz-list-item-meta-title>
-                {{item.companyName}} [ {{item.companyCode}} ]
+                {{item.menuGroupName}} [ {{item.menuGroupCode}} ]
               </nz-list-item-meta-title>
 
               <nz-list-item-meta-description>
-                대표자 : {{item.nameOfRepresentative}}
+                비고 : {{item.description}}
               </nz-list-item-meta-description>
             </nz-list-item-meta>
 
-            설립일 : {{item.establishmentDate}} <br/>
-            사업자등록번호 : {{item.businessRegistrationNumber}} <br/>
-            법인번호 : {{item.coporationNumber}} <br/>
+            메뉴그룹 URL : {{item.menuGroupUrl}} <br/>
+            순번 : {{item.sequence}}
 
             <ul nz-list-item-actions>
               <nz-list-item-action>
@@ -83,21 +65,21 @@ export interface Company {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompanyListComponent {
-  editButtonClicked = output<Company>();
+export class MenuGroupListComponent {
+  editButtonClicked = output<MenuGroup>();
 
   private http = inject(HttpClient);
 
   gridQuery = signal<any>('');
   gridResource = rxResource({
     request: () => this.gridQuery(),
-    loader: ({request}) => this.http.get<ResponseList<Company>>(
-      GlobalProperty.serverUrl() + `/api/system/company`,
+    loader: ({request}) => this.http.get<ResponseList<MenuGroup>>(
+      GlobalProperty.serverUrl() + `/api/system/menugroup`,
       getHttpOptions(request)
     )
   })
 
-  onEditButtonClick(rowData: Company) {
+  onEditButtonClick(rowData: MenuGroup) {
     this.editButtonClicked.emit(rowData);
   }
 

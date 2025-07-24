@@ -16,6 +16,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzPageHeaderCustomComponent } from 'src/app/third-party/ng-zorro/nz-page-header-custom/nz-page-header-custom.component';
 import { NzSearchAreaComponent } from 'src/app/third-party/ng-zorro/nz-search-area/nz-search-area.component';
 import { ShapeComponent } from "src/app/core/app/shape.component";
+import { MenuGroupListComponent } from './menu-group-list.component';
+import { MenuListComponent } from "./menu-list.component";
 
 @Component({
   selector: 'menu-app',
@@ -35,7 +37,9 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
     MenuGridComponent,
     MenuGroupFormDrawerComponent,
     MenuFormDrawerComponent,
-    ShapeComponent
+    ShapeComponent,
+    MenuGroupListComponent,
+    MenuListComponent
 ],
   template: `
 <ng-template #header>
@@ -101,19 +105,35 @@ import { ShapeComponent } from "src/app/core/app/shape.component";
   <div class="page-content">
     <h3 class="header1">메뉴 그룹 목록</h3>
     @defer {
-    <app-menu-group-grid class="grid1"
-      (rowClicked)="menuGroupGridRowClicked($event)"
-      (editButtonClicked)="editMenuGroup($event)"
-      (rowDoubleClicked)="editMenuGroup($event)">
-    </app-menu-group-grid>
+      @if (view === 'grid') {
+      <app-menu-group-grid class="grid1"
+        (rowClicked)="menuGroupGridRowClicked($event)"
+        (editButtonClicked)="editMenuGroup($event)"
+        (rowDoubleClicked)="editMenuGroup($event)">
+      </app-menu-group-grid>
+      }
+      @else if (view === 'list') {
+        <app-menu-group-list
+          (editButtonClicked)="editMenuGroup($event)"
+        >
+        </app-menu-group-list>
+      }
     }
     <h3 class="header2">메뉴 목록</h3>
     @defer {
-    <app-menu-grid class="grid2"
-      (rowClicked)="menuGridRowClicked($event)"
-      (editButtonClicked)="editMenu($event)"
-      (rowDoubleClicked)="editMenu($event)">
-    </app-menu-grid>
+      @if (view === 'grid') {
+        <app-menu-grid class="grid2"
+          (rowClicked)="menuGridRowClicked($event)"
+          (editButtonClicked)="editMenu($event)"
+          (rowDoubleClicked)="editMenu($event)">
+        </app-menu-grid>
+      }
+      @else if (view === 'list') {
+        <app-menu-list
+          (editButtonClicked)="editMenu($event)"
+        >
+        </app-menu-list>
+      }
     }
   </div>
 </app-shape>
@@ -198,6 +218,11 @@ export class MenuApp {
   gridMenuGroup = viewChild.required(MenuGroupGridComponent);
   gridMenu = viewChild.required(MenuGridComponent);
 
+  listMenuGroup = viewChild.required(MenuGroupListComponent);
+  listMenu = viewChild.required(MenuListComponent);
+
+  view: 'grid' | 'list' = 'grid';
+
   query: {
     menuGroup : { key: string, value: string, list: {label: string, value: string}[] },
     menu: { key: string, value: string, list: {label: string, value: string}[] }
@@ -237,7 +262,13 @@ export class MenuApp {
 
     this.drawer.menuGroup.visible = false;
     //this.gridMenu().clearData();
-    this.gridMenuGroup().gridQuery.set(params);
+
+    if (this.view === 'grid') {
+      this.gridMenuGroup().gridQuery.set(params);
+    } else if (this.view === 'list') {
+      this.listMenuGroup().gridQuery.set(params);
+    }
+
   }
 
   newMenuGroup(): void {
@@ -267,7 +298,12 @@ export class MenuApp {
     }
 
     this.drawer.menu.visible = false;
-    this.gridMenu().gridQuery.set(params);
+
+    if (this.view === 'grid') {
+      this.gridMenu().gridQuery.set(params);
+    } else if (this.view === 'list') {
+      this.listMenu().gridQuery.set(params);
+    }
   }
 
   newMenu(): void {

@@ -9,35 +9,21 @@ import { GlobalProperty } from 'src/app/core/global-property';
 import { getHttpOptions } from 'src/app/core/http/http-utils';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
-export interface Company {
-  /**
-   * 회사코드
-   */
-  companyCode: string | null;
-  /**
-   * 회사명
-   */
-  companyName: string | null;
-  /**
-   * 사업자등록번호
-   */
-  businessRegistrationNumber: string | null;
-  /**
-   * 법인번호
-   */
-  coporationNumber: string | null;
-  /**
-   * 대표자
-   */
-  nameOfRepresentative: string | null;
-  /**
-   * 설립일
-   */
-  establishmentDate: Date | null;
+export interface Menu {
+  menuGroupCode: string | null;
+  menuCode: string | null;
+  menuName: string | null;
+  menuType: string | null;
+  parentMenuCode: string | null;
+  sequence: number | null;
+  appUrl: string | null;
+  appIconType: string | null;
+  appIcon: string | null;
 }
 
+
 @Component({
-  selector: 'app-company-list',
+  selector: 'app-menu-list',
   imports: [
     CommonModule,
     NzListModule,
@@ -46,11 +32,11 @@ export interface Company {
   template: `
     <ng-template #header>
       <nz-icon nzType="database" nzTheme="outline" />
-      회사 목록
+      메뉴 목록
     </ng-template>
 
     <ng-template #footer>
-        회사 : {{gridResource.value()?.data?.length}} 건
+        메뉴 : {{gridResource.value()?.data?.length}} 건
       </ng-template>
 
     <nz-list nzItemLayout="vertical" [nzHeader]="header" [nzFooter]="footer" >
@@ -59,17 +45,17 @@ export interface Company {
           <ng-container>
             <nz-list-item-meta>
               <nz-list-item-meta-title>
-                {{item.companyName}} [ {{item.companyCode}} ]
+                {{item.menuName}} [ {{item.menuCode}} ]
               </nz-list-item-meta-title>
 
               <nz-list-item-meta-description>
-                대표자 : {{item.nameOfRepresentative}}
+                메뉴타입 : {{item.menuType}}
               </nz-list-item-meta-description>
             </nz-list-item-meta>
 
-            설립일 : {{item.establishmentDate}} <br/>
-            사업자등록번호 : {{item.businessRegistrationNumber}} <br/>
-            법인번호 : {{item.coporationNumber}} <br/>
+            상위메뉴코드 : {{item.parentMenuCode}} <br/>
+            URL : {{item.appUrl}} <br/>
+            Icon : {{item.appIcon}} <br/>
 
             <ul nz-list-item-actions>
               <nz-list-item-action>
@@ -83,22 +69,21 @@ export interface Company {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompanyListComponent {
-  editButtonClicked = output<Company>();
+export class MenuListComponent {
+  editButtonClicked = output<Menu>();
 
   private http = inject(HttpClient);
 
   gridQuery = signal<any>('');
   gridResource = rxResource({
     request: () => this.gridQuery(),
-    loader: ({request}) => this.http.get<ResponseList<Company>>(
-      GlobalProperty.serverUrl() + `/api/system/company`,
+    loader: ({request}) => this.http.get<ResponseList<Menu>>(
+      GlobalProperty.serverUrl() + `/api/system/menu`,
       getHttpOptions(request)
     )
   })
 
-  onEditButtonClick(rowData: Company) {
+  onEditButtonClick(rowData: Menu) {
     this.editButtonClicked.emit(rowData);
   }
-
 }
