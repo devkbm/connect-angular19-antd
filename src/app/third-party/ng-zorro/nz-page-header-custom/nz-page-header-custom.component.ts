@@ -1,5 +1,5 @@
 import { Component, TemplateRef, inject, input } from '@angular/core';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { MenuBreadCrumb, SessionManager } from 'src/app/core/session-manager';
@@ -11,6 +11,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 @Component({
   selector: 'nz-page-header-custom',
   imports: [
+    CommonModule,
     RouterModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -22,6 +23,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       <nz-breadcrumb-item><a routerLink="/home"><span nz-icon [nzType]="'home'"></span></a></nz-breadcrumb-item>
     </nz-breadcrumb>
     -->
+
+    {{menuBreadCrumb|json}}
     <nz-page-header (nzBack)="goBack()" nzBackIcon [nzTitle]="title()" [nzSubtitle]="subtitle()">
       <nz-breadcrumb nz-page-header-breadcrumb nzSeparator=">" >
         <nz-breadcrumb-item><a routerLink="/home"><span nz-icon [nzType]="'home'"></span></a></nz-breadcrumb-item>
